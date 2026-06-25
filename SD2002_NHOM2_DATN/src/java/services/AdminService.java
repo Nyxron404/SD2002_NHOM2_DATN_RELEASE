@@ -12,7 +12,4 @@ import models.User;
  * @author longd
  */
 public class AdminService {
-    private List<User> list;
-
-
 }
