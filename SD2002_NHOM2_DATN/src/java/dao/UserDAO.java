@@ -4,10 +4,37 @@
  */
 package dao;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import models.User;
+import uril.DBConnect;
+import java.time.LocalDateTime;
 /**
  *
  * @author longd
  */
 public class UserDAO {
-    
+    private List<User> listUser;
+    public UserDAO(){
+        listUser = new ArrayList<>();
+    }
+    public List<User> selectUser(){
+        String select = "SELECT * FROM User";
+        try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
+            ResultSet rs = stmt.executeQuery(select);
+            while (rs.next()) {                
+                int MaNguoiDung = rs.getInt("MaNguoiDung");
+                String TenDangNhap = rs.getString("TenDangNhap");
+                String MatKhau = rs.getString("MatKhau");
+                int MaNhom = rs.getInt("MaNhom");
+                boolean TrangThai = rs.getBoolean("TrangThai");
+                LocalDateTime NgayTao = rs.getObject("NgayTao", LocalDateTime.class);
+                listUser.add(new User(MaNguoiDung, TenDangNhap, MatKhau, MaNhom, TrangThai, NgayTao));
+            }
+            return listUser;
+        } catch (SQLException e) {
+            return listUser;
+        }
+    }
 }

@@ -27,6 +27,11 @@ public class User {
         this.TrangThai = TrangThai;
         this.NgayTao = NgayTao;
     }
+    public User(String TenDangNhap, String MatKhau) {
+        this.TenDangNhap = TenDangNhap;
+        this.MatKhau = MatKhau;
+        this.MaNhom = MaNhom;
+    }
 
     public int getMaNguoiDung() {
         return MaNguoiDung;
