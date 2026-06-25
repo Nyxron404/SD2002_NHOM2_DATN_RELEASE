@@ -17,7 +17,7 @@ public class AuthService {
         StaffDAO staffDAO = new StaffDAO();
         List<Staff> listStaff = staffDAO.selectStaff();
         for (Staff staff : listStaff) {
-            if(Email.equals(staff.getEmail()) && staff.ge){
+            if(Email.equals(staff.getEmail()) && staff.isDangKy() == false){
                 
             }
         }
