@@ -4,10 +4,22 @@
  */
 package services;
 
+import dao.StaffDAO;
+import java.util.List;
+import models.Staff;
+
 /**
  *
  * @author longd
  */
 public class AuthService {
-    
+    public void register(String TenDangKy, String Email, String MatKhau){
+        StaffDAO staffDAO = new StaffDAO();
+        List<Staff> listStaff = staffDAO.selectStaff();
+        for (Staff staff : listStaff) {
+            if(Email.equals(staff.getEmail()) && staff.ge){
+                
+            }
+        }
+    }
 }

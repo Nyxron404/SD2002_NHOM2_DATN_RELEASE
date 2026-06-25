@@ -19,7 +19,7 @@ public class Staff {
     private LocalDate NgayVaoLam;
     private double Luong;
     private int MaNguoiDung;
-
+    private boolean DangKy;
     public Staff() {
     }
 
@@ -36,6 +36,30 @@ public class Staff {
         this.MaNguoiDung = MaNguoiDung;
     }
 
+    public Staff(int MaNhanVien, String HoTen, LocalDate NgaySinh, boolean GioiTinh, String SDT, String Email, String DiaChi, LocalDate NgayVaoLam, double Luong, int MaNguoiDung, boolean DangKy) {
+        this.MaNhanVien = MaNhanVien;
+        this.HoTen = HoTen;
+        this.NgaySinh = NgaySinh;
+        this.GioiTinh = GioiTinh;
+        this.SDT = SDT;
+        this.Email = Email;
+        this.DiaChi = DiaChi;
+        this.NgayVaoLam = NgayVaoLam;
+        this.Luong = Luong;
+        this.MaNguoiDung = MaNguoiDung;
+        this.DangKy = DangKy;
+    }
+    
+    public boolean isDangKy() {
+        return DangKy;
+    }
+
+    public void setDangKy(boolean DangKy) {
+        this.DangKy = DangKy;
+    }
+    
+    
+    
     public int getMaNhanVien() {
         return MaNhanVien;
     }

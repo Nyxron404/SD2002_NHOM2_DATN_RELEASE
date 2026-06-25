@@ -34,7 +34,8 @@ public class StaffDAO {
                 LocalDate NgayVaoLam = rs.getObject("NgayVaoLam",LocalDate.class);
                 double Luong = rs.getDouble("Luong");
                 int MaNguoiDung = rs.getInt("MaNguoiDung");
-                listStaff.add(new Staff(MaNhanVien, HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, NgayVaoLam, Luong, MaNguoiDung));
+                boolean DangKy = rs.getBoolean("DangKy");
+                listStaff.add(new Staff(MaNhanVien, HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, NgayVaoLam, Luong, MaNguoiDung,DangKy));
             }
             return listStaff;
         } catch (SQLException e) {
