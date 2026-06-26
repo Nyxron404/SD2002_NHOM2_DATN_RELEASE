@@ -263,8 +263,8 @@
                 </svg>
                 <h1>Đăng Ký</h1>
             </div>
-
-            <form method="Post">
+            
+            <form method="Post" action="${pageContext.request.contextPath}/auth">
                 <table>
                     <tr>
                         <td>
