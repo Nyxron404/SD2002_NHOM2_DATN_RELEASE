@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import services.AuthService;
 
 /**
  *
@@ -19,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="authServlet", urlPatterns={"/auth"})
 public class AuthServlet extends HttpServlet {
-   
+    AuthService authSV = new AuthService();
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -72,7 +73,19 @@ public class AuthServlet extends HttpServlet {
         //processRequest(request, response);
         String action = request.getParameter("action");
         if(action.equals("register")){
-            
+            String TenDangKy = request.getParameter("TenDangKy");
+            String Email = request.getParameter("Email");
+            String MatKhau = request.getParameter("MatKhau");
+            int mess = authSV.Register(TenDangKy, Email, MatKhau);
+            if(mess == 1){
+                request.setAttribute("success", "Đăng ký tài khoản thành công.");
+            }else if(mess == 2){
+                request.setAttribute("errorEmail", "Email không có quyền đăng ký tài khoản.");
+            }else if(mess == 3){
+                request.setAttribute("errorTenDangKy", "Tên đăng ký bị trùng.");
+            }else{
+                request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
+            }
         }
     }
 

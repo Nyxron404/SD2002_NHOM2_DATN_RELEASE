@@ -18,8 +18,8 @@ public class AuthService {
         int checkEmail = staffDAO.CheckEmail(Email);
         int checkTenDangKy = userDAO.CheckTenDangKy(TenDangKy);
         if(checkEmail == 1 && checkTenDangKy == 1){
-            userDAO.InsertUser(TenDangKy, MatKhau);
-            return 1;
+            int checkInsert = userDAO.InsertUser(TenDangKy, MatKhau);
+            return checkInsert;
         }else if(checkEmail == 2){
             return checkEmail;
         }else if(checkTenDangKy == 3){

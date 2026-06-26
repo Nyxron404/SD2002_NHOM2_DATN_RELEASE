@@ -53,15 +53,15 @@ public class UserDAO {
         }
     }
     
-    public void InsertUser(String TenDangKy, String MatKhau){
+    public int InsertUser(String TenDangKy, String MatKhau){
         String insert = ("EXEC SP_InsertUser ?,?");
         try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert)) {
             pstmt.setString(1, TenDangKy);
             pstmt.setString(2, MatKhau);
             pstmt.executeUpdate();
-            return;
+            return 1;
         } catch (SQLException e) {
-            return;
+            return 0;
         }
     }
 }
