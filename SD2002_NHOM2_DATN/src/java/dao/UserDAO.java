@@ -34,6 +34,7 @@ public class UserDAO {
             }
             return listUser;
         } catch (SQLException e) {
+            e.printStackTrace();
             return listUser;
         }
     }
@@ -49,6 +50,7 @@ public class UserDAO {
                 return 3;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             return 0;
         }
     }
@@ -61,6 +63,7 @@ public class UserDAO {
             pstmt.executeUpdate();
             return 1;
         } catch (SQLException e) {
+            e.printStackTrace();
             return 0;
         }
     }

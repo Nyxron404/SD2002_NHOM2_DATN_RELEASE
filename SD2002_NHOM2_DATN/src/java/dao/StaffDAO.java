@@ -39,6 +39,7 @@ public class StaffDAO {
             }
             return listStaff;
         } catch (SQLException e) {
+            e.printStackTrace();
             return listStaff;
         }
     }
@@ -54,6 +55,7 @@ public class StaffDAO {
                 return 2;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             return 0;
         }
     }
