@@ -216,8 +216,8 @@
             <a href="/index/index.html"><button type="submit" class="btn-dk" name="tn-dk" value="action">Đăng nhập</button></a>
             
             <div class="link-group">
-                <a href="./views/auth/register.jsp" class="register-link" name="register-link">Đăng ký tài khoản</a>
-                <a href="./views/auth/forgotPassword.jsp" class="forget-link" name="forget-link">Quên mật khẩu?</a>
+                <a href="${pageContext.request.contextPath}/views/auth/register.jsp" class="register-link" name="register-link">Đăng ký tài khoản</a>
+                <a href="${pageContext.request.contextPath}/views/auth/forgot.jsp" class="forget-link" name="forget-link">Quên mật khẩu?</a>
             </div>
         </form>
     </div>

@@ -243,6 +243,13 @@
                     transform: translateY(0);
                 }
             }
+            .toggle-password{
+                position:absolute;
+                right:15px;
+                cursor:pointer;
+                user-select:none;
+                font-size:18px;
+            }
         </style>
     </head>
 
@@ -263,13 +270,12 @@
                 </svg>
                 <h1>Đăng Ký</h1>
             </div>
-            
             <form method="Post" action="${pageContext.request.contextPath}/auth">
                 <table>
                     <tr>
                         <td>
                             <div class="input-group">
-                                <input type="text" lang="en" pattern="[a-zA-Z0-9\s]+" title="Tên tài khoản không hợp lệ" class="ten-dk" name="TenDangKy" placeholder="Nhập tên đăng ký" required>
+                                <input type="text" lang="en" pattern="[A-Za-z0-9]+" title="Tên tài khoản không hợp lệ." class="ten-dk" name="TenDangKy" placeholder="Nhập tên đăng ký" required>
                                 <svg class="icon-left" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                             </div>
                         </td>
@@ -285,8 +291,16 @@
                     <tr>
                         <td>
                             <div class="input-group">
-                                <input type="password" class="password" name="MatKhau" placeholder="Mật khẩu" required>
-                                <svg class="icon-left" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                <input
+                                    type="password"
+                                    name="MatKhau"
+                                    class="password"
+                                    placeholder="Nhập mật khẩu"
+                                    required>
+                                <svg class="icon-left" viewBox="0 0 24 24">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                                </svg>
+                                <span class="toggle-password">👁</span>
                             </div>
                         </td>
                     </tr>
@@ -307,7 +321,16 @@
                 </div>
                 <button type="submit" class="btn-dk" name="action" value="register">Đăng ký</button>
             </form>
-            <a href="./views/auth/login.jsp" class="login-link" name="login-link">Bạn đã có tài khoản?</a>
+            <a href="${pageContext.request.contextPath}/views/auth/login.jsp" class="login-link" name="login-link">Bạn đã có tài khoản?</a>
         </div>
+        <script>
+            const password = document.querySelector(".password");
+            const eye = document.querySelector(".toggle-password");
+
+            eye.onclick = () => {
+                password.type = password.type === "password" ? "text" : "password";
+                eye.textContent = password.type === "password" ? "👁" : "🙈";
+            };
+        </script>
     </body>
 </html>

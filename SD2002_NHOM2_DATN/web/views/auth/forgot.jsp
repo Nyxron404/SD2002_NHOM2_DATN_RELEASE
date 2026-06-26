@@ -216,8 +216,8 @@
             </table>
             <button type="submit" class="btn-dk" name="tn-dk" value="action">Gửi yêu cầu</button>
             <div class="link-group">
-                <a href="./views/auth/register.jsp" class="register-link" name="register-link">Đăng ký mới</a>
-                <a href="./views/auth/login.jsp" class="login-link" name="login-link">Đăng nhập ngay</a>
+                <a href="${pageContext.request.contextPath}/views/auth/register.jsp" class="register-link" name="register-link">Đăng ký mới</a>
+                <a href="${pageContext.request.contextPath}/views/auth/login.jsp" class="login-link" name="login-link">Đăng nhập ngay</a>
             </div>
         </form>
     </div>
