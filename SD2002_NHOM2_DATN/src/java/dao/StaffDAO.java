@@ -19,7 +19,7 @@ public class StaffDAO {
     public StaffDAO(){
         listStaff = new ArrayList<>();
     }
-    public List<Staff> selectStaff(){
+    public List<Staff> SelectStaff(){
         String select = "SELECT * FROM Staff";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery(select);
@@ -43,18 +43,18 @@ public class StaffDAO {
         }
     }
     
-    public int checkTenDangKyEmail(String TenDangKy,String Email){
-        String checkTenDangKy = "SELECT 1 FROM User WHERE TenDangNhap = ? AND DangKy = 0";
-        String checkEmail = "SELECT 1 FROM Staff WHERE Email = ?";
-        try(Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(checkTenDangKy);PreparedStatement pstmt2 = con.prepareStatement(checkEmail)) {
-            pstmt.setString(1, TenDangKy);
+    public int CheckEmail(String Email){
+        String checkEmail = "SELECT 1 FROM Staff WHERE Email = ? AND DangKy = 0";
+        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(checkEmail)) {
+            pstmt.setString(1, Email);
             ResultSet rs = pstmt.executeQuery();
-            pstmt2.setString(1, Email);
-            ResultSet rs2 = pstmt2.executeQuery();
-            if(!rs.next() && !rs2.next()){
-                
+            if(rs.next()){
+                return 1;
+            }else{
+                return 2;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            return 0;
         }
     }
 }
