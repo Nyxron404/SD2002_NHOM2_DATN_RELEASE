@@ -74,7 +74,7 @@ public class AuthServlet extends HttpServlet {
         String action = request.getParameter("action");
         if(action.equals("register")){
             String TenDangKy = request.getParameter("TenDangKy");
-            String Email = request.getParameter("Email");
+            String Email = request.getParameter("EmailDangKy");
             String MatKhau = request.getParameter("MatKhau");
             int mess = authSV.Register(TenDangKy, Email, MatKhau);
             if(mess == 1){
@@ -87,6 +87,7 @@ public class AuthServlet extends HttpServlet {
                 request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
             }
         }
+        request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
     }
 
     /** 

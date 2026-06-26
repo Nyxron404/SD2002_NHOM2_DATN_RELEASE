@@ -20,7 +20,7 @@ public class UserDAO {
         listUser = new ArrayList<>();
     }
     public List<User> SelectUser(){
-        String select = "SELECT * FROM User";
+        String select = "SELECT * FROM [User]";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery(select);
             while (rs.next()) {                
@@ -39,7 +39,7 @@ public class UserDAO {
     }
     
     public int CheckTenDangKy(String TenDangKy){
-        String checkTenDangKy = "SELECT 1 FROM User WHERE TenDangNhap = ?";
+        String checkTenDangKy = "SELECT 1 FROM [User] WHERE TenDangNhap = ?";
         try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(checkTenDangKy)) {
             pstmt.setString(1, TenDangKy);
             ResultSet rs = pstmt.executeQuery();
