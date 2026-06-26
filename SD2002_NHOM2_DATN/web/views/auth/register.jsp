@@ -312,6 +312,12 @@
                     <c:if test="${errorEmail != null}">
                         <p class="msg-error">${errorEmail}</p>
                     </c:if>
+                    <c:if test="${errorFormatTenDangKy != null}">
+                        <p class="msg-error">${errorFormatTenDangKy}</p>
+                    </c:if>
+                    <c:if test="${errorFormatMatKhau != null}">
+                        <p class="msg-error">${errorFormatMatKhau}</p>
+                    </c:if>
                     <c:if test="${errorTenDangKy != null}">
                         <p class="msg-error">${errorTenDangKy}</p>
                     </c:if>
