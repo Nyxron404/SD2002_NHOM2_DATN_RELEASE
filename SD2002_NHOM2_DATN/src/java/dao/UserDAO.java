@@ -37,4 +37,13 @@ public class UserDAO {
             return listUser;
         }
     }
+    
+    public void InsertUser(){
+        String insert = "EXEC SP_InsertUser ?,?";
+        try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
+            
+        } catch (SQLException e) {
+            
+        }
+    }
 }

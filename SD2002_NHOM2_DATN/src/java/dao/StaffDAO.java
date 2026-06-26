@@ -42,4 +42,19 @@ public class StaffDAO {
             return listStaff;
         }
     }
+    
+    public int checkTenDangKyEmail(String TenDangKy,String Email){
+        String checkTenDangKy = "SELECT 1 FROM User WHERE TenDangNhap = ? AND DangKy = 0";
+        String checkEmail = "SELECT 1 FROM Staff WHERE Email = ?";
+        try(Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(checkTenDangKy);PreparedStatement pstmt2 = con.prepareStatement(checkEmail)) {
+            pstmt.setString(1, TenDangKy);
+            ResultSet rs = pstmt.executeQuery();
+            pstmt2.setString(1, Email);
+            ResultSet rs2 = pstmt2.executeQuery();
+            if(!rs.next() && !rs2.next()){
+                
+            }
+        } catch (Exception e) {
+        }
+    }
 }
