@@ -32,19 +32,6 @@
                 z-index: -1;
             }
 
-            /* Tiêu đề chính đã được phóng to gấp đôi */
-            .main-title {
-                font-size: 80px; /* Tăng từ 42px lên 80px */
-                font-weight: 900; /* Tăng độ dày chữ để trông mạnh mẽ hơn */
-                color: #ffffff;
-                text-transform: uppercase;
-                letter-spacing: 4px; /* Tăng khoảng cách giữa các chữ cái */
-                margin: 0;
-                text-shadow: 0px 6px 15px rgba(0, 0, 0, 0.6); /* Đổ bóng đậm hơn để nổi bật */
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                text-align: center;
-            }
-
             .form-div {
                 display: flex;
                 flex-direction: column;
@@ -254,7 +241,7 @@
     </head>
 
     <body>
-        <h2 class="main-title">Smart Farmer</h2>
+        <jsp:include page="/views/common/authtitle.jsp"></jsp:include>
         <div class="form-div">
             <div class="title-group">
                 <svg viewBox="0 0 100 100">

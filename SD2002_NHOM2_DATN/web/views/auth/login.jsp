@@ -12,6 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             background-image: url('https://media.istockphoto.com/id/863542630/vi/anh/ho%C3%A0ng-h%C3%B4n-m%C3%B9a-h%C3%A8-v%E1%BB%9Bi-chu%E1%BB%93ng-tr%E1%BA%A1i-m%C3%A0u-%C4%91%E1%BB%8F-%E1%BB%9F-v%C3%B9ng-n%C3%B4ng-th%C3%B4n-montana-v%C3%A0-d%C3%A3y-n%C3%BAi-rocky.jpg?s=612x612&w=0&k=20&c=6EaDA4wBhWLYKVK7mhDExYQII8ZD1617vIjQzdr_cTA=');
             background-size: cover;
             background-position: center;
@@ -179,6 +180,7 @@
 </head>
 
 <body>
+    <jsp:include page="/views/common/authtitle.jsp"></jsp:include>
     <div class="form-div">
         <div class="title-group">
             <svg viewBox="0 0 100 100">
@@ -199,7 +201,7 @@
                 <tr>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="ten-dk" name="ten-dk" placeholder="Nhập tên đăng ký" required>
+                            <input type="text" class="ten-dk" lang="en" pattern="[A-Za-z0-9]+" title="Tên đăng nhập không hợp lệ." name="TenDangNhap" placeholder="Nhập tên đăng nhập" required>
                             <svg class="icon-left" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
                     </td>
@@ -207,14 +209,13 @@
                 <tr>
                     <td>
                         <div class="input-group">
-                            <input type="password" class="password" name="password" placeholder="Mật khẩu" required>
+                            <input type="password" class="password" name="MatKhau" placeholder="Nhập mật khẩu" required>
                             <svg class="icon-left" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         </div>
                     </td>
                 </tr>
             </table>
-            <a href="/index/index.html"><button type="submit" class="btn-dk" name="tn-dk" value="action">Đăng nhập</button></a>
-            
+            <button type="submit" class="btn-dk" name="tn-dk" value="action">Đăng nhập</button>
             <div class="link-group">
                 <a href="${pageContext.request.contextPath}/views/auth/register.jsp" class="register-link" name="register-link">Đăng ký tài khoản</a>
                 <a href="${pageContext.request.contextPath}/views/auth/forgot.jsp" class="forget-link" name="forget-link">Quên mật khẩu?</a>
