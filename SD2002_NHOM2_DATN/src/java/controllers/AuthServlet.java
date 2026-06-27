@@ -83,6 +83,7 @@ public class AuthServlet extends HttpServlet {
             String MatKhau = request.getParameter("MatKhau");
             int mess = authSV.Register(TenDangKy, Email, MatKhau);
             if (mess == 1) {
+                
                 request.setAttribute("success", "Đăng ký tài khoản thành công.");
             } else if (mess == 2) {
                 request.setAttribute("errorEmail", "Email không có quyền đăng ký tài khoản.");
