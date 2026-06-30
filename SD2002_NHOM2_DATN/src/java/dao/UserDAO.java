@@ -20,6 +20,7 @@ public class UserDAO {
         listUser = new ArrayList<>();
     }
     public List<User> SelectUser(){
+        listUser.clear();
         String select = "SELECT * FROM [User]";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery(select);
@@ -56,21 +57,21 @@ public class UserDAO {
     public int InsertUser(String TenDangKy, String MatKhau, String Email){
         String insert = ("EXEC SP_InsertUser ?,?,?");
         String updateMaNguoiDung = ("EXEC SP_UpdateMaNguoiDung ?,?");
-        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert); PreparedStatement pstmt2 = con.prepareStatement(updateMaNguoiDung)) {
+        String select = ("SELECT MaNguoiDung FROM [User] WHERE TenDangNhap = ?");
+        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert); PreparedStatement pstmt2 = con.prepareStatement(updateMaNguoiDung); PreparedStatement pstmt3 = con.prepareStatement(select)) {
             pstmt.setString(1, TenDangKy);
             pstmt.setString(2, MatKhau);
             pstmt.setString(3, Email);
             pstmt.executeUpdate();
-            List<User> listUser = SelectUser();
-            for (User user : listUser) {
-                if(user.getTenDangNhap().equals(TenDangKy)){
-                    pstmt2.setString(1, Email);
-                    pstmt2.setInt(2, user.getMaNguoiDung());
-                    pstmt2.executeUpdate();
-                    return 1;
-                }
+            pstmt3.setString(1, TenDangKy);
+            ResultSet rs = pstmt3.executeQuery();
+            if(rs.next()){
+                pstmt2.setString(1, Email);
+                pstmt2.setInt(2, rs.getInt("MaNguoiDung"));
+                pstmt2.executeUpdate();
+                return 1;
             }
-            return 1;
+            return 0;
         } catch (SQLException e) {
             return 0;
         }
