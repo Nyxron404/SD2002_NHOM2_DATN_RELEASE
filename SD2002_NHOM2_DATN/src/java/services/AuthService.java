@@ -23,7 +23,7 @@ public class AuthService {
             int checkEmail = staffDAO.CheckEmail(Email);
             int checkTenDangKy = userDAO.CheckTenDangKy(TenDangKy);
             if (checkEmail == 1 && checkTenDangKy == 1) {
-                int checkInsert = userDAO.InsertUser(TenDangKy, MatKhau);
+                int checkInsert = userDAO.InsertUser(TenDangKy, MatKhau, Email);
                 return checkInsert;
             } else if (checkEmail == 2) {
                 return checkEmail;

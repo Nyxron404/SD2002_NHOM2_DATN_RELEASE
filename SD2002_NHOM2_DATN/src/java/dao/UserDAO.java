@@ -34,7 +34,6 @@ public class UserDAO {
             }
             return listUser;
         } catch (SQLException e) {
-            e.printStackTrace();
             return listUser;
         }
     }
@@ -50,20 +49,19 @@ public class UserDAO {
                 return 3;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             return 0;
         }
     }
     
-    public int InsertUser(String TenDangKy, String MatKhau){
-        String insert = ("EXEC SP_InsertUser ?,?");
+    public int InsertUser(String TenDangKy, String MatKhau, String Email){
+        String insert = ("EXEC SP_InsertUser ?,?,?");
         try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert)) {
             pstmt.setString(1, TenDangKy);
             pstmt.setString(2, MatKhau);
+            pstmt.setString(3, Email);
             pstmt.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
             return 0;
         }
     }
