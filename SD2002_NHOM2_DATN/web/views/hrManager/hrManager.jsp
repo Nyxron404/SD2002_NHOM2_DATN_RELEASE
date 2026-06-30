@@ -476,9 +476,6 @@
         <jsp:include page="/views/common/sidebar.jsp">
             <jsp:param name="activePage" value="hrManager" />
         </jsp:include>
-        <jsp:include page="/views/common/sidebar.jsp">
-            <jsp:param name="activePage" value="hrManager" />
-        </jsp:include>
 
         <div class="main-wrapper">
             <header class="header">
