@@ -55,11 +55,21 @@ public class UserDAO {
     
     public int InsertUser(String TenDangKy, String MatKhau, String Email){
         String insert = ("EXEC SP_InsertUser ?,?,?");
-        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert)) {
+        String updateMaNguoiDung = ("EXEC SP_UpdateMaNguoiDung ?,?");
+        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(insert); PreparedStatement pstmt2 = con.prepareStatement(updateMaNguoiDung)) {
             pstmt.setString(1, TenDangKy);
             pstmt.setString(2, MatKhau);
             pstmt.setString(3, Email);
             pstmt.executeUpdate();
+            List<User> listUser = SelectUser();
+            for (User user : listUser) {
+                if(user.getTenDangNhap().equals(TenDangKy)){
+                    pstmt2.setString(1, Email);
+                    pstmt2.setInt(2, user.getMaNguoiDung());
+                    pstmt2.executeUpdate();
+                    return 1;
+                }
+            }
             return 1;
         } catch (SQLException e) {
             return 0;
