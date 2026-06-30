@@ -20,7 +20,7 @@ import services.AuthService;
 @WebServlet(name = "authServlet", urlPatterns = {"/auth"})
 public class AuthServlet extends HttpServlet {
 
-    AuthService authSV = new AuthService();
+    private AuthService authSV = new AuthService();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
