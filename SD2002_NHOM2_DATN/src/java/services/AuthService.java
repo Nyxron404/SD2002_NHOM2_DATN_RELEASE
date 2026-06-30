@@ -24,7 +24,12 @@ public class AuthService {
             int checkTenDangKy = userDAO.CheckTenDangKy(TenDangKy);
             if (checkEmail == 1 && checkTenDangKy == 1) {
                 int checkInsert = userDAO.InsertUser(TenDangKy, MatKhau, Email);
-                return checkInsert;
+                if(checkInsert == 1){
+                    int checkUpdate = userDAO.UpdateMaNguoiDung(checkInsert, TenDangKy, Email);
+                    return checkUpdate;
+                }else{
+                    return checkInsert;
+                }
             } else if (checkEmail == 2) {
                 return checkEmail;
             } else if (checkTenDangKy == 3) {
