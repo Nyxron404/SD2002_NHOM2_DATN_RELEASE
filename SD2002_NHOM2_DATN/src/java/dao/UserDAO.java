@@ -79,8 +79,8 @@ public class UserDAO {
                 ResultSet rs = pstmt.executeQuery();
                 if(rs.next()){
                     int MaNguoiDung = rs.getInt("MaNguoiDung");
-                    pstmt2.setInt(1, MaNguoiDung);
-                    pstmt2.setString(2, Email);
+                    pstmt2.setString(1, Email);
+                    pstmt2.setInt(2, MaNguoiDung);
                     pstmt2.executeUpdate();
                     return 1;
                 }
