@@ -22,6 +22,14 @@ public class Staff {
     private boolean DangKy;
     public Staff() {
     }
+    
+    public Staff(int MaNhanVien, String HoTen, boolean GioiTinh, String SDT, String Email) {
+        this.MaNhanVien = MaNhanVien;
+        this.HoTen = HoTen;
+        this.GioiTinh = GioiTinh;
+        this.SDT = SDT;
+        this.Email = Email;
+    }
 
     public Staff(int MaNhanVien, String HoTen, LocalDate NgaySinh, boolean GioiTinh, String SDT, String Email, String DiaChi, LocalDate NgayVaoLam, double Luong, int MaNguoiDung) {
         this.MaNhanVien = MaNhanVien;

@@ -1,9 +1,5 @@
-<%-- 
-    Document   : admin_hr_management
-    Created on : Jun 30, 2026
-    Author     : longd (Modified for HR Management with Modals)
---%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="vi">
@@ -432,42 +428,49 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Họ và Tên</th>
-                                <th>SĐT / Email</th>
+                                <th>Giới tính</th> 
+                                <th>SĐT</th>
+                                <th>Email</th>
                                 <th>Quyền / Chức vụ</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Đặng Thành Long</td>
-                                <td>0822069476 <br> <small style="color: #666">longdazng@gmail.com</small></td>
-                                <td><span class="role-badge">Admin</span></td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
-                                        <button class="btn-action btn-lock" title="Khóa">Khóa</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <p>Số lượng nhân viên lấy được: ${fn:length(LIST_STAFF)}</p>
+                            <c:forEach var="st" items="${LIST_STAFF}">
+                                <tr>
+                                    <td>${st.getMaNhanVien()}</td>
 
-                            <tr>
-                                <td>2</td>
-                                <td>Phạm Văn Minh</td>
-                                <td>0387789504 <br> <small style="color: #666">minhpvth08530@gmail.com</small></td>
-                                <td><span class="role-badge">Worker</span></td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
-                                        <button class="btn-action btn-lock" title="Khóa">Khóa</button>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <td><strong>${st.getHoTen()}</strong></td>
+
+                                    <td>${st.isGioiTinh() ? 'Nam' : 'Nữ'}</td>
+
+                                    <td>
+                                        ${st.getSDT()}
+                                    </td>
+                                    
+                                    <td>
+                                        ${st.getEmail()}
+                                    </td>
+
+                                    <td>
+                                        <span class="role-badge">Chưa phân quyền</span>
+                                    </td>
+
+                                    <td>
+                                       
+                                    </td>
+
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
+                                            <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
+                                            <button class="btn-action btn-lock" title="Khóa">Khóa</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>
