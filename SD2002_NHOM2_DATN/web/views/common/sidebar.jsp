@@ -1,4 +1,77 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<style>
+    /* ================= SIDEBAR ================= */
+            .sidebar {
+                width: 300px;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-right: 1px solid rgba(255, 255, 255, 0.4);
+                display: flex;
+                flex-direction: column;
+                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+                z-index: 10;
+            }
+
+            .logo-area {
+                height: 85px;
+                display: flex;
+                align-items: center;
+                padding: 0 25px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                gap: 15px;
+            }
+
+            .logo-area svg {
+                width: 36px;
+                height: 36px;
+                filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
+            }
+            .logo-area h2 {
+                margin: 0;
+                font-size: 22px;
+                font-weight: 850;
+                background: linear-gradient(135deg, #1e4512, #467e32);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .menu {
+                list-style: none;
+                padding: 25px 0;
+                margin: 0;
+                flex: 1;
+                overflow-y: auto;
+            }
+            .menu-item {
+                padding: 14px 25px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                color: #1a2419;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 15px;
+                transition: all 0.3s ease;
+                border-left: 5px solid transparent;
+            }
+
+            .menu-item:hover, .menu-item.active {
+                background: linear-gradient(90deg, rgba(87, 156, 63, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+                border-left-color: #579c3f;
+                color: #467e32;
+            }
+            .menu-item svg {
+                width: 22px;
+                height: 22px;
+                fill: currentColor;
+            }
+
+            .logout-btn {
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                padding: 20px 0;
+            }
+</style>
 <aside class="sidebar">
     <div class="logo-area">
         <svg viewBox="0 0 100 100">
@@ -35,7 +108,7 @@
             </a>
         </li>
         <li>
-            <a href="${pageContext.request.contextPath}/views/equipmentManager/equipmentManager.jsp" class="menu-item ${param.activePage == 'us3' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/views/equipmentManager/equipmentManager.jsp" class="menu-item ${param.activePage == 'equipmentManager' ? 'active' : ''}">
                 <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-2-1h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
                 Quản lý kho vật tư 
             </a>
@@ -66,7 +139,7 @@
         </li>
         
         <li>
-            <a href="${pageContext.request.contextPath}/logout" class="menu-item logout-btn" style="color: #e74c3c; margin-top: 20px; border-top: 1px solid rgba(0, 0, 0, 0.08);">
+            <a href="${pageContext.request.contextPath}/views/auth/login.jsp" class="menu-item logout-btn" style="color: #e74c3c; margin-top: 20px; border-top: 1px solid rgba(0, 0, 0, 0.08);">
                 <svg viewBox="0 0 24 24" style="fill: #e74c3c;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
                 Đăng xuất 
             </a>
