@@ -35,13 +35,13 @@
             </a>
         </li>
         <li>
-            <a href="${pageContext.request.contextPath}/views/equipmentManager/equipmentManager.jsp" class="menu-item ${param.activePage == 'us3' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/views/inventoryManager/inventoryManager.jsp" class="menu-item ${param.activePage == 'inventoryManager' ? 'active' : ''}">
                 <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-2-1h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
                 Quản lý kho vật tư 
             </a>
         </li>
         <li>
-            <a href="#" class="menu-item ${param.activePage == 'us4' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/views/equipmentManager/equipmentManager.jsp" class="menu-item ${param.activePage == 'equipmentManager' ? 'active' : ''}">
                 <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
                 Quản lý thiết bị
             </a>
@@ -53,7 +53,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="menu-item ${param.activePage == 'us6' ? 'active' : ''}">
+            <a href="${pageContext.request.contextPath}/views/technician/technician.jsp" class="menu-item ${param.activePage == 'technician' ? 'active' : ''}">
                 <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
                 Thiết lập quy trình 
             </a>
