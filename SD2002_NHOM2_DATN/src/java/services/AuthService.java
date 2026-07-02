@@ -67,15 +67,9 @@ public class AuthService {
         for (User user : listUser) {
             if(user.getTenDangNhap().equals(TenDangNhap) && user.getMatKhau().equals(MatKhau)){
                 return 1;
-            }else if(!user.getTenDangNhap().equals(TenDangNhap) && !user.getMatKhau().equals(MatKhau)){
-                return 2;
-            }else if(!user.getTenDangNhap().equals(TenDangNhap)){
-                return 3;
-            }else if(!user.getMatKhau().equals(MatKhau)){
-                return 4;
             }
         }
-        return 0;
+        return 2;
     }
     public List<String> Login(String TenDangNhap, String MatKhau){
         List<String> QuyenHan = userDAO.GetLogin(TenDangNhap, MatKhau);

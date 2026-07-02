@@ -56,7 +56,7 @@ public class AuthFilter implements Filter {
     private static final Map<String, String> ROLE_MAP = new HashMap<>();
     static {
         ROLE_MAP.put("/admin", "Admin");
-        ROLE_MAP.put("/views/", "Admin");
+        ROLE_MAP.put("/views/admin/", "Admin");
 
         ROLE_MAP.put("/farmowner", "FarmOwner");
         ROLE_MAP.put("/views/farmOwner/", "FarmOwner");

@@ -97,6 +97,7 @@ public class AuthServlet extends HttpServlet {
             } else {
                 request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
             }
+            request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
         }else if(action.equals("login")){
             String TenDangNhap = request.getParameter("TenDangNhap");
             String MatKhau = request.getParameter("MatKhau");
@@ -137,7 +138,6 @@ public class AuthServlet extends HttpServlet {
                 }
             }
         }
-        request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
     }
 
     /**
