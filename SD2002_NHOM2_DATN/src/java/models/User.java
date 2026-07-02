@@ -18,7 +18,7 @@ public class User {
 
     public User() {
     }
-
+    
     public User(int MaNguoiDung, String TenDangNhap, String MatKhau, int MaNhom, boolean TrangThai, LocalDateTime NgayTao) {
         this.MaNguoiDung = MaNguoiDung;
         this.TenDangNhap = TenDangNhap;
@@ -27,12 +27,7 @@ public class User {
         this.TrangThai = TrangThai;
         this.NgayTao = NgayTao;
     }
-    public User(String TenDangNhap, String MatKhau) {
-        this.TenDangNhap = TenDangNhap;
-        this.MatKhau = MatKhau;
-        this.MaNhom = MaNhom;
-    }
-
+    
     public int getMaNguoiDung() {
         return MaNguoiDung;
     }

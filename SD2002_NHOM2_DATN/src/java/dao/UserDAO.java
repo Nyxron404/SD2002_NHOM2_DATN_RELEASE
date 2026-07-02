@@ -70,14 +70,15 @@ public class UserDAO {
             return 0;
         }
     }
-    public int UpdateMaNguoiDung(int checkInsert, String TenDangKy, String Email){
+
+    public int UpdateMaNguoiDung(int checkInsert, String TenDangKy, String Email) {
         String select = ("SELECT MaNguoiDung FROM [User] WHERE TenDangNhap = ?");
         String updateMaNguoiDung = ("EXEC SP_UpdateMaNguoiDung ?,?");
-        try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(select); PreparedStatement pstmt2 = con.prepareStatement(updateMaNguoiDung)) {
-            if(checkInsert == 1){
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(select); PreparedStatement pstmt2 = con.prepareStatement(updateMaNguoiDung)) {
+            if (checkInsert == 1) {
                 pstmt.setString(1, TenDangKy);
                 ResultSet rs = pstmt.executeQuery();
-                if(rs.next()){
+                if (rs.next()) {
                     int MaNguoiDung = rs.getInt("MaNguoiDung");
                     pstmt2.setString(1, Email);
                     pstmt2.setInt(2, MaNguoiDung);
@@ -88,6 +89,31 @@ public class UserDAO {
             return 0;
         } catch (SQLException e) {
             return 0;
+        }
+    }
+
+    public List<String> GetLogin(String TenDangNhap, String MatKhau) {
+        String select = "SELECT MaNhom FROM [User] WHERE TenDangNhap = ? AND MatKhau = ?";
+        String select2 = "SELECT \n"
+                + "	p.TenQuyen\n"
+                + "FROM UserGroupPermission ugp INNER JOIN Permission p ON ugp.MaQuyen = p.MaQuyen\n"
+                + "WHERE MaNhom = ?";
+        List<String> QuyenHan = new ArrayList<>();
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(select); PreparedStatement pstmt2 = con.prepareStatement(select2)) {
+            pstmt.setString(1, TenDangNhap);
+            pstmt.setString(2, MatKhau);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                pstmt2.setInt(1, rs.getInt("MaNhom"));
+                ResultSet rs2 = pstmt2.executeQuery();
+                while (rs2.next()) {                    
+                    QuyenHan.add(rs2.getString("TenQuyen"));
+                }
+                return QuyenHan;
+            }
+            return QuyenHan;
+        } catch (SQLException e) {
+            return QuyenHan;
         }
     }
 }

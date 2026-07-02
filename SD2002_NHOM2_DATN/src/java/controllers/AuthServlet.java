@@ -11,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import services.AuthService;
 
 /**
@@ -95,10 +97,47 @@ public class AuthServlet extends HttpServlet {
             } else {
                 request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
             }
+            request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
         }else if(action.equals("login")){
-            
+            String TenDangNhap = request.getParameter("TenDangNhap");
+            String MatKhau = request.getParameter("MatKhau");
+            int checkLogin = authSV.CheckLogin(TenDangNhap, MatKhau);
+            if(checkLogin == 1){
+                List<String> QuyenHan = authSV.Login(TenDangNhap, MatKhau);
+                if(!QuyenHan.isEmpty()){
+                    HttpSession session = request.getSession();
+                    session.setAttribute("QuyenHan", QuyenHan);
+                    session.setAttribute("TenDangNhap", TenDangNhap);
+                    String truyCap = QuyenHan.get(0);
+                    switch (truyCap) {
+                        case "Admin":
+                            response.sendRedirect(request.getContextPath()+"/admin");
+                            break;
+                        case "FarmOwner":
+                            response.sendRedirect(request.getContextPath()+"/farmowner");
+                            break;
+                        case "HrManager":
+                            response.sendRedirect(request.getContextPath()+"/hr");
+                            break;
+                        case "InventoryManager":
+                            response.sendRedirect(request.getContextPath()+"/inventory");
+                            break;
+                        case "EquipmentManager":
+                            response.sendRedirect(request.getContextPath()+"/equipment");
+                            break;
+                        case "Technician":
+                            response.sendRedirect(request.getContextPath()+"/technician");
+                            break;
+                        case "Worker":
+                            response.sendRedirect(request.getContextPath()+"/worker");
+                            break;
+                        default:
+                            response.sendRedirect(request.getContextPath()+"/auth");
+                    }
+                    return;
+                }
+            }
         }
-        request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
     }
 
     /**

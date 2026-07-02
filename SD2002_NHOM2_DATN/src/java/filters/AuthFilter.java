@@ -18,6 +18,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Filter nay chay cho TAT CA request ("/*").
@@ -29,7 +30,7 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author longd
  */
-//@WebFilter(filterName = "AuthFilter", urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
+@WebFilter(filterName = "AuthFilter", urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class AuthFilter implements Filter {
 
     private static final boolean debug = true;
@@ -54,26 +55,26 @@ public class AuthFilter implements Filter {
      */
     private static final Map<String, String> ROLE_MAP = new HashMap<>();
     static {
-        ROLE_MAP.put("/admin", "admin");
-        ROLE_MAP.put("/views/", "admin");
+        ROLE_MAP.put("/admin", "Admin");
+        ROLE_MAP.put("/views/admin/", "Admin");
 
-        ROLE_MAP.put("/farmowner", "farmOwner");
-        ROLE_MAP.put("/views/farmOwner/", "farmOwner");
+        ROLE_MAP.put("/farmowner", "FarmOwner");
+        ROLE_MAP.put("/views/farmOwner/", "FarmOwner");
 
-        ROLE_MAP.put("/hr", "hrManager");
-        ROLE_MAP.put("/views/hrManager/", "hrManager");
+        ROLE_MAP.put("/hr", "HrManager");
+        ROLE_MAP.put("/views/hrManager/", "HrManager");
 
-        ROLE_MAP.put("/inventory", "inventoryManager");
-        ROLE_MAP.put("/views/inventoryManager/", "inventoryManager");
+        ROLE_MAP.put("/inventory", "InventoryManager");
+        ROLE_MAP.put("/views/inventoryManager/", "InventoryManager");
 
-        ROLE_MAP.put("/technician", "technician");
-        ROLE_MAP.put("/views/technician/", "technician");
+        ROLE_MAP.put("/technician", "Technician");
+        ROLE_MAP.put("/views/technician/", "Technician");
 
-        ROLE_MAP.put("/worker", "worker");
-        ROLE_MAP.put("/views/worker/", "worker");
+        ROLE_MAP.put("/worker", "Worker");
+        ROLE_MAP.put("/views/worker/", "Worker");
 
-        ROLE_MAP.put("/equipment", "equipmentManager");
-        ROLE_MAP.put("/views/equipmentManager/", "equipmentManager");
+        ROLE_MAP.put("/equipment", "EquipmentManager");
+        ROLE_MAP.put("/views/equipmentManager/", "EquipmentManager");
     }
 
     public AuthFilter() {
@@ -102,24 +103,24 @@ public class AuthFilter implements Filter {
         }
 
         HttpSession session = req.getSession(false); // false = khong tu tao session moi
-        Object account = (session != null) ? session.getAttribute("account") : null;
+        List<String> QuyenHan = (session != null) ? (List<String>) session.getAttribute("QuyenHan") : null;
 
         // BUOC 2: chua dang nhap -> ve trang login
-        if (account == null) {
-            if (debug) {
-                log("AuthFilter: chua dang nhap, redirect ve login");
-            }
+        if (QuyenHan == null) {
             res.sendRedirect(contextPath + "/views/auth/register.jsp");
             return;
         }
 
-        // BUOC 3: da dang nhap -> kiem tra role co duoc phep vao khu vuc nay khong
-        String role = (String) session.getAttribute("role");
+        if (QuyenHan.contains("Admin")) {
+            chain.doFilter(request, response);
+            return;
+        }
+        
         String requiredRole = getRequiredRole(path);
 
-        if (requiredRole != null && !requiredRole.equalsIgnoreCase(role)) {
+        if (requiredRole != null && !QuyenHan.contains(requiredRole)) {
             if (debug) {
-                log("AuthFilter: role '" + role + "' khong co quyen vao '" + path + "'");
+                log("AuthFilter: role '" + QuyenHan + "' khong co quyen vao '" + path + "'");
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN, "Ban khong co quyen truy cap trang nay");
             return;

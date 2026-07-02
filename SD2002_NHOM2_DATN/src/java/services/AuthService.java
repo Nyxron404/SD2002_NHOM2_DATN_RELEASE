@@ -6,6 +6,8 @@ package services;
 
 import dao.StaffDAO;
 import dao.UserDAO;
+import java.util.List;
+import models.User;
 
 /**
  *
@@ -17,7 +19,7 @@ public class AuthService {
     private UserDAO userDAO = new UserDAO();
 
     public int Register(String TenDangKy, String Email, String MatKhau) {
-        int checkFormatTenDangKy = CheckFormatTenDangKy(TenDangKy);
+        int checkFormatTenDangKy = CheckFormatTenTaiKhoan(TenDangKy);
         int checkFormatMatKhau = CheckFormatMatKhau(MatKhau);
         if (checkFormatTenDangKy == 1 && checkFormatMatKhau == 1) {
             int checkEmail = staffDAO.CheckEmail(Email);
@@ -44,7 +46,7 @@ public class AuthService {
         }
     }
 
-    public int CheckFormatTenDangKy(String TenDangKy) {
+    public int CheckFormatTenTaiKhoan(String TenDangKy) {
         if (TenDangKy != null && !TenDangKy.trim().isEmpty() && TenDangKy.matches("^[A-Za-z0-9]+$")) {
             return 1;
         } else {
@@ -58,5 +60,19 @@ public class AuthService {
         } else {
             return 5;
         }
+    }
+    
+    public int CheckLogin(String TenDangNhap, String MatKhau){
+        List<User> listUser = userDAO.SelectUser();
+        for (User user : listUser) {
+            if(user.getTenDangNhap().equals(TenDangNhap) && user.getMatKhau().equals(MatKhau)){
+                return 1;
+            }
+        }
+        return 2;
+    }
+    public List<String> Login(String TenDangNhap, String MatKhau){
+        List<String> QuyenHan = userDAO.GetLogin(TenDangNhap, MatKhau);
+        return QuyenHan;
     }
 }
