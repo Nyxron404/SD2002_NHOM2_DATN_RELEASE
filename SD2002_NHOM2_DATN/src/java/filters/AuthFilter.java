@@ -54,26 +54,26 @@ public class AuthFilter implements Filter {
      */
     private static final Map<String, String> ROLE_MAP = new HashMap<>();
     static {
-        ROLE_MAP.put("/admin", "ADMIN");
-        ROLE_MAP.put("/views/admin/", "ADMIN");
+        ROLE_MAP.put("/admin", "admin");
+        ROLE_MAP.put("/views/", "admin");
 
-        ROLE_MAP.put("/farmowner", "FARM_OWNER");
-        ROLE_MAP.put("/views/farmOwner/", "FARM_OWNER");
+        ROLE_MAP.put("/farmowner", "farmOwner");
+        ROLE_MAP.put("/views/farmOwner/", "farmOwner");
 
-        ROLE_MAP.put("/hr", "HR_MANAGER");
-        ROLE_MAP.put("/views/hrManager/", "HR_MANAGER");
+        ROLE_MAP.put("/hr", "hrManager");
+        ROLE_MAP.put("/views/hrManager/", "hrManager");
 
-        ROLE_MAP.put("/inventory", "INVENTORY_MANAGER");
-        ROLE_MAP.put("/views/inventoryManager/", "INVENTORY_MANAGER");
+        ROLE_MAP.put("/inventory", "inventoryManager");
+        ROLE_MAP.put("/views/inventoryManager/", "inventoryManager");
 
-        ROLE_MAP.put("/technician", "TECHNICIAN");
-        ROLE_MAP.put("/views/technician/", "TECHNICIAN");
+        ROLE_MAP.put("/technician", "technician");
+        ROLE_MAP.put("/views/technician/", "technician");
 
-        ROLE_MAP.put("/worker", "WORKER");
-        ROLE_MAP.put("/views/worker/", "WORKER");
+        ROLE_MAP.put("/worker", "worker");
+        ROLE_MAP.put("/views/worker/", "worker");
 
-        ROLE_MAP.put("/equipment", "EQUIPMENT_MANAGER");
-        ROLE_MAP.put("/views/equipmentManager/", "EQUIPMENT_MANAGER");
+        ROLE_MAP.put("/equipment", "equipmentManager");
+        ROLE_MAP.put("/views/equipmentManager/", "equipmentManager");
     }
 
     public AuthFilter() {

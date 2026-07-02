@@ -17,6 +17,7 @@
             background-size: cover;
             background-position: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            gap: 35px;
         }
 
         body::before {
@@ -196,7 +197,7 @@
             </svg>
             <h1>Đăng Nhập</h1>
         </div>
-        <form method="POST">
+        <form method="Post" action="${pageContext.request.contextPath}/auth">
             <table>
                 <tr>
                     <td>
@@ -215,7 +216,7 @@
                     </td>
                 </tr>
             </table>
-            <button type="submit" class="btn-dk" name="tn-dk" value="action">Đăng nhập</button>
+            <button type="submit" class="btn-dk" name="action" value="login">Đăng nhập</button>
             <div class="link-group">
                 <a href="${pageContext.request.contextPath}/views/auth/register.jsp" class="register-link" name="register-link">Đăng ký tài khoản</a>
                 <a href="${pageContext.request.contextPath}/views/auth/forgot.jsp" class="forget-link" name="forget-link">Quên mật khẩu?</a>

@@ -95,6 +95,8 @@ public class AuthServlet extends HttpServlet {
             } else {
                 request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
             }
+        }else if(action.equals("login")){
+            
         }
         request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
     }
