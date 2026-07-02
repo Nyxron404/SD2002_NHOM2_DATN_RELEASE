@@ -44,25 +44,6 @@ public class StaffDAO {
         }
     }
     
-    public static void main(String[] args) {
-        StaffDAO dao = new StaffDAO();
-        
-        System.out.println("--- ĐANG KẾT NỐI VÀ LẤY DỮ LIỆU ---");
-        
-        List<Staff> list = dao.SelectStaff();
-        
-        if (list.isEmpty()) {
-            System.out.println("Kết quả: Danh sách trống! Kiểm tra lại kết nối hoặc câu query SQL.");
-        } else {
-            System.out.println("Kết quả: Tìm thấy " + list.size() + " nhân viên.");
-            for (Staff st : list) {
-                System.out.println("ID: " + st.getMaNhanVien() + " | Tên: " + st.getHoTen() + " | Email: " + st.getEmail());
-            }
-        }
-        
-        System.out.println("--- KẾT THÚC TEST ---");
-    }
-    
     public List<Staff> SelectStaff2(){
         String select = "SELECT * FROM Staff";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
