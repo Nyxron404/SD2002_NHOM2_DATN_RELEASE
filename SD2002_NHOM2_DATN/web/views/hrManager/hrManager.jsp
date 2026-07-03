@@ -1,9 +1,5 @@
-<%-- 
-    Document   : admin_hr_management
-    Created on : Jun 30, 2026
-    Author     : longd (Modified for HR Management with Modals)
---%>
-
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="vi">
@@ -31,78 +27,6 @@
                 inset: 0;
                 background-color: rgba(20, 35, 20, 0.6);
                 z-index: -1;
-            }
-
-            /* ================= SIDEBAR ================= */
-            .sidebar {
-                width: 300px;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-right: 1px solid rgba(255, 255, 255, 0.4);
-                display: flex;
-                flex-direction: column;
-                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-                z-index: 10;
-            }
-
-            .logo-area {
-                height: 85px;
-                display: flex;
-                align-items: center;
-                padding: 0 25px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-                gap: 15px;
-            }
-
-            .logo-area svg {
-                width: 36px;
-                height: 36px;
-                filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
-            }
-            .logo-area h2 {
-                margin: 0;
-                font-size: 22px;
-                font-weight: 850;
-                background: linear-gradient(135deg, #1e4512, #467e32);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .menu {
-                list-style: none;
-                padding: 25px 0;
-                margin: 0;
-                flex: 1;
-                overflow-y: auto;
-            }
-            .menu-item {
-                padding: 14px 25px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                color: #1a2419;
-                text-decoration: none;
-                font-weight: 700;
-                font-size: 15px;
-                transition: all 0.3s ease;
-                border-left: 5px solid transparent;
-            }
-
-            .menu-item:hover, .menu-item.active {
-                background: linear-gradient(90deg, rgba(87, 156, 63, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
-                border-left-color: #579c3f;
-                color: #467e32;
-            }
-            .menu-item svg {
-                width: 22px;
-                height: 22px;
-                fill: currentColor;
-            }
-
-            .logout-btn {
-                border-top: 1px solid rgba(0, 0, 0, 0.08);
-                padding: 20px 0;
             }
 
             /* ================= HEADER & MAIN CONTENT ================= */
@@ -504,42 +428,49 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Họ và Tên</th>
-                                <th>SĐT / Email</th>
+                                <th>Giới tính</th> 
+                                <th>SĐT</th>
+                                <th>Email</th>
                                 <th>Quyền / Chức vụ</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Đặng Thành Long</td>
-                                <td>0822069476 <br> <small style="color: #666">longdazng@gmail.com</small></td>
-                                <td><span class="role-badge">Admin</span></td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
-                                        <button class="btn-action btn-lock" title="Khóa">Khóa</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <p>Số lượng nhân viên lấy được: ${fn:length(LIST_STAFF)}</p>
+                            <c:forEach var="st" items="${LIST_STAFF}">
+                                <tr>
+                                    <td>${st.getMaNhanVien()}</td>
 
-                            <tr>
-                                <td>2</td>
-                                <td>Phạm Văn Minh</td>
-                                <td>0387789504 <br> <small style="color: #666">minhpvth08530@gmail.com</small></td>
-                                <td><span class="role-badge">Worker</span></td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
-                                        <button class="btn-action btn-lock" title="Khóa">Khóa</button>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <td><strong>${st.getHoTen()}</strong></td>
+
+                                    <td>${st.isGioiTinh() ? 'Nam' : 'Nữ'}</td>
+
+                                    <td>
+                                        ${st.getSDT()}
+                                    </td>
+                                    
+                                    <td>
+                                        ${st.getEmail()}
+                                    </td>
+
+                                    <td>
+                                        <span class="role-badge">Chưa phân quyền</span>
+                                    </td>
+
+                                    <td>
+                                       
+                                    </td>
+
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
+                                            <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
+                                            <button class="btn-action btn-lock" title="Khóa">Khóa</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>

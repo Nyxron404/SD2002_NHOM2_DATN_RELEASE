@@ -1,13 +1,20 @@
 <%-- 
-    Document   : admin_hr_management
-    Created on : Jun 30, 2026
-    Author     : longd (Modified for HR Management with Modals)
+    Document   : farmOwner
+    Created on : Jun 23, 2026, 2:13:08 PM
+    Author     : longd
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
     <head>
+<<<<<<< HEAD
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+=======
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Smart Farmer - Quản lý nhân sự</title>
@@ -31,78 +38,6 @@
                 inset: 0;
                 background-color: rgba(20, 35, 20, 0.6);
                 z-index: -1;
-            }
-
-            /* ================= SIDEBAR ================= */
-            .sidebar {
-                width: 300px;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-right: 1px solid rgba(255, 255, 255, 0.4);
-                display: flex;
-                flex-direction: column;
-                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-                z-index: 10;
-            }
-
-            .logo-area {
-                height: 85px;
-                display: flex;
-                align-items: center;
-                padding: 0 25px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-                gap: 15px;
-            }
-
-            .logo-area svg {
-                width: 36px;
-                height: 36px;
-                filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
-            }
-            .logo-area h2 {
-                margin: 0;
-                font-size: 22px;
-                font-weight: 850;
-                background: linear-gradient(135deg, #1e4512, #467e32);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .menu {
-                list-style: none;
-                padding: 25px 0;
-                margin: 0;
-                flex: 1;
-                overflow-y: auto;
-            }
-            .menu-item {
-                padding: 14px 25px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                color: #1a2419;
-                text-decoration: none;
-                font-weight: 700;
-                font-size: 15px;
-                transition: all 0.3s ease;
-                border-left: 5px solid transparent;
-            }
-
-            .menu-item:hover, .menu-item.active {
-                background: linear-gradient(90deg, rgba(87, 156, 63, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
-                border-left-color: #579c3f;
-                color: #467e32;
-            }
-            .menu-item svg {
-                width: 22px;
-                height: 22px;
-                fill: currentColor;
-            }
-
-            .logout-btn {
-                border-top: 1px solid rgba(0, 0, 0, 0.08);
-                padding: 20px 0;
             }
 
             /* ================= HEADER & MAIN CONTENT ================= */
@@ -474,7 +409,7 @@
     <body>
 
         <jsp:include page="/views/common/sidebar.jsp">
-            <jsp:param name="activePage" value="hrManager" />
+            <jsp:param name="activePage" value="equipmentManager" />
         </jsp:include>
 
         <div class="main-wrapper">
@@ -676,5 +611,6 @@
                 }
             }
         </script>
+>>>>>>> 1d0510713f583e2465a9fcfcd5d6fa73f1334b64
     </body>
 </html>
