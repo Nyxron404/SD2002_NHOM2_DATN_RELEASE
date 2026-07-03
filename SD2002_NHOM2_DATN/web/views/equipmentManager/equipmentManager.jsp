@@ -1,23 +1,12 @@
-<%-- 
-    Document   : farmOwner
-    Created on : Jun 23, 2026, 2:13:08 PM
-    Author     : longd
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
     <head>
-<<<<<<< HEAD
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-=======
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Smart Farmer - Quản lý nhân sự</title>
+        <title>Smart Farmer - Trang chủ</title>
         <style>
             body {
                 margin: 0;
@@ -133,7 +122,7 @@
                 overflow-y: auto;
             }
 
-            /* ================= HR MANAGEMENT STYLES ================= */
+            /* ================= PAGE STYLES ================= */
             .page-toolbar {
                 display: flex;
                 justify-content: space-between;
@@ -276,7 +265,7 @@
                 background: #95a5a6;
             }
 
-            /* ================= MODAL (FORM BẬT LÊN) ================= */
+            /* ================= MODAL ================= */
             .modal-overlay {
                 position: fixed;
                 top: 0;
@@ -304,14 +293,8 @@
             }
 
             @keyframes slideIn {
-                from {
-                    transform: translateY(-30px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+                from { transform: translateY(-30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
             }
 
             .modal-header {
@@ -335,21 +318,11 @@
                 cursor: pointer;
                 color: #999;
             }
-            .close-btn:hover {
-                color: #e74c3c;
-            }
+            .close-btn:hover { color: #e74c3c; }
 
-            .form-row {
-                display: flex;
-                gap: 15px;
-            }
-            .form-row .form-group {
-                flex: 1;
-            }
-
-            .form-group {
-                margin-bottom: 15px;
-            }
+            .form-row { display: flex; gap: 15px; }
+            .form-row .form-group { flex: 1; }
+            .form-group { margin-bottom: 15px; }
             .form-group label {
                 display: block;
                 margin-bottom: 8px;
@@ -372,7 +345,6 @@
                 border-color: #579c3f;
                 box-shadow: 0 0 0 3px rgba(87,156,63,0.1);
             }
-
             .modal-footer {
                 display: flex;
                 justify-content: flex-end;
@@ -388,9 +360,7 @@
                 font-weight: 600;
                 cursor: pointer;
             }
-            .btn-cancel:hover {
-                background: #dfe4ea;
-            }
+            .btn-cancel:hover { background: #dfe4ea; }
             .btn-save {
                 padding: 10px 20px;
                 background: #579c3f;
@@ -400,22 +370,19 @@
                 font-weight: 600;
                 cursor: pointer;
             }
-            .btn-save:hover {
-                background: #467e32;
-            }
-
+            .btn-save:hover { background: #467e32; }
         </style>
     </head>
     <body>
 
         <jsp:include page="/views/common/sidebar.jsp">
-            <jsp:param name="activePage" value="equipmentManager" />
+            <jsp:param name="activePage" value="farmOwner" />
         </jsp:include>
 
         <div class="main-wrapper">
             <header class="header">
                 <div class="header-title">
-                    <h1>Quản Lý Kho Vật Tư</h1>
+                    <h1>Trang Chủ - Chủ Trang Trại</h1>
                 </div>
                 <div class="user-profile">
                     <div class="notification"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span class="badge"></span></div>
@@ -460,7 +427,6 @@
                                     </div>
                                 </td>
                             </tr>
-
                             <tr>
                                 <td>2</td>
                                 <td>Phạm Văn Minh</td>
@@ -489,12 +455,10 @@
                 </div>
                 <form action="EmployeeServlet" method="POST">
                     <input type="hidden" name="action" id="formAction" value="add">
-
                     <div class="form-group">
                         <label>Họ và tên</label>
                         <input type="text" name="hoTen" class="form-control" placeholder="Nhập họ tên đầy đủ" required>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label>Ngày sinh</label>
@@ -508,7 +472,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label>Số điện thoại</label>
@@ -519,17 +482,14 @@
                             <input type="email" name="email" class="form-control" placeholder="example@gmail.com" required>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label>Địa chỉ</label>
                         <input type="text" name="diaChi" class="form-control" placeholder="Nhập địa chỉ" required>
                     </div>
-
                     <div class="form-group">
                         <label>Lương (VNĐ)</label>
                         <input type="number" name="luong" class="form-control" placeholder="Ví dụ: 93129131" required>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn-cancel" onclick="closeModal('employeeModal')">Hủy bỏ</button>
                         <button type="submit" class="btn-save">Lưu thông tin</button>
@@ -546,7 +506,6 @@
                 </div>
                 <form action="RoleServlet" method="POST">
                     <input type="hidden" name="maNhanVien" id="roleEmployeeId" value="">
-
                     <div class="form-group">
                         <label>Chọn chức vụ mới</label>
                         <select name="role" class="form-control" required>
@@ -559,7 +518,6 @@
                             <option value="worker">Worker</option>
                         </select>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn-cancel" onclick="closeModal('roleModal')">Hủy bỏ</button>
                         <button type="submit" class="btn-save">Cập nhật quyền</button>
@@ -569,7 +527,6 @@
         </div>
 
         <script>
-            // Hàm mở Form Thêm/Sửa
             function openEmployeeForm(mode) {
                 const modal = document.getElementById('employeeModal');
                 const title = document.getElementById('employeeModalTitle');
@@ -578,28 +535,22 @@
                 if (mode === 'add') {
                     title.innerText = 'Thêm nhân viên mới';
                     actionInput.value = 'add';
-                    // Reset form rỗng nếu muốn thêm mới
                     modal.querySelector('form').reset();
                 } else if (mode === 'edit') {
                     title.innerText = 'Sửa thông tin nhân viên';
                     actionInput.value = 'edit';
-                    // Tại đây bạn có thể dùng JS đổ dữ liệu cũ vào form nếu cần
                 }
-
                 modal.style.display = 'flex';
             }
 
-            // Hàm mở Form Đổi quyền
             function openRoleForm() {
                 document.getElementById('roleModal').style.display = 'flex';
             }
 
-            // Hàm đóng chung cho các Form
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
 
-            // Click ra ngoài khoảng xám để đóng Form
             window.onclick = function (event) {
                 let empModal = document.getElementById('employeeModal');
                 let roleModal = document.getElementById('roleModal');
@@ -611,6 +562,5 @@
                 }
             }
         </script>
->>>>>>> 1d0510713f583e2465a9fcfcd5d6fa73f1334b64
     </body>
 </html>
