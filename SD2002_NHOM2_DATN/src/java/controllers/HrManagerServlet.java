@@ -30,7 +30,7 @@ public class HrManagerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.setAttribute("LIST_STAFF", stDAO.SelectStaff2());
+        request.setAttribute("LIST_STAFF", stDAO.SelectStaff());
         request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
     } 
     
@@ -42,7 +42,7 @@ public class HrManagerServlet extends HttpServlet {
             
         }
         
-        request.setAttribute("LIST_STAFF", stDAO.SelectStaff2());
+        request.setAttribute("LIST_STAFF", stDAO.SelectStaff());
         request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
     }
 

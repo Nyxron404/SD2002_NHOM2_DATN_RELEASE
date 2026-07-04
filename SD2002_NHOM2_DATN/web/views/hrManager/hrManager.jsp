@@ -437,8 +437,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <p>Số lượng nhân viên lấy được: ${fn:length(LIST_STAFF)}</p>
-                            <c:forEach var="st" items="${LIST_STAFF}" >
+                            <c:forEach var="st" items="${LIST_STAFF}">
                                 <tr>
                                     <td>${st.getMaNhanVien()}</td>
 

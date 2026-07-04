@@ -16,10 +16,14 @@ import java.time.LocalDate;
  */
 public class StaffDAO {
     private List<Staff> listStaff;
+    
+    static String connectionUrl = "jdbc:sqlserver://26.242.245.112;databaseName=SD2002_NHOM2_DATN;user=sa;password=123;TrustServerCertificate=True";
+    
     public StaffDAO(){
         listStaff = new ArrayList<>();
     }
     public List<Staff> SelectStaff(){
+        listStaff.clear();
         String select = "SELECT * FROM Staff";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery(select);
@@ -36,25 +40,6 @@ public class StaffDAO {
                 int MaNguoiDung = rs.getInt("MaNguoiDung");
                 boolean DangKy = rs.getBoolean("DangKy");
                 listStaff.add(new Staff(MaNhanVien, HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, NgayVaoLam, Luong, MaNguoiDung,DangKy));
-            }
-            return listStaff;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return listStaff;
-        }
-    }
-    
-    public List<Staff> SelectStaff2(){
-        String select = "SELECT * FROM Staff";
-        try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
-            ResultSet rs = stmt.executeQuery(select);
-            while (rs.next()) {                
-                int MaNhanVien = rs.getInt("MaNhanVien");
-                String HoTen = rs.getString("HoTen");
-                boolean GioiTinh = rs.getBoolean("GioiTinh");
-                String SDT = rs.getString("SDT");
-                String Email = rs.getString("Email");
-                listStaff.add(new Staff(MaNhanVien, HoTen, GioiTinh, SDT, Email));
             }
             return listStaff;
         } catch (SQLException e) {
