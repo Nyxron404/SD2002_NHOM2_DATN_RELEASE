@@ -20,16 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
-/**
- * Filter nay chay cho TAT CA request ("/*").
- * Nhiem vu:
- *   1) Cho qua nhung trang khong can dang nhap (login, register, forgot, static resource...)
- *   2) Neu chua dang nhap (session khong co "account") -> chuyen ve trang login
- *   3) Neu da dang nhap nhung role khong khop voi khu vuc dang truy cap -> tra ve 403
- *   4) Hop le -> cho di tiep (chain.doFilter)
- *
- * @author longd
- */
+
 @WebFilter(filterName = "AuthFilter", urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class AuthFilter implements Filter {
 
@@ -37,22 +28,12 @@ public class AuthFilter implements Filter {
 
     private FilterConfig filterConfig = null;
 
-    /**
-     * Nhung duong dan KHONG can dang nhap.
-     * Dung startsWith() nen chi can ghi tien to la du.
-     * -> Sua/them tuy theo URL pattern thuc te cua AuthServlet va cac trang JSP cua ban.
-     */
     private static final String[] PUBLIC_PATHS = {
-        "/auth",      // servlet xu ly login/register/forgot
-        "/views/auth/",      // login.jsp, register.jsp, forgot.jsp
-        "/css/", "/js/", "/images/", "/assets/", "/webjars/" // tai nguyen tinh
+        "/auth",   
+        "/views/auth/",      
+        "/css/", "/js/", "/images/", "/assets/", "/webjars/" 
     };
 
-    /**
-     * Map: tien to URL  ->  role duoc phep truy cap khu vuc do.
-     * Dua theo cac servlet/folder trong anh project cua ban.
-     * -> Sua lai cho dung @WebServlet urlPatterns cua tung Servlet ban da viet.
-     */
     private static final Map<String, String> ROLE_MAP = new HashMap<>();
     static {
         ROLE_MAP.put("/admin", "Admin");
@@ -89,23 +70,20 @@ public class AuthFilter implements Filter {
 
         String contextPath = req.getContextPath();
         String uri = req.getRequestURI();
-        // Bo phan contextPath de chi con lai duong dan "thuan" trong app, vd: /views/admin/admin.jsp
         String path = uri.substring(contextPath.length());
 
         if (debug) {
             log("AuthFilter: kiem tra request -> " + path);
         }
 
-        // BUOC 1: trang public thi cho qua luon, khong can kiem tra gi them
         if (isPublicPath(path)) {
             chain.doFilter(request, response);
             return;
         }
 
-        HttpSession session = req.getSession(false); // false = khong tu tao session moi
+        HttpSession session = req.getSession(false);
         List<String> QuyenHan = (session != null) ? (List<String>) session.getAttribute("QuyenHan") : null;
 
-        // BUOC 2: chua dang nhap -> ve trang login
         if (QuyenHan == null) {
             res.sendRedirect(contextPath + "/views/auth/register.jsp");
             return;
@@ -126,13 +104,9 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // BUOC 4: hop le -> cho request di tiep trong chain
         chain.doFilter(request, response);
     }
 
-    /**
-     * Kiem tra path co thuoc danh sach khong can dang nhap khong.
-     */
     private boolean isPublicPath(String path) {
         for (String p : PUBLIC_PATHS) {
             if (path.startsWith(p)) {
@@ -142,11 +116,6 @@ public class AuthFilter implements Filter {
         return false;
     }
 
-    /**
-     * Tra ve role can co de duoc vao path nay.
-     * Tra ve null neu path khong nam trong khu vuc can phan quyen rieng
-     * (vd: tat ca user da dang nhap deu vao duoc).
-     */
     private String getRequiredRole(String path) {
         for (Map.Entry<String, String> entry : ROLE_MAP.entrySet()) {
             if (path.startsWith(entry.getKey())) {
