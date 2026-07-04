@@ -43,7 +43,6 @@ public class StaffDAO {
             }
             return listStaff;
         } catch (SQLException e) {
-            e.printStackTrace();
             return listStaff;
         }
     }
@@ -61,7 +60,6 @@ public class StaffDAO {
             pstmt.setDouble(7, st.getLuong());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     
@@ -76,7 +74,6 @@ public class StaffDAO {
                 return 2;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             return 0;
         }
     }
