@@ -71,13 +71,10 @@ public class InventoryManagerServlet extends HttpServlet {
         request.getRequestDispatcher("./views/inventoryManager/inventoryManager.jsp").forward(request, response);
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
+   
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }
