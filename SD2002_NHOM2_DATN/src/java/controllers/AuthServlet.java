@@ -136,6 +136,8 @@ public class AuthServlet extends HttpServlet {
                     }
                     return;
                 }
+            }else{
+                request.getRequestDispatcher("/views/auth/login.jsp");
             }
         }
     }

@@ -11,6 +11,8 @@
             margin: 0;
             height: 100vh;
             display: flex;
+            gap: 35px;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-image: url('https://media.istockphoto.com/id/863542630/vi/anh/ho%C3%A0ng-h%C3%B4n-m%C3%B9a-h%C3%A8-v%E1%BB%9Bi-chu%E1%BB%93ng-tr%E1%BA%A1i-m%C3%A0u-%C4%91%E1%BB%8F-%E1%BB%9F-v%C3%B9ng-n%C3%B4ng-th%C3%B4n-montana-v%C3%A0-d%C3%A3y-n%C3%BAi-rocky.jpg?s=612x612&w=0&k=20&c=6EaDA4wBhWLYKVK7mhDExYQII8ZD1617vIjQzdr_cTA=');
@@ -180,6 +182,7 @@
 </head>
 
 <body>
+    <jsp:include page="/views/common/authtitle.jsp"></jsp:include>
     <div class="form-div">
         <div class="title-group">
             <svg viewBox="0 0 100 100">
@@ -195,12 +198,12 @@
             </svg>
             <h1>Quên Mật Khẩu</h1>
         </div>
-        <form>
+        <form method="Post" action="${pageContext.request.contextPath}/auth">
             <table>
                 <tr>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="ten-dk" name="ten-dk" placeholder="Nhập tên đăng ký" required>
+                            <input type="text" class="ten-dk" name="TenDangNhap" placeholder="Nhập tên tài khoản" required>
                             <svg class="icon-left" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
                     </td>
@@ -208,7 +211,7 @@
                 <tr>
                     <td>
                         <div class="input-group">
-                            <input type="email" class="email-dk" name="email-dk" placeholder="Nhập email đăng ký" required>
+                            <input type="email" class="email-dk" name="Email" placeholder="Nhập email tài khoản" required>
                             <svg class="icon-left" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                         </div>
                     </td>
