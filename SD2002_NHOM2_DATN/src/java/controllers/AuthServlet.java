@@ -80,10 +80,10 @@ public class AuthServlet extends HttpServlet {
         //processRequest(request, response);
         String action = request.getParameter("action");
         if (action.equals("register")) {
-            String TenDangKy = request.getParameter("TenDangKy");
-            String Email = request.getParameter("EmailDangKy");
-            String MatKhau = request.getParameter("MatKhau");
-            int mess = authSV.Register(TenDangKy, Email, MatKhau);
+            String tenDangKy = request.getParameter("TenDangKy");
+            String email = request.getParameter("EmailDangKy");
+            String matKhau = request.getParameter("MatKhau");
+            int mess = authSV.Register(tenDangKy, email, matKhau);
             if (mess == 1) {
                 request.setAttribute("success", "Đăng ký tài khoản thành công.");
             } else if (mess == 2) {
@@ -99,16 +99,16 @@ public class AuthServlet extends HttpServlet {
             }
             request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
         }else if(action.equals("login")){
-            String TenDangNhap = request.getParameter("TenDangNhap");
-            String MatKhau = request.getParameter("MatKhau");
-            int checkLogin = authSV.CheckLogin(TenDangNhap, MatKhau);
+            String tenDangNhap = request.getParameter("TenDangNhap");
+            String matKhau = request.getParameter("MatKhau");
+            int checkLogin = authSV.CheckLogin(tenDangNhap, matKhau);
             if(checkLogin == 1){
-                List<String> QuyenHan = authSV.Login(TenDangNhap, MatKhau);
-                if(!QuyenHan.isEmpty()){
+                List<String> quyenHan = authSV.Login(tenDangNhap, matKhau);
+                if(!quyenHan.isEmpty()){
                     HttpSession session = request.getSession();
-                    session.setAttribute("QuyenHan", QuyenHan);
-                    session.setAttribute("TenDangNhap", TenDangNhap);
-                    String truyCap = QuyenHan.get(0);
+                    session.setAttribute("QuyenHan", quyenHan);
+                    session.setAttribute("TenDangNhap", tenDangNhap);
+                    String truyCap = quyenHan.get(0);
                     switch (truyCap) {
                         case "Admin":
                             response.sendRedirect(request.getContextPath()+"/admin");
