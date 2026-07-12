@@ -24,7 +24,7 @@ import java.util.List;
 @WebFilter(filterName = "AuthFilter", urlPatterns = {"/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class AuthFilter implements Filter {
 
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     private FilterConfig filterConfig = null;
 
@@ -82,23 +82,23 @@ public class AuthFilter implements Filter {
         }
 
         HttpSession session = req.getSession(false);
-        List<String> QuyenHan = (session != null) ? (List<String>) session.getAttribute("QuyenHan") : null;
+        List<String> quyenHan = (session != null) ? (List<String>) session.getAttribute("QuyenHan") : null;
 
-        if (QuyenHan == null) {
-            res.sendRedirect(contextPath + "/views/auth/register.jsp");
+        if (quyenHan == null) {
+            res.sendRedirect(contextPath + "/views/auth/login.jsp");
             return;
         }
 
-        if (QuyenHan.contains("Admin")) {
+        if (quyenHan.contains("Admin")) {
             chain.doFilter(request, response);
             return;
         }
         
         String requiredRole = getRequiredRole(path);
 
-        if (requiredRole != null && !QuyenHan.contains(requiredRole)) {
+        if (requiredRole != null && !quyenHan.contains(requiredRole)) {
             if (debug) {
-                log("AuthFilter: role '" + QuyenHan + "' khong co quyen vao '" + path + "'");
+                log("AuthFilter: role '" + quyenHan + "' khong co quyen vao '" + path + "'");
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN, "Ban khong co quyen truy cap trang nay");
             return;
@@ -125,14 +125,6 @@ public class AuthFilter implements Filter {
         return null;
     }
 
-    public FilterConfig getFilterConfig() {
-        return (this.filterConfig);
-    }
-
-    public void setFilterConfig(FilterConfig filterConfig) {
-        this.filterConfig = filterConfig;
-    }
-
     public void destroy() {
     }
 
@@ -143,17 +135,6 @@ public class AuthFilter implements Filter {
                 log("AuthFilter: Initializing filter");
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        if (filterConfig == null) {
-            return ("AuthFilter()");
-        }
-        StringBuilder sb = new StringBuilder("AuthFilter(");
-        sb.append(filterConfig);
-        sb.append(")");
-        return (sb.toString());
     }
 
     public void log(String msg) {

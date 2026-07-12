@@ -18,16 +18,16 @@ public class AuthService {
     private StaffDAO staffDAO = new StaffDAO();
     private UserDAO userDAO = new UserDAO();
 
-    public int Register(String TenDangKy, String Email, String MatKhau) {
-        int checkFormatTenDangKy = CheckFormatTenTaiKhoan(TenDangKy);
-        int checkFormatMatKhau = CheckFormatMatKhau(MatKhau);
+    public int Register(String tenDangKy, String email, String matKhau) {
+        int checkFormatTenDangKy = CheckFormatTenTaiKhoan(tenDangKy);
+        int checkFormatMatKhau = CheckFormatMatKhau(matKhau);
         if (checkFormatTenDangKy == 1 && checkFormatMatKhau == 1) {
-            int checkEmail = staffDAO.CheckEmail(Email);
-            int checkTenDangKy = userDAO.CheckTenDangKy(TenDangKy);
+            int checkEmail = staffDAO.CheckEmail(email);
+            int checkTenDangKy = userDAO.CheckTenDangKy(tenDangKy);
             if (checkEmail == 1 && checkTenDangKy == 1) {
-                int checkInsert = userDAO.InsertUser(TenDangKy, MatKhau, Email);
+                int checkInsert = userDAO.InsertUser(tenDangKy, matKhau, email);
                 if(checkInsert == 1){
-                    int checkUpdate = userDAO.UpdateMaNguoiDung(checkInsert, TenDangKy, Email);
+                    int checkUpdate = userDAO.UpdateMaNguoiDung(checkInsert, tenDangKy, email);
                     return checkUpdate;
                 }else{
                     return checkInsert;
@@ -46,33 +46,33 @@ public class AuthService {
         }
     }
 
-    public int CheckFormatTenTaiKhoan(String TenDangKy) {
-        if (TenDangKy != null && !TenDangKy.trim().isEmpty() && TenDangKy.matches("^[A-Za-z0-9]+$")) {
+    public int CheckFormatTenTaiKhoan(String tenDangKy) {
+        if (tenDangKy != null && !tenDangKy.trim().isEmpty() && tenDangKy.matches("^[A-Za-z0-9]+$")) {
             return 1;
         } else {
             return 4;
         }
     }
 
-    public int CheckFormatMatKhau(String MatKhau) {
-        if (MatKhau != null && !MatKhau.trim().isEmpty() && MatKhau.matches("^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};:',.<>/?\\\\|]{8,}$")) {
+    public int CheckFormatMatKhau(String matKhau) {
+        if (matKhau != null && !matKhau.trim().isEmpty() && matKhau.matches("^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};:',.<>/?\\\\|]{8,}$")) {
             return 1;
         } else {
             return 5;
         }
     }
     
-    public int CheckLogin(String TenDangNhap, String MatKhau){
+    public int CheckLogin(String tenDangNhap, String matKhau){
         List<User> listUser = userDAO.SelectUser();
         for (User user : listUser) {
-            if(user.getTenDangNhap().equals(TenDangNhap) && user.getMatKhau().equals(MatKhau)){
+            if(user.getTenDangNhap().equals(tenDangNhap) && user.getMatKhau().equals(matKhau)){
                 return 1;
             }
         }
         return 2;
     }
-    public List<String> Login(String TenDangNhap, String MatKhau){
-        List<String> QuyenHan = userDAO.GetLogin(TenDangNhap, MatKhau);
-        return QuyenHan;
+    public List<String> Login(String tenDangNhap, String matKhau){
+        List<String> quyenHan = userDAO.GetLogin(tenDangNhap, matKhau);
+        return quyenHan;
     }
 }
