@@ -265,7 +265,7 @@
                 background: #95a5a6;
             }
 
-            /* ================= MODAL (FORM BẬT LÊN) ================= */
+            /* ================= MODAL ================= */
             .modal-overlay {
                 position: fixed;
                 top: 0;
@@ -393,6 +393,30 @@
                 background: #467e32;
             }
 
+            /* Checkbox styles */
+            .checkbox-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 10px;
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #eee;
+            }
+            .checkbox-group label {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                font-weight: 500;
+            }
+            .checkbox-group input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -440,32 +464,43 @@
                             <c:forEach var="st" items="${LIST_STAFF}">
                                 <tr>
                                     <td>${st.getMaNhanVien()}</td>
-
                                     <td><strong>${st.getHoTen()}</strong></td>
-
                                     <td>${st.isGioiTinh() ? 'Nam' : 'Nữ'}</td>
+                                    <td>${st.getSDT()}</td>
+                                    <td>${st.getEmail()}</td>
 
                                     <td>
-                                        ${st.getSDT()}
-                                    </td>
-                                    
-                                    <td>
-                                        ${st.getEmail()}
-                                    </td>
-                                        
-                                    <td>
-                                        <span class="role-badge">Chưa phân quyền</span>
+                                        <!-- Bọc trong div có flex-wrap để các quyền tự động xếp hàng ngang, hết chỗ thì xuống dòng đẹp mắt -->
+                                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                            <c:choose>
+                                                <c:when test="${empty st.getDanhSachQuyen() or st.getDanhSachQuyen() == 'Chưa phân quyền'}">
+                                                    <span class="role-badge status-locked" style="margin:0;">Chưa phân quyền</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <!-- Dùng hàm fn:split để cắt chuỗi ở dấu phẩy, tạo ra nhiều badge rời nhau -->
+                                                    <c:forEach var="quyen" items="${fn:split(st.getDanhSachQuyen(), ',')}">
+                                                        <span class="role-badge status-active" style="margin:0;">${fn:trim(quyen)}</span>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
                                     </td>
 
                                     <td>
-                                       
+                                        <span class="status-badge ${st.isDangKy() ? 'status-active' : 'status-locked'}">
+                                            ${st.isDangKy() ? 'Bình thường' : 'Đã khóa'}
+                                        </span>
                                     </td>
 
                                     <td>
                                         <div class="action-btns">
-                                            <button class="btn-action btn-edit" title="Sửa" onclick="openEmployeeForm('edit')">Sửa</button>
-                                            <button class="btn-action btn-role" title="Đổi Quyền" onclick="openRoleForm()">Đổi Quyền</button>
-                                            <button class="btn-action btn-lock" title="Khóa">Khóa</button>
+                                            <!-- Nút sửa: truyền tất cả dữ liệu của nhân viên vào JS -->
+                                            <button class="btn-action btn-edit" onclick="openEmployeeForm('edit', '${st.getMaNhanVien()}', '${st.getHoTen()}', '${st.getNgaySinh()}', '${st.isGioiTinh() ? 1 : 0}', '${st.getSDT()}', '${st.getEmail()}', '${st.getDiaChi()}', '${st.getLuong()}')">Sửa</button>
+
+                                            <!-- FIX: Thêm white-space: nowrap để cấm rớt dòng và rút gọn chữ thành "Phân Quyền" -->
+                                            <button class="btn-action btn-role" style="white-space: nowrap;" title="Cấp Quyền" onclick="openRoleForm('${st.getMaNhanVien()}', '${st.getMaNguoiDung()}', '${st.getMaNhom()}')">Phân Quyền</button>
+
+                                            <button class="btn-action btn-lock" onclick="openLockForm('${st.getMaNguoiDung()}')">Khóa</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -482,8 +517,9 @@
                     <h3 id="employeeModalTitle">Thêm nhân viên mới</h3>
                     <button class="close-btn" onclick="closeModal('employeeModal')">&times;</button>
                 </div>
-                <form action="EmployeeServlet" method="POST">
+                <form action="hr" method="POST">
                     <input type="hidden" name="action" id="formAction" value="add">
+                    <input type="hidden" name="maNhanVien" id="editEmpId" value="">
 
                     <div class="form-group">
                         <label>Họ và tên</label>
@@ -533,77 +569,155 @@
             </div>
         </div>
 
+        <!-- MODAL CẤP CHỨC VỤ VÀ QUYỀN -->
         <div class="modal-overlay" id="roleModal">
-            <div class="modal-content" style="width: 400px;">
+            <div class="modal-content" style="width: 450px;">
                 <div class="modal-header">
-                    <h3>Thay đổi Quyền / Chức vụ</h3>
+                    <h3>Gán Chức vụ & Quyền hạn</h3>
                     <button class="close-btn" onclick="closeModal('roleModal')">&times;</button>
                 </div>
-                <form action="RoleServlet" method="POST">
+                <form action="hr" method="POST">
+                    <input type="hidden" name="action" value="updateRole">
                     <input type="hidden" name="maNhanVien" id="roleEmployeeId" value="">
+                    <input type="hidden" name="maNguoiDung" id="roleUserId" value="">
 
+                    <!-- PHẦN 1: CHỌN CHỨC VỤ (NHÓM) -->
                     <div class="form-group">
-                        <label>Chọn chức vụ mới</label>
-                        <select name="role" class="form-control" required>
-                            <option value="admin">Admin</option>
-                            <option value="equipment_manager">Equipment Manager</option>
-                            <option value="farm_owner">Farm Owner</option>
-                            <option value="hr_manager">HR Manager</option>
-                            <option value="inventory_manager">Inventory Manager</option>
-                            <option value="technician">Technician</option>
-                            <option value="worker">Worker</option>
-                        </select>
+                        <label style="color:#2e541f; font-size:16px;">1. Gán vào Chức vụ (Nhóm):</label>
+                        <p style="font-size:12px; color:#666; margin-top:0;">*Lưu ý: Sửa quyền của nhóm sẽ áp dụng cho tất cả những người đang ở trong nhóm đó.</p>
+
+                        <div class="checkbox-group" style="max-height: 150px; overflow-y: auto;">
+                            <!-- Đổ danh sách nhóm từ Database lên bằng vòng lặp -->
+                            <c:forEach var="group" items="${LIST_GROUP}">
+                                <label>
+                                    <input type="radio" name="selectedGroup" value="${group.getMaNhom()}" onclick="toggleNewGroupInput()"> 
+                                    ${group.getTenNhom()}
+                                </label>
+                            </c:forEach>
+
+                            <!-- Option Đặc Biệt: Tạo nhóm tùy chỉnh -->
+                            <label style="color:#e74c3c; font-weight:700;">
+                                <input type="radio" name="selectedGroup" id="radioNewGroup" value="-1" onclick="toggleNewGroupInput()"> 
+                                + Tạo chức vụ mới (Tùy chỉnh riêng)
+                            </label>
+                        </div>
+
+                        <!-- Ô nhập tên nhóm mới (Chỉ hiện khi chọn "Tạo chức vụ mới") -->
+                        <div id="divNewGroupName" style="display:none; margin-top:10px;">
+                            <input type="text" name="newGroupName" class="form-control" placeholder="Nhập tên chức vụ mới (Ví dụ: Giám sát sảnh)...">
+                        </div>
+                    </div>
+
+                    <!-- PHẦN 2: CHỌN QUYỀN CHO NHÓM ĐÓ -->
+                    <div class="form-group" style="margin-top:20px;">
+                        <label style="color:#2e541f; font-size:16px;">2. Các quyền cấp cho chức vụ trên:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="permissions" value="1"> Admin</label>
+                            <label><input type="checkbox" name="permissions" value="2"> Farm Owner</label>
+                            <label><input type="checkbox" name="permissions" value="3"> HR Manager</label>
+                            <label><input type="checkbox" name="permissions" value="4"> Inventory Manager</label>
+                            <label><input type="checkbox" name="permissions" value="5"> Technician</label>
+                            <label><input type="checkbox" name="permissions" value="6"> Worker</label>
+                            <label><input type="checkbox" name="permissions" value="7"> Equipment Manager</label>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn-cancel" onclick="closeModal('roleModal')">Hủy bỏ</button>
-                        <button type="submit" class="btn-save">Cập nhật quyền</button>
+                        <button type="submit" class="btn-save">Xác nhận Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="lockModal">
+            <div class="modal-content" style="width: 350px;">
+                <h3>Trạng thái tài khoản</h3>
+                <form action="hr" method="POST">
+                    <input type="hidden" name="action" value="lock">
+                    <input type="hidden" name="maNguoiDung" id="lockUserId">
+                    <select name="trangThai" class="form-control">
+                        <option value="true">Bình thường (Đang hoạt động)</option>
+                        <option value="false">Khóa tài khoản</option>
+                    </select>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="closeModal('lockModal')">Hủy</button>
+                        <button type="submit" class="btn-save">Lưu</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <script>
-            // Hàm mở Form Thêm/Sửa
-            function openEmployeeForm(mode) {
+            // Sửa dòng khai báo hàm thêm các tham số tương ứng
+            function openEmployeeForm(mode, id, ten, ngaysinh, gioitinh, sdt, email, diachi, luong) {
                 const modal = document.getElementById('employeeModal');
                 const title = document.getElementById('employeeModalTitle');
                 const actionInput = document.getElementById('formAction');
+                const form = modal.querySelector('form');
+
+                form.reset(); // Dọn dẹp form trước
 
                 if (mode === 'add') {
                     title.innerText = 'Thêm nhân viên mới';
                     actionInput.value = 'add';
-                    // Reset form rỗng nếu muốn thêm mới
-                    modal.querySelector('form').reset();
                 } else if (mode === 'edit') {
-                    title.innerText = 'Sửa thông tin nhân viên';
+                    title.innerText = 'Sửa thông tin';
                     actionInput.value = 'edit';
-                    // Tại đây bạn có thể dùng JS đổ dữ liệu cũ vào form nếu cần
-                }
 
+                    // Điền dữ liệu vào các ô input (Bắt buộc phải có thẻ <input type="hidden" name="maNhanVien" id="editEmpId"> trong form)
+                    document.getElementById('editEmpId').value = id;
+                    form.elements['hoTen'].value = ten;
+                    form.elements['ngaySinh'].value = ngaysinh;
+                    form.elements['gioiTinh'].value = gioitinh;
+                    form.elements['sdt'].value = sdt;
+                    form.elements['email'].value = email;
+                    form.elements['diaChi'].value = diachi;
+                    form.elements['luong'].value = luong;
+                }
                 modal.style.display = 'flex';
             }
 
-            // Hàm mở Form Đổi quyền
-            function openRoleForm() {
+            // Hàm mở Form Role xịn xò
+            function openRoleForm(maNhanVien, maNguoiDung, maNhomHienTai) {
+                document.getElementById('roleEmployeeId').value = maNhanVien;
+                document.getElementById('roleUserId').value = maNguoiDung || '0';
+
+                // Tự động tick vào cái Radio button trùng với Nhóm hiện tại của nhân viên
+                let radios = document.getElementsByName('selectedGroup');
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].value == maNhomHienTai) {
+                        radios[i].checked = true;
+                    }
+                }
+                toggleNewGroupInput(); // Cập nhật lại UI text box
+
                 document.getElementById('roleModal').style.display = 'flex';
             }
 
-            // Hàm đóng chung cho các Form
+            // Hiện khung nhập Tên chức vụ nếu HR chọn "Tạo mới"
+            function toggleNewGroupInput() {
+                let isNew = document.getElementById('radioNewGroup').checked;
+                document.getElementById('divNewGroupName').style.display = isNew ? 'block' : 'none';
+            }
+
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
 
-            // Click ra ngoài khoảng xám để đóng Form
+            function openLockForm(maNguoiDung) {
+                document.getElementById('lockUserId').value = maNguoiDung;
+                document.getElementById('lockModal').style.display = 'flex';
+            }
+
+
             window.onclick = function (event) {
                 let empModal = document.getElementById('employeeModal');
                 let roleModal = document.getElementById('roleModal');
-                if (event.target == empModal) {
+                if (event.target === empModal)
                     empModal.style.display = "none";
-                }
-                if (event.target == roleModal) {
+                if (event.target === roleModal)
                     roleModal.style.display = "none";
-                }
             }
         </script>
     </body>
