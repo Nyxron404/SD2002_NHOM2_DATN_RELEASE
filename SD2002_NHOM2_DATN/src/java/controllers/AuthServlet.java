@@ -137,7 +137,8 @@ public class AuthServlet extends HttpServlet {
                     return;
                 }
             }else{
-                request.getRequestDispatcher("/views/auth/login.jsp");
+                request.setAttribute("errorLogin", "Tên đăng nhập hoặc mất khẩu sai.");
+                request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
             }
         }
     }
