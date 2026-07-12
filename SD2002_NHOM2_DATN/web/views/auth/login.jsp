@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -177,6 +178,50 @@
             text-decoration: underline; 
             color: #467e32;
         }
+        .mess {
+                width: 100%;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                font-size: 14px;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            /* Định dạng chung cho tất cả các thẻ p bên trong .mess */
+            .mess p {
+                margin: 5px 0;
+                padding: 8px 12px;
+                border-radius: 6px;
+                animation: fadeIn 0.4s ease-in-out; /* Hiệu ứng mượt mà khi xuất hiện */
+            }
+
+            /* Định dạng riêng cho thông báo lỗi (error) */
+            .mess p:not(:first-child),
+            .mess p:has(~ .btn-dk), /* CSS hiện đại để check nếu cần */
+            .mess {
+                /* Mặc định nếu có lỗi thì chữ sẽ có màu đỏ đậm trông nổi bật */
+                color: #c0392b;
+            }
+
+            /* Để tối ưu hóa (optimize - v) giao diện, ta nên tách biệt màu sắc thông báo */
+            /* Bạn có thể thêm class trực tiếp vào thẻ p trong JSTL để dễ quản lý hơn, ví dụ: */
+            .msg-error {
+                color: #c0392b;
+                background-color: rgba(192, 57, 43, 0.1);
+                border: 1px solid rgba(192, 57, 43, 0.3);
+            }
+
+            /* Tạo hiệu ứng mượt mà khi thông báo xuất hiện */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-5px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
     </style>
 </head>
 
@@ -216,6 +261,11 @@
                     </td>
                 </tr>
             </table>
+            <div class="mess">
+                    <c:if test="${errorLogin != null}">
+                        <p class="msg-error">${errorLogin}</p>
+                    </c:if>
+                </div>
             <button type="submit" class="btn-dk" name="action" value="login">Đăng nhập</button>
             <div class="link-group">
                 <a href="${pageContext.request.contextPath}/views/auth/register.jsp" class="register-link" name="register-link">Đăng ký tài khoản</a>
