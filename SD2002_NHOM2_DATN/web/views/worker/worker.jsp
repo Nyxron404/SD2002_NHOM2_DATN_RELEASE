@@ -120,7 +120,7 @@
 <body>
 
     <jsp:include page="/views/common/sidebar.jsp">
-        <jsp:param name="activePage" value="us6_task" />
+        <jsp:param name="activePage" value="worker" />
     </jsp:include>
     
     <div class="main-wrapper">
