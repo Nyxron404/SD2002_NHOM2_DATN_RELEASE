@@ -57,6 +57,19 @@
         font-size: 15px;
         transition: all 0.3s ease;
         border-left: 5px solid transparent;
+        width: 100%; /* Chiếm toàn bộ chiều rộng form */
+        background: none; 
+        border: none; 
+        outline: none; /* KHẮC PHỤC: Xóa bỏ viền đen focus mặc định của trình duyệt */
+        cursor: pointer; 
+        text-align: left; 
+        font-family: inherit; 
+    }
+
+    /* Đảm bảo khi click/focus vào button sẽ không hiện viền đen */
+    .menu-item:focus, .menu-item:active {
+        outline: none;
+        box-shadow: none;
     }
 
     .menu-item:hover, .menu-item.active {
@@ -64,15 +77,38 @@
         border-left-color: #579c3f;
         color: #467e32;
     }
+    
     .menu-item svg {
         width: 22px;
         height: 22px;
-        fill: currentColor;
+        fill: currentColor; /* SVG tự động ăn theo màu chữ (color) của thẻ cha */
     }
 
-    .logout-btn {
+    /* ================= KHU VỰC ĐĂNG XUẤT ================= */
+    .logout-container {
+        margin-top: 20px;
         border-top: 1px solid rgba(0, 0, 0, 0.08);
-        padding: 20px 0;
+        width: 100%; /* Trải rộng full sidebar */
+    }
+
+    /* Class riêng cho form Đăng xuất để kéo dãn chiều rộng */
+    .logout-form {
+        margin: 0;
+        padding: 0;
+        width: 100%; /* KHẮC PHỤC: Đảm bảo form rộng bằng thẻ li */
+        display: block;
+    }
+
+    /* Màu chữ và icon đỏ mặc định */
+    .logout-btn-submit {
+        color: #e74c3c !important; 
+    }
+
+    /* Hiệu ứng hover riêng cho nút Đăng xuất */
+    .logout-btn-submit:hover {
+        background: linear-gradient(90deg, rgba(231, 76, 60, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+        border-left-color: #e74c3c;
+        color: #e74c3c !important;
     }
 </style>
 <aside class="sidebar">
@@ -145,11 +181,14 @@
                 </li>
             </c:if>
         </c:forEach>
-        <li>
-            <a href="${pageContext.request.contextPath}/auth?action=logout" class="menu-item logout-btn" style="color: #e74c3c; margin-top: 20px; border-top: 1px solid rgba(0, 0, 0, 0.08);">
-                <svg viewBox="0 0 24 24" style="fill: #e74c3c;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-                Đăng xuất 
-            </a>
+        <li class="logout-container">
+            <form action="${pageContext.request.contextPath}/auth" method="Post" class="logout-form">
+                <input type="hidden" name="action" value="logout"/>
+                <button type="submit" class="menu-item logout-btn-submit">
+                    <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                    Đăng xuất
+                </button>
+            </form>
         </li>
     </ul>
 </aside>
