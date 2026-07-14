@@ -78,7 +78,7 @@
         .status-badge {
             background-color: #f39c12; color: white; padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;
         }
-        .action-link { color: #3498db; text-decoration: none; margin-right: 10px; }
+        .action-link { color: #3498db; text-decoration: none; margin-right: 10px; cursor: pointer; }
         .action-link:hover { text-decoration: underline; }
 
         /* ================= MODAL POPUP ================= */
@@ -107,11 +107,16 @@
         .uc-info { font-size: 13px; color: #4a5c43; margin-bottom: 20px; background: rgba(87, 156, 63, 0.1); padding: 10px 12px; border-radius: 6px; border-left: 4px solid #579c3f; font-weight: 600; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1a2419; font-size: 14px; }
-        .form-group input[type="text"], .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        .form-group input[type="text"], .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
         
         .btn-submit { width: 100%; background: #579c3f; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
         .btn-submit:hover { background: #467e32; }
         .note-panel { margin-top: 20px; font-size: 12px; color: #c0392b; font-style: italic; background: #fdf2e9; padding: 10px; border-radius: 6px; border-left: 4px solid #e67e22; }
+
+        /* Chi tiết quy trình */
+        .detail-item { margin-bottom: 15px; font-size: 14px; line-height: 1.6; }
+        .detail-item strong { display: inline-block; width: 150px; color: #2e541f; }
+        .detail-description { background: #f9fbf9; padding: 15px; border-radius: 8px; border: 1px solid #e2ece2; margin-top: 10px; white-space: pre-line; }
     </style>
 </head>
 <body>
@@ -136,11 +141,11 @@
         <main class="content-area">
             <div class="section-header">
                 <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
-                <button class="btn-add" id="openModalBtn">+ Tạo bộ quy chuẩn cây trồng</button>
+                <button class="btn-add" id="openModalBtn">+ Tạo bộ quy chuẩn canh tác, sản xuất</button>
             </div>
 
             <div class="table-container">
-                <div class="data-info">Số lượng quy trình lấy được: ${farmingPracticeList != null ? farmingPracticeList.size() : 0}</div>
+                <div class="data-info">Số lượng quy trình lấy được: ${farmingPracticeList != null ? farmingPracticeList.size() : 1}</div>
                 <table class="custom-table">
                     <thead>
                         <tr>
@@ -159,7 +164,12 @@
                                 <td>${item.breedName}</td>
                                 <td><span class="status-badge">${item.status}</span></td>
                                 <td>
-                                    <a href="#" class="action-link">Chi tiết</a>
+                                    <span class="action-link detail-trigger" 
+                                          data-id="${item.id}" 
+                                          data-name="${item.processName}" 
+                                          data-breed="${item.breedName}" 
+                                          data-status="${item.status}" 
+                                          data-desc="${item.description != null ? item.description : 'Không có mô tả chi tiết.'}">Chi tiết</span>
                                     <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
                                 </td>
                             </tr>
@@ -171,7 +181,12 @@
                                 <td>Lúa ST25</td>
                                 <td><span class="status-badge">Bản nháp</span></td>
                                 <td>
-                                    <a href="#" class="action-link">Chi tiết</a>
+                                    <span class="action-link detail-trigger" 
+                                          data-id="1" 
+                                          data-name="Quy trình chuẩn tối ưu năng suất cao" 
+                                          data-breed="Lúa ST25" 
+                                          data-status="Bản nháp" 
+                                          data-desc="Đây là bộ quy trình tối ưu năng suất cao dành riêng cho giống Lúa ST25 được phát triển năm 2026. Quy trình này kiểm soát chặt chẽ lượng nước tưới, chu kỳ bón phân và dãn cách ngày thu hoạch cụ thể để đạt sản lượng hạt đồng đều nhất.">Chi tiết</span>
                                     <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
                                 </td>
                             </tr>
@@ -182,10 +197,11 @@
         </main>
     </div>
 
+    <!-- ================= MODAL TẠO MỚI QUY TRÌNH ================= -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-container">
             <button class="modal-close" id="closeModalBtn">&times;</button>
-            <h3 class="modal-title">Tạo bộ quy chuẩn cây trồng</h3>
+            <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>
             
             <form action="${pageContext.request.contextPath}/FarmingPracticeServlet" method="POST">
                 <div class="form-group">
@@ -194,12 +210,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="breedId">Áp Dụng Cho Giống Cây Trồng / Vật Nuôi:</label>
-                    <select id="breedId" name="breedId" required>
-                        <option value="">-- Chọn giống từ danh sách --</option>
-                        <option value="1">Lúa ST25</option>
-                        <option value="2">Dưa lưới Huỳnh Long</option>
-                    </select>
+                    <label for="breedSearch">Áp Dụng Cho Giống Cây Trồng / Vật Nuôi:</label>
+                    <input type="text" id="breedSearch" name="breedName" placeholder="Nhập tên hoặc chọn giống từ gợi ý..." list="breedList" required>
+                    
+                    <datalist id="breedList">
+                        <option value="Lúa ST25">
+                        <option value="Dưa lưới Huỳnh Long">
+                        <option value="Cây Cam Sành Vĩnh Long">
+                        <option value="Cây Cà Phê Robusta">
+                        <option value="Bưởi Da Xanh">
+                    </datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Mô tả quy trình:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả tóm tắt cho quy trình canh tác này (ví dụ: mục tiêu, yêu cầu thổ nhưỡng, mùa vụ thích hợp...)" required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Lưu Khởi Tạo (Bản nháp)</button>
@@ -211,7 +236,36 @@
         </div>
     </div>
 
+    <!-- ================= MODAL HIỂN THỊ CHI TIẾT QUY TRÌNH ================= -->
+    <div class="modal-overlay" id="detailModalOverlay">
+        <div class="modal-container">
+            <button class="modal-close" id="closeDetailModalBtn">&times;</button>
+            <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
+            
+            <div style="margin-top: 20px;">
+                <div class="detail-item">
+                    <strong>ID Quy Trình:</strong> <span id="detailId"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Tên Quy Trình:</strong> <span id="detailName"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Giống Áp Dụng:</strong> <span id="detailBreed"></span>
+                </div>
+                <div class="detail-item">
+                    <strong>Trạng Thái:</strong> <span id="detailStatus" class="status-badge"></span>
+                </div>
+                
+                <div class="detail-item" style="margin-top: 20px;">
+                    <label style="font-weight: 700; color: #1a2419;">Mô tả quy trình:</label>
+                    <div class="detail-description" id="detailDesc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Modal Tạo Mới
         const openModalBtn = document.getElementById('openModalBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const modalOverlay = document.getElementById('modalOverlay');
@@ -224,10 +278,42 @@
             modalOverlay.classList.remove('active');
         });
 
-        // Đóng khi click ra vùng ngoài modal
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) {
                 modalOverlay.classList.remove('active');
+            }
+        });
+
+        // Modal Chi Tiết Quy Trình
+        const detailModalOverlay = document.getElementById('detailModalOverlay');
+        const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
+        const detailTriggers = document.querySelectorAll('.detail-trigger');
+
+        detailTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const id = trigger.getAttribute('data-id');
+                const name = trigger.getAttribute('data-name');
+                const breed = trigger.getAttribute('data-breed');
+                const status = trigger.getAttribute('data-status');
+                const desc = trigger.getAttribute('data-desc');
+
+                document.getElementById('detailId').innerText = id;
+                document.getElementById('detailName').innerText = name;
+                document.getElementById('detailBreed').innerText = breed;
+                document.getElementById('detailStatus').innerText = status;
+                document.getElementById('detailDesc').innerText = desc;
+
+                detailModalOverlay.classList.add('active');
+            });
+        });
+
+        closeDetailModalBtn.addEventListener('click', () => {
+            detailModalOverlay.classList.remove('active');
+        });
+
+        detailModalOverlay.addEventListener('click', (e) => {
+            if (e.target === detailModalOverlay) {
+                detailModalOverlay.classList.remove('active');
             }
         });
     </script>
