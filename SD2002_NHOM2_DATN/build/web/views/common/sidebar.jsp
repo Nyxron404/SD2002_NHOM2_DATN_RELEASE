@@ -95,7 +95,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'FarmOwner'}">
+            <c:if test="${QuyenHan == 'FarmOwner' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="#" class="menu-item ${param.activePage == 'us1' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
@@ -103,7 +103,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'HrManager'}">
+            <c:if test="${QuyenHan == 'HrManager' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/views/inventoryManager/inventoryManager.jsp" class="menu-item ${param.activePage == 'inventoryManager' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-2-1h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
@@ -111,7 +111,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'InventoryManager'}">
+            <c:if test="${QuyenHan == 'InventoryManager' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/views/equipmentManager/equipmentManager.jsp" class="menu-item ${param.activePage == 'equipmentManager' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
@@ -119,7 +119,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'Technician'}">
+            <c:if test="${QuyenHan == 'Technician' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/hr" class="menu-item ${param.activePage == 'hrManager' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -127,7 +127,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'Worker'}">
+            <c:if test="${QuyenHan == 'Worker' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/views/technician/technician.jsp" class="menu-item ${param.activePage == 'technician' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
@@ -135,7 +135,7 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${QuyenHan == 'EquipmentManager'}">
+            <c:if test="${QuyenHan == 'EquipmentManager' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/worker" class="menu-item ${param.activePage == 'worker' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
