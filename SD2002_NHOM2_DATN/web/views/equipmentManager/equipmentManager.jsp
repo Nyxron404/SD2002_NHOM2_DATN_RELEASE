@@ -376,7 +376,7 @@
     <body>
 
         <jsp:include page="/views/common/sidebar.jsp">
-            <jsp:param name="activePage" value="farmOwner" />
+            <jsp:param name="activePage" value="equipmentManager" />
         </jsp:include>
 
         <div class="main-wrapper">

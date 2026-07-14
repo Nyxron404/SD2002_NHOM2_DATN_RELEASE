@@ -117,7 +117,7 @@
 <body>
 
     <jsp:include page="/views/common/sidebar.jsp">
-        <jsp:param name="activePage" value="us6" />
+        <jsp:param name="activePage" value="technician" />
     </jsp:include>
     
     <div class="main-wrapper">

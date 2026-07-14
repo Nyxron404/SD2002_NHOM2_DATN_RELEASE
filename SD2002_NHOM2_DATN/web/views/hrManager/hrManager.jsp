@@ -1,6 +1,7 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- Sử dụng namespace jakarta cho Tomcat 10+ --%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -138,6 +139,34 @@
                 text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             }
 
+            /* THANH TÌM KIẾM */
+            .search-box {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 8px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .search-box input {
+                border: none;
+                outline: none;
+                padding: 8px 10px;
+                width: 250px;
+                font-size: 14px;
+            }
+            .btn-search {
+                background: #f39c12;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .btn-search:hover { background: #e67e22; }
+
             .btn-add {
                 background: linear-gradient(135deg, #579c3f, #396728);
                 color: white;
@@ -234,36 +263,12 @@
                 transition: 0.2s;
             }
 
-            .btn-edit {
-                background: #f39c12;
-            }
-            .btn-edit:hover {
-                background: #e67e22;
-            }
-            .btn-role {
-                background: #3498db;
-            }
-            .btn-role:hover {
-                background: #2980b9;
-            }
-            .btn-lock {
-                background: #e74c3c;
-            }
-            .btn-lock:hover {
-                background: #c0392b;
-            }
-            .btn-unlock {
-                background: #2ecc71;
-            }
-            .btn-unlock:hover {
-                background: #27ae60;
-            }
-            .btn-delete {
-                background: #7f8c8d;
-            }
-            .btn-delete:hover {
-                background: #95a5a6;
-            }
+            .btn-edit { background: #f39c12; }
+            .btn-edit:hover { background: #e67e22; }
+            .btn-role { background: #3498db; }
+            .btn-role:hover { background: #2980b9; }
+            .btn-lock { background: #e74c3c; }
+            .btn-lock:hover { background: #c0392b; }
 
             /* ================= MODAL ================= */
             .modal-overlay {
@@ -293,14 +298,8 @@
             }
 
             @keyframes slideIn {
-                from {
-                    transform: translateY(-30px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+                from { transform: translateY(-30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
             }
 
             .modal-header {
@@ -324,21 +323,12 @@
                 cursor: pointer;
                 color: #999;
             }
-            .close-btn:hover {
-                color: #e74c3c;
-            }
+            .close-btn:hover { color: #e74c3c; }
 
-            .form-row {
-                display: flex;
-                gap: 15px;
-            }
-            .form-row .form-group {
-                flex: 1;
-            }
+            .form-row { display: flex; gap: 15px; }
+            .form-row .form-group { flex: 1; }
 
-            .form-group {
-                margin-bottom: 15px;
-            }
+            .form-group { margin-bottom: 15px; }
             .form-group label {
                 display: block;
                 margin-bottom: 8px;
@@ -368,55 +358,25 @@
                 gap: 10px;
                 margin-top: 25px;
             }
-            .btn-cancel {
+            .btn-cancel, .btn-save {
                 padding: 10px 20px;
-                background: #f1f2f6;
-                color: #333;
                 border: none;
                 border-radius: 8px;
                 font-weight: 600;
                 cursor: pointer;
             }
-            .btn-cancel:hover {
-                background: #dfe4ea;
-            }
-            .btn-save {
-                padding: 10px 20px;
-                background: #579c3f;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-            }
-            .btn-save:hover {
-                background: #467e32;
-            }
+            .btn-cancel { background: #f1f2f6; color: #333; }
+            .btn-cancel:hover { background: #dfe4ea; }
+            .btn-save { background: #579c3f; color: white; }
+            .btn-save:hover { background: #467e32; }
 
             /* Checkbox styles */
             .checkbox-group {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                margin-top: 10px;
-                background: #f9f9f9;
-                padding: 15px;
-                border-radius: 8px;
-                border: 1px solid #eee;
+                display: flex; flex-direction: column; gap: 10px; margin-top: 10px;
+                background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee;
             }
-            .checkbox-group label {
-                margin: 0;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                cursor: pointer;
-                font-weight: 500;
-            }
-            .checkbox-group input[type="checkbox"] {
-                width: 16px;
-                height: 16px;
-                cursor: pointer;
-            }
+            .checkbox-group label { margin: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
+            .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
         </style>
     </head>
     <body>
@@ -440,14 +400,23 @@
 
                 <div class="page-toolbar">
                     <h2>Danh sách nhân viên</h2>
-                    <button class="btn-add" onclick="openEmployeeForm('add')">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        Thêm nhân viên
-                    </button>
+                    
+                    <%-- THANH TÌM KIẾM ĐƯỢC CHÈN VÀO ĐÂY --%>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID nhân viên..." onkeydown="if(event.key === 'Enter') openSearchModal()">
+                            <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                        </div>
+
+                        <button class="btn-add" onclick="openEmployeeForm('add')">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            Thêm nhân viên
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-card">
-                    <table>
+                    <table id="mainStaffTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -460,7 +429,8 @@
                                 <th>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
+                        <tbody id="mainTableBody">
                             <c:forEach var="st" items="${LIST_STAFF}">
                                 <tr>
                                     <td>${st.getMaNhanVien()}</td>
@@ -470,14 +440,12 @@
                                     <td>${st.getEmail()}</td>
 
                                     <td>
-                                        <!-- Bọc trong div có flex-wrap để các quyền tự động xếp hàng ngang, hết chỗ thì xuống dòng đẹp mắt -->
                                         <div style="display: flex; flex-wrap: wrap; gap: 6px;">
                                             <c:choose>
                                                 <c:when test="${empty st.getDanhSachQuyen() or st.getDanhSachQuyen() == 'Chưa phân quyền'}">
                                                     <span class="role-badge status-locked" style="margin:0;">Chưa phân quyền</span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <!-- Dùng hàm fn:split để cắt chuỗi ở dấu phẩy, tạo ra nhiều badge rời nhau -->
                                                     <c:forEach var="quyen" items="${fn:split(st.getDanhSachQuyen(), ',')}">
                                                         <span class="role-badge status-active" style="margin:0;">${fn:trim(quyen)}</span>
                                                     </c:forEach>
@@ -494,12 +462,8 @@
 
                                     <td>
                                         <div class="action-btns">
-                                            <!-- Nút sửa: truyền tất cả dữ liệu của nhân viên vào JS -->
                                             <button class="btn-action btn-edit" onclick="openEmployeeForm('edit', '${st.getMaNhanVien()}', '${st.getHoTen()}', '${st.getNgaySinh()}', '${st.isGioiTinh() ? 1 : 0}', '${st.getSDT()}', '${st.getEmail()}', '${st.getDiaChi()}', '${st.getLuong()}')">Sửa</button>
-
-                                            <!-- FIX: Thêm white-space: nowrap để cấm rớt dòng và rút gọn chữ thành "Phân Quyền" -->
                                             <button class="btn-action btn-role" style="white-space: nowrap;" title="Cấp Quyền" onclick="openRoleForm('${st.getMaNhanVien()}', '${st.getMaNguoiDung()}', '${st.getMaNhom()}')">Phân Quyền</button>
-
                                             <button class="btn-action btn-lock" onclick="openLockForm('${st.getMaNguoiDung()}')">Khóa</button>
                                         </div>
                                     </td>
@@ -511,6 +475,39 @@
             </main>
         </div>
 
+        <%-- MODAL KẾT QUẢ TÌM KIẾM (MỚI THÊM) --%>
+        <div class="modal-overlay" id="searchModal">
+            <%-- Đổi width to hơn cho vừa cái bảng --%>
+            <div class="modal-content" style="width: 1000px; max-width: 95%;"> 
+                <div class="modal-header">
+                    <h3>Kết quả Tìm kiếm</h3>
+                    <button class="close-btn" onclick="closeModal('searchModal')">&times;</button>
+                </div>
+                
+                <div class="table-card" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và Tên</th>
+                                <th>Giới tính</th> 
+                                <th>SĐT</th>
+                                <th>Email</th>
+                                <th>Quyền / Chức vụ</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <%-- Tbody rỗng, JS sẽ nhét kết quả vào đây --%>
+                        <tbody id="searchResultBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <%-- CÁC MODAL CŨ GIỮ NGUYÊN BÊN DƯỚI --%>
         <div class="modal-overlay" id="employeeModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -569,7 +566,6 @@
             </div>
         </div>
 
-        <!-- MODAL CẤP CHỨC VỤ VÀ QUYỀN -->
         <div class="modal-overlay" id="roleModal">
             <div class="modal-content" style="width: 450px;">
                 <div class="modal-header">
@@ -581,34 +577,27 @@
                     <input type="hidden" name="maNhanVien" id="roleEmployeeId" value="">
                     <input type="hidden" name="maNguoiDung" id="roleUserId" value="">
 
-                    <!-- PHẦN 1: CHỌN CHỨC VỤ (NHÓM) -->
                     <div class="form-group">
                         <label style="color:#2e541f; font-size:16px;">1. Gán vào Chức vụ (Nhóm):</label>
                         <p style="font-size:12px; color:#666; margin-top:0;">*Lưu ý: Sửa quyền của nhóm sẽ áp dụng cho tất cả những người đang ở trong nhóm đó.</p>
 
                         <div class="checkbox-group" style="max-height: 150px; overflow-y: auto;">
-                            <!-- Đổ danh sách nhóm từ Database lên bằng vòng lặp -->
                             <c:forEach var="group" items="${LIST_GROUP}">
                                 <label>
                                     <input type="radio" name="selectedGroup" value="${group.getMaNhom()}" onclick="toggleNewGroupInput()"> 
                                     ${group.getTenNhom()}
                                 </label>
                             </c:forEach>
-
-                            <!-- Option Đặc Biệt: Tạo nhóm tùy chỉnh -->
                             <label style="color:#e74c3c; font-weight:700;">
                                 <input type="radio" name="selectedGroup" id="radioNewGroup" value="-1" onclick="toggleNewGroupInput()"> 
                                 + Tạo chức vụ mới (Tùy chỉnh riêng)
                             </label>
                         </div>
-
-                        <!-- Ô nhập tên nhóm mới (Chỉ hiện khi chọn "Tạo chức vụ mới") -->
                         <div id="divNewGroupName" style="display:none; margin-top:10px;">
                             <input type="text" name="newGroupName" class="form-control" placeholder="Nhập tên chức vụ mới (Ví dụ: Giám sát sảnh)...">
                         </div>
                     </div>
 
-                    <!-- PHẦN 2: CHỌN QUYỀN CHO NHÓM ĐÓ -->
                     <div class="form-group" style="margin-top:20px;">
                         <label style="color:#2e541f; font-size:16px;">2. Các quyền cấp cho chức vụ trên:</label>
                         <div class="checkbox-group">
@@ -649,14 +638,59 @@
         </div>
 
         <script>
-            // Sửa dòng khai báo hàm thêm các tham số tương ứng
+            // HÀM MỚI: QUÉT DỮ LIỆU BẢNG GỐC VÀ ĐỔ VÀO MODAL TÌM KIẾM
+            function openSearchModal() {
+                // Lấy từ khóa, chuyển thành chữ thường để tìm kiếm không phân biệt hoa/thường
+                let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+                let resultBody = document.getElementById('searchResultBody');
+                
+                // Xóa dữ liệu kết quả của lần tìm trước đó
+                resultBody.innerHTML = ''; 
+
+                if (keyword === '') {
+                    alert("Vui lòng nhập tên hoặc ID để tìm kiếm!");
+                    return;
+                }
+
+                // Lấy tất cả các dòng <tr> nằm trong <tbody> của bảng gốc
+                let mainTableRows = document.querySelectorAll('#mainTableBody tr');
+                let matchCount = 0;
+
+                mainTableRows.forEach(row => {
+                    // Cột 0 là ID, Cột 1 là Tên. Lấy nội dung chữ và ép thành chữ thường
+                    let idText = row.cells[0].innerText.toLowerCase();
+                    let nameText = row.cells[1].innerText.toLowerCase();
+
+                    // Nếu ID hoặc Tên có chứa từ khóa
+                    if (idText.includes(keyword) || nameText.includes(keyword)) {
+                        // Sao chép nguyên si dòng đó (kéo theo cả các nút Sửa, Phân quyền có sẵn ID bên trong)
+                        let clonedRow = row.cloneNode(true);
+                        resultBody.appendChild(clonedRow);
+                        matchCount++;
+                    }
+                });
+
+                // Nếu không có ai khớp
+                if (matchCount === 0) {
+                    resultBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy nhân viên nào khớp với "' + keyword + '"</td></tr>';
+                }
+
+                // Hiển thị modal tìm kiếm
+                document.getElementById('searchModal').style.display = 'flex';
+            }
+
+
+            // Các hàm cũ giữ nguyên
             function openEmployeeForm(mode, id, ten, ngaysinh, gioitinh, sdt, email, diachi, luong) {
+                // Đóng luôn cái modal tìm kiếm nếu đang mở (để tránh chồng chéo 2 cái modal)
+                closeModal('searchModal');
+                
                 const modal = document.getElementById('employeeModal');
                 const title = document.getElementById('employeeModalTitle');
                 const actionInput = document.getElementById('formAction');
                 const form = modal.querySelector('form');
 
-                form.reset(); // Dọn dẹp form trước
+                form.reset(); 
 
                 if (mode === 'add') {
                     title.innerText = 'Thêm nhân viên mới';
@@ -664,8 +698,6 @@
                 } else if (mode === 'edit') {
                     title.innerText = 'Sửa thông tin';
                     actionInput.value = 'edit';
-
-                    // Điền dữ liệu vào các ô input (Bắt buộc phải có thẻ <input type="hidden" name="maNhanVien" id="editEmpId"> trong form)
                     document.getElementById('editEmpId').value = id;
                     form.elements['hoTen'].value = ten;
                     form.elements['ngaySinh'].value = ngaysinh;
@@ -678,24 +710,20 @@
                 modal.style.display = 'flex';
             }
 
-            // Hàm mở Form Role xịn xò
             function openRoleForm(maNhanVien, maNguoiDung, maNhomHienTai) {
+                closeModal('searchModal'); // Đóng bảng tìm kiếm nếu bấm từ bên trong nó
                 document.getElementById('roleEmployeeId').value = maNhanVien;
                 document.getElementById('roleUserId').value = maNguoiDung || '0';
-
-                // Tự động tick vào cái Radio button trùng với Nhóm hiện tại của nhân viên
                 let radios = document.getElementsByName('selectedGroup');
                 for (let i = 0; i < radios.length; i++) {
                     if (radios[i].value == maNhomHienTai) {
                         radios[i].checked = true;
                     }
                 }
-                toggleNewGroupInput(); // Cập nhật lại UI text box
-
+                toggleNewGroupInput();
                 document.getElementById('roleModal').style.display = 'flex';
             }
 
-            // Hiện khung nhập Tên chức vụ nếu HR chọn "Tạo mới"
             function toggleNewGroupInput() {
                 let isNew = document.getElementById('radioNewGroup').checked;
                 document.getElementById('divNewGroupName').style.display = isNew ? 'block' : 'none';
@@ -706,18 +734,21 @@
             }
 
             function openLockForm(maNguoiDung) {
+                closeModal('searchModal'); // Đóng bảng tìm kiếm nếu bấm từ bên trong nó
                 document.getElementById('lockUserId').value = maNguoiDung;
                 document.getElementById('lockModal').style.display = 'flex';
             }
 
-
             window.onclick = function (event) {
                 let empModal = document.getElementById('employeeModal');
                 let roleModal = document.getElementById('roleModal');
-                if (event.target === empModal)
-                    empModal.style.display = "none";
-                if (event.target === roleModal)
-                    roleModal.style.display = "none";
+                let lockModal = document.getElementById('lockModal');
+                let searchModal = document.getElementById('searchModal');
+                
+                if (event.target === empModal) empModal.style.display = "none";
+                if (event.target === roleModal) roleModal.style.display = "none";
+                if (event.target === lockModal) lockModal.style.display = "none";
+                if (event.target === searchModal) searchModal.style.display = "none";
             }
         </script>
     </body>
