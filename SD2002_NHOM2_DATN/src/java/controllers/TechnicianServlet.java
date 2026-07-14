@@ -44,7 +44,22 @@ public class TechnicianServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-    } else {
+    }
+    else if ("update".equals(action)) {
+    String idRaw = request.getParameter("id");
+    String tenQuyTrinh = request.getParameter("processName");
+    String moTa = request.getParameter("description");
+    String trangThai = request.getParameter("status"); // Lấy trạng thái mới từ form
+    
+        if (idRaw != null) {
+            try {
+                int id = Integer.parseInt(idRaw);
+                farmingPracticeService.updateFarmingPractice(id, tenQuyTrinh, moTa, trangThai);
+            } catch (Exception e) {
+            }
+        }
+    }
+    else {
         // --- XỬ LÝ TẠO MỚI QUY TRÌNH (Code tạo mới cũ của bạn giữ nguyên ở đây) ---
         String tenQuyTrinh = request.getParameter("processName");
         String moTa = request.getParameter("description");

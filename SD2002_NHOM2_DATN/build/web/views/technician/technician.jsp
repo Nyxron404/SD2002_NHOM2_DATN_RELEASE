@@ -107,6 +107,10 @@
         <c:forEach var="item" items="${farmingPracticeList}">
         #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} { opacity: 1; pointer-events: auto; }
         #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} .modal-container { transform: translateY(0); }
+        
+        /* Ẩn hiện Form Sửa thuần CSS */
+        #editToggle-${item.maQuyTrinh}:checked ~ .view-mode-${item.maQuyTrinh} { display: none !important; }
+        #editToggle-${item.maQuyTrinh}:checked ~ .edit-mode-${item.maQuyTrinh} { display: block !important; }
         </c:forEach>
 
         .modal-close {
@@ -119,7 +123,7 @@
         
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1a2419; font-size: 14px; }
-        .form-group input[type="text"], .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
+        .form-group input[type="text"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
         
         .btn-submit { width: 100%; background: #579c3f; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
         .btn-submit:hover { background: #467e32; }
@@ -129,6 +133,14 @@
         .detail-item { margin-bottom: 15px; font-size: 14px; line-height: 1.6; }
         .detail-item strong { display: inline-block; width: 150px; color: #2e541f; }
         .detail-description { background: #f9fbf9; padding: 15px; border-radius: 8px; border: 1px solid #e2ece2; margin-top: 10px; white-space: pre-line; }
+
+        /* Style cho nút sửa/hủy/lưu */
+        .btn-edit-trigger { background-color: #ffc107; color: black; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; display: inline-block; }
+        .btn-edit-trigger:hover { background-color: #e0a800; }
+        .btn-cancel { background-color: #6c757d; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; font-size: 14px; text-decoration: none; font-weight: bold; display: inline-block; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        .btn-save { background-color: #28a745; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; font-size: 14px; font-weight: bold; display: inline-block; }
+        .btn-save:hover { background-color: #218838; }
     </style>
 </head>
 <body>
@@ -196,9 +208,9 @@
                                 <td>
                                     <label for="detailToggle-${item.maQuyTrinh}" class="action-link" style="color: #3498db;">Chi tiết</label>
                                     <form action="${pageContext.request.contextPath}/technician" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa quy trình này không?');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="${item.maQuyTrinh}">
-                                    <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0; font-family:inherit; font-size:inherit;"> Xóa </button>
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="${item.maQuyTrinh}">
+                                        <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0; font-family:inherit; font-size:inherit;"> Xóa </button>
                                     </form>
                                 </td>
                             </tr>
@@ -247,7 +259,11 @@
                 <label for="detailToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
                 <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
                 
-                <div style="margin-top: 20px;">
+                <!-- Checkbox ẩn để kích hoạt Chế độ Sửa của từng quy trình riêng biệt mà không dùng Javascript -->
+                <input type="checkbox" id="editToggle-${item.maQuyTrinh}" class="modal-toggle">
+
+                <!-- 1. CHẾ ĐỘ XEM CHI TIẾT (MẶC ĐỊNH) -->
+                <div class="view-mode-${item.maQuyTrinh}" style="margin-top: 20px;">
                     <div class="detail-item">
                         <strong>ID Quy Trình:</strong> <span>${item.maQuyTrinh}</span>
                     </div>
@@ -261,7 +277,7 @@
                         <strong>Người Tạo (Mã):</strong> <span>${item.nguoiTao}</span>
                     </div>
                     <div class="detail-item">
-                        <strong>Trạng Thái:</strong> 
+                        <strong>Trạng Thế:</strong> 
                         <span class="status-badge ${item.trangThai ? 'active-status' : ''}">
                             ${item.trangThai ? 'Hoạt động' : 'Bản nháp'}
                         </span>
@@ -271,10 +287,59 @@
                         <label style="font-weight: 700; color: #1a2419;">Mô tả quy trình:</label>
                         <div class="detail-description">${item.moTa != null ? item.moTa : 'Không có mô tả chi tiết.'}</div>
                     </div>
+
+                    <!-- Nút Sửa đặt ở góc dưới phần mô tả quy trình -->
+                    <div style="text-align: right; margin-top: 20px;">
+                        <label for="editToggle-${item.maQuyTrinh}" class="btn-edit-trigger">Sửa</label>
+                    </div>
                 </div>
+
+                <!-- 2. CHẾ ĐỘ SỬA THÔNG TIN (ẨN ĐI, CHỈ HIỆN KHI ẤN NÚT "SỬA") -->
+                <div class="edit-mode-${item.maQuyTrinh}" style="margin-top: 20px; display: none;">
+                    <form action="${pageContext.request.contextPath}/technician" method="POST">
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="id" value="${item.maQuyTrinh}">
+
+                        <div class="detail-item">
+                            <strong>ID Quy Trình:</strong> <span>${item.maQuyTrinh}</span>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="editName-${item.maQuyTrinh}">Tên Quy Trình:</label>
+                            <input type="text" id="editName-${item.maQuyTrinh}" name="processName" value="${item.tenQuyTrinh}" required>
+                        </div>
+
+                        <div class="detail-item">
+                            <strong>Ngày Tạo:</strong> <span>${item.ngayTao}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Người Tạo (Mã):</strong> <span>${item.nguoiTao}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editStatus-${item.maQuyTrinh}">Trạng Thái:</label>
+                            <select id="editStatus-${item.maQuyTrinh}" name="status">
+                                <option value="false" ${!item.trangThai ? 'selected' : ''}>Bản nháp</option>
+                                <option value="true" ${item.trangThai ? 'selected' : ''}>Hoạt động</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editDesc-${item.maQuyTrinh}">Mô tả quy trình:</label>
+                            <textarea id="editDesc-${item.maQuyTrinh}" name="description" rows="5" required>${item.moTa}</textarea>
+                        </div>
+
+                        <!-- 2 Nút Hủy và Lưu góc dưới -->
+                        <div style="text-align: right; margin-top: 20px; gap: 10px; display: flex; justify-content: flex-end;">
+                            <label for="editToggle-${item.maQuyTrinh}" class="btn-cancel">Hủy</label>
+                            <button type="submit" class="btn-save">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </c:forEach>
-
+    
 </body>
 </html>

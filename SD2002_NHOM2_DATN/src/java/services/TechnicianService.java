@@ -28,4 +28,8 @@ public class TechnicianService {
     public boolean deleteFarmingPractice(int id) {
     return farmingPracticeDAO.deleteFarmingPractice(id);
     }
+    
+    public boolean updateFarmingPractice(int id, String tenQuyTrinh, String moTa, String trangThai) {
+    return farmingPracticeDAO.updateFarmingPractice(id, tenQuyTrinh, moTa, trangThai);
+    }
 }

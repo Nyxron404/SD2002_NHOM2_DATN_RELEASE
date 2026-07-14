@@ -84,4 +84,19 @@ public class FarmingPracticeDAO {
     }
     return false;
     }
+    
+    public boolean updateFarmingPractice(int id, String tenQuyTrinh, String moTa, String trangThai) {
+    String sql = "UPDATE FarmingPractice SET TenQuyTrinh = ?, MoTa = ?, TrangThai = ? WHERE MaQuyTrinh = ?";
+    try (Connection conn = DBConnect.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, tenQuyTrinh);
+        ps.setString(2, moTa);
+        ps.setString(3, trangThai);
+        ps.setInt(4, id);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+    }
 }
