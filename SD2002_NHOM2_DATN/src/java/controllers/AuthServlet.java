@@ -63,7 +63,7 @@ public class AuthServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
-
+        doPost(request, response);
     }
 
     /**
@@ -141,7 +141,9 @@ public class AuthServlet extends HttpServlet {
                 request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
             }
         }else if(action.equals("logout")){
-            
+            HttpSession session = request.getSession(false);
+            session.invalidate();
+            response.sendRedirect(request.getContextPath() + "/views/auth/login.jsp");
         }
     }
 
