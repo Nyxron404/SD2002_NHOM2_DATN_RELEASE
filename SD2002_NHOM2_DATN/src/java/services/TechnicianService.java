@@ -4,10 +4,28 @@
  */
 package services;
 
-/**
- *
- * @author longd
- */
+
+import dao.FarmingPracticeDAO;
+import java.util.List;
+import models.FarmingPractice;
+
 public class TechnicianService {
+
+    private final FarmingPracticeDAO farmingPracticeDAO = new FarmingPracticeDAO();
+
+    public List<FarmingPractice> getAllFarmingPractices() {
+        return farmingPracticeDAO.getAllFarmingPractices();
+    }
+
+    public boolean createFarmingPractice(FarmingPractice fp) {
+        // Bạn có thể thêm logic kiểm tra dữ liệu ở đây nếu cần trước khi gọi DAO
+        if (fp.getTenQuyTrinh() == null || fp.getTenQuyTrinh().trim().isEmpty()) {
+            return false;
+        }
+        return farmingPracticeDAO.insertFarmingPractice(fp);
+    }
     
+    public boolean deleteFarmingPractice(int id) {
+    return farmingPracticeDAO.deleteFarmingPractice(id);
+    }
 }

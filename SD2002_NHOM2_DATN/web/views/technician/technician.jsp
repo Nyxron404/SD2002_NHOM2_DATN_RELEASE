@@ -78,33 +78,45 @@
         .status-badge {
             background-color: #f39c12; color: white; padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;
         }
+        .status-badge.active-status {
+            background-color: #2ecc71;
+        }
         .action-link { color: #3498db; text-decoration: none; margin-right: 10px; cursor: pointer; }
         .action-link:hover { text-decoration: underline; }
 
-        /* ================= MODAL POPUP ================= */
+        /* ================= MODAL PURE CSS LOGIC ================= */
+        .modal-toggle { display: none; }
+
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
             display: flex; justify-content: center; align-items: center; z-index: 999;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-container {
             background: #ffffff; width: 100%; max-width: 600px; border-radius: 16px;
             padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             position: relative; transform: translateY(-30px); transition: transform 0.3s ease;
         }
-        .modal-overlay.active .modal-container { transform: translateY(0); }
+
+        /* Trigger hiển thị Modal Tạo Mới qua CSS */
+        #createModalToggle:checked ~ .modal-overlay#modalOverlay { opacity: 1; pointer-events: auto; }
+        #createModalToggle:checked ~ .modal-overlay#modalOverlay .modal-container { transform: translateY(0); }
+
+        /* Trigger hiển thị các Modal Chi Tiết riêng biệt qua CSS */
+        <c:forEach var="item" items="${farmingPracticeList}">
+        #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} { opacity: 1; pointer-events: auto; }
+        #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} .modal-container { transform: translateY(0); }
+        </c:forEach>
 
         .modal-close {
             position: absolute; top: 20px; right: 20px; background: none; border: none;
-            font-size: 24px; color: #aaa; cursor: pointer;
+            font-size: 24px; color: #aaa; cursor: pointer; display: inline-block; line-height: 1;
         }
         .modal-close:hover { color: #333; }
 
         .modal-title { font-size: 22px; font-weight: 800; color: #1a2419; margin-top: 0; margin-bottom: 20px; }
         
-        .uc-info { font-size: 13px; color: #4a5c43; margin-bottom: 20px; background: rgba(87, 156, 63, 0.1); padding: 10px 12px; border-radius: 6px; border-left: 4px solid #579c3f; font-weight: 600; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1a2419; font-size: 14px; }
         .form-group input[type="text"], .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
@@ -120,6 +132,13 @@
     </style>
 </head>
 <body>
+
+    <!-- Các thẻ Checkbox ẩn để xử lý đóng mở Modal bằng CSS -->
+    <input type="checkbox" id="createModalToggle" class="modal-toggle">
+    
+    <c:forEach var="item" items="${farmingPracticeList}">
+        <input type="checkbox" id="detailToggle-${item.maQuyTrinh}" class="modal-toggle">
+    </c:forEach>
 
     <jsp:include page="/views/common/sidebar.jsp">
         <jsp:param name="activePage" value="technician" />
@@ -141,17 +160,18 @@
         <main class="content-area">
             <div class="section-header">
                 <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
-                <button class="btn-add" id="openModalBtn">+ Tạo bộ quy chuẩn canh tác, sản xuất</button>
+                <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn canh tác, sản xuất</label>
             </div>
 
             <div class="table-container">
-                <div class="data-info">Số lượng quy trình lấy được: ${farmingPracticeList != null ? farmingPracticeList.size() : 1}</div>
+                <div class="data-info">Số lượng quy trình lấy được: ${farmingPracticeList != null ? farmingPracticeList.size() : 0}</div>
                 <table class="custom-table">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Tên Quy Trình</th>
-                            <th>Giống Áp Dụng</th>
+                            <th>Ngày Tạo</th>
+                            <th>Người Tạo</th>
                             <th>Trạng Thái</th>
                             <th>Hành Động</th>
                         </tr>
@@ -159,36 +179,33 @@
                     <tbody>
                         <c:forEach var="item" items="${farmingPracticeList}">
                             <tr>
-                                <td>${item.id}</td>
-                                <td>${item.processName}</td>
-                                <td>${item.breedName}</td>
-                                <td><span class="status-badge">${item.status}</span></td>
+                                <td>${item.maQuyTrinh}</td>
+                                <td>${item.tenQuyTrinh}</td>
+                                <td>${item.ngayTao}</td>
+                                <td>${item.nguoiTao}</td>
                                 <td>
-                                    <span class="action-link detail-trigger" 
-                                          data-id="${item.id}" 
-                                          data-name="${item.processName}" 
-                                          data-breed="${item.breedName}" 
-                                          data-status="${item.status}" 
-                                          data-desc="${item.description != null ? item.description : 'Không có mô tả chi tiết.'}">Chi tiết</span>
-                                    <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
+                                    <c:choose>
+                                        <c:when test="${item.trangThai}">
+                                            <span class="status-badge active-status">Hoạt động</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="status-badge">Bản nháp</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <label for="detailToggle-${item.maQuyTrinh}" class="action-link" style="color: #3498db;">Chi tiết</label>
+                                    <form action="${pageContext.request.contextPath}/technician" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa quy trình này không?');">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="${item.maQuyTrinh}">
+                                    <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0; font-family:inherit; font-size:inherit;"> Xóa </button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty farmingPracticeList}">
                             <tr>
-                                <td>1</td>
-                                <td>Quy trình chuẩn tối ưu năng suất cao</td>
-                                <td>Lúa ST25</td>
-                                <td><span class="status-badge">Bản nháp</span></td>
-                                <td>
-                                    <span class="action-link detail-trigger" 
-                                          data-id="1" 
-                                          data-name="Quy trình chuẩn tối ưu năng suất cao" 
-                                          data-breed="Lúa ST25" 
-                                          data-status="Bản nháp" 
-                                          data-desc="Đây là bộ quy trình tối ưu năng suất cao dành riêng cho giống Lúa ST25 được phát triển năm 2026. Quy trình này kiểm soát chặt chẽ lượng nước tưới, chu kỳ bón phân và dãn cách ngày thu hoạch cụ thể để đạt sản lượng hạt đồng đều nhất.">Chi tiết</span>
-                                    <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
-                                </td>
+                                <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 30px;">Chưa có quy trình nào được thiết lập. Hãy bấm nút tạo mới bên trên.</td>
                             </tr>
                         </c:if>
                     </tbody>
@@ -200,122 +217,64 @@
     <!-- ================= MODAL TẠO MỚI QUY TRÌNH ================= -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-container">
-            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <label for="createModalToggle" class="modal-close">&times;</label>
             <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>
             
-            <form action="${pageContext.request.contextPath}/FarmingPracticeServlet" method="POST">
+            <form action="${pageContext.request.contextPath}/technician" method="POST">
                 <div class="form-group">
                     <label for="processName">Tên Quy Trình Quy Chuẩn:</label>
                     <input type="text" id="processName" name="processName" placeholder="Nhập tên bộ quy chuẩn..." required>
                 </div>
 
                 <div class="form-group">
-                    <label for="breedSearch">Áp Dụng Cho Giống Cây Trồng / Vật Nuôi:</label>
-                    <input type="text" id="breedSearch" name="breedName" placeholder="Nhập tên hoặc chọn giống từ gợi ý..." list="breedList" required>
-                    
-                    <datalist id="breedList">
-                        <option value="Lúa ST25">
-                        <option value="Dưa lưới Huỳnh Long">
-                        <option value="Cây Cam Sành Vĩnh Long">
-                        <option value="Cây Cà Phê Robusta">
-                        <option value="Bưởi Da Xanh">
-                    </datalist>
-                </div>
-
-                <div class="form-group">
                     <label for="description">Mô tả quy trình:</label>
-                    <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả tóm tắt cho quy trình canh tác này (ví dụ: mục tiêu, yêu cầu thổ nhưỡng, mùa vụ thích hợp...)" required></textarea>
+                    <textarea id="description" name="description" rows="5" placeholder="Nhập mô tả tóm tắt cho quy trình canh tác này (ví dụ: mục tiêu, yêu cầu thổ nhưỡng, mùa vụ thích hợp...)" required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Lưu Khởi Tạo (Bản nháp)</button>
 
                 <div class="note-panel">
-                    * Lưu ý: Việc chuẩn hóa danh mục giống cây trồng cần được thực hiện trước để đảm bảo dữ liệu đầu vào không bị rác.
+                    * Lưu ý: Quy trình sau khi tạo sẽ nằm ở trạng thái "Bản nháp". Bạn cần phê duyệt để chính thức áp dụng.
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ================= MODAL HIỂN THỊ CHI TIẾT QUY TRÌNH ================= -->
-    <div class="modal-overlay" id="detailModalOverlay">
-        <div class="modal-container">
-            <button class="modal-close" id="closeDetailModalBtn">&times;</button>
-            <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
-            
-            <div style="margin-top: 20px;">
-                <div class="detail-item">
-                    <strong>ID Quy Trình:</strong> <span id="detailId"></span>
-                </div>
-                <div class="detail-item">
-                    <strong>Tên Quy Trình:</strong> <span id="detailName"></span>
-                </div>
-                <div class="detail-item">
-                    <strong>Giống Áp Dụng:</strong> <span id="detailBreed"></span>
-                </div>
-                <div class="detail-item">
-                    <strong>Trạng Thái:</strong> <span id="detailStatus" class="status-badge"></span>
-                </div>
+    <!-- ================= CÁC MODAL CHI TIẾT QUY TRÌNH (Vòng lặp tạo động qua CSS) ================= -->
+    <c:forEach var="item" items="${farmingPracticeList}">
+        <div class="modal-overlay" id="detailModal-${item.maQuyTrinh}">
+            <div class="modal-container">
+                <label for="detailToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
+                <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
                 
-                <div class="detail-item" style="margin-top: 20px;">
-                    <label style="font-weight: 700; color: #1a2419;">Mô tả quy trình:</label>
-                    <div class="detail-description" id="detailDesc"></div>
+                <div style="margin-top: 20px;">
+                    <div class="detail-item">
+                        <strong>ID Quy Trình:</strong> <span>${item.maQuyTrinh}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Tên Quy Trình:</strong> <span>${item.tenQuyTrinh}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Ngày Tạo:</strong> <span>${item.ngayTao}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Người Tạo (Mã):</strong> <span>${item.nguoiTao}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Trạng Thái:</strong> 
+                        <span class="status-badge ${item.trangThai ? 'active-status' : ''}">
+                            ${item.trangThai ? 'Hoạt động' : 'Bản nháp'}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-item" style="margin-top: 20px;">
+                        <label style="font-weight: 700; color: #1a2419;">Mô tả quy trình:</label>
+                        <div class="detail-description">${item.moTa != null ? item.moTa : 'Không có mô tả chi tiết.'}</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </c:forEach>
 
-    <script>
-        // Modal Tạo Mới
-        const openModalBtn = document.getElementById('openModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const modalOverlay = document.getElementById('modalOverlay');
-
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
-        });
-
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-            }
-        });
-
-        // Modal Chi Tiết Quy Trình
-        const detailModalOverlay = document.getElementById('detailModalOverlay');
-        const closeDetailModalBtn = document.getElementById('closeDetailModalBtn');
-        const detailTriggers = document.querySelectorAll('.detail-trigger');
-
-        detailTriggers.forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const id = trigger.getAttribute('data-id');
-                const name = trigger.getAttribute('data-name');
-                const breed = trigger.getAttribute('data-breed');
-                const status = trigger.getAttribute('data-status');
-                const desc = trigger.getAttribute('data-desc');
-
-                document.getElementById('detailId').innerText = id;
-                document.getElementById('detailName').innerText = name;
-                document.getElementById('detailBreed').innerText = breed;
-                document.getElementById('detailStatus').innerText = status;
-                document.getElementById('detailDesc').innerText = desc;
-
-                detailModalOverlay.classList.add('active');
-            });
-        });
-
-        closeDetailModalBtn.addEventListener('click', () => {
-            detailModalOverlay.classList.remove('active');
-        });
-
-        detailModalOverlay.addEventListener('click', (e) => {
-            if (e.target === detailModalOverlay) {
-                detailModalOverlay.classList.remove('active');
-            }
-        });
-    </script>
 </body>
 </html>
