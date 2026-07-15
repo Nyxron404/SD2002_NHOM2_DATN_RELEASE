@@ -78,43 +78,79 @@
         .status-badge {
             background-color: #f39c12; color: white; padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; display: inline-block;
         }
-        .action-link { color: #3498db; text-decoration: none; margin-right: 10px; }
+        .status-badge.active-status {
+            background-color: #2ecc71;
+        }
+        .action-link { color: #3498db; text-decoration: none; margin-right: 10px; cursor: pointer; }
         .action-link:hover { text-decoration: underline; }
 
-        /* ================= MODAL POPUP ================= */
+        /* ================= MODAL PURE CSS LOGIC ================= */
+        .modal-toggle { display: none; }
+
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
             display: flex; justify-content: center; align-items: center; z-index: 999;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-container {
             background: #ffffff; width: 100%; max-width: 600px; border-radius: 16px;
             padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             position: relative; transform: translateY(-30px); transition: transform 0.3s ease;
         }
-        .modal-overlay.active .modal-container { transform: translateY(0); }
+
+        /* Trigger hiển thị Modal Tạo Mới qua CSS */
+        #createModalToggle:checked ~ .modal-overlay#modalOverlay { opacity: 1; pointer-events: auto; }
+        #createModalToggle:checked ~ .modal-overlay#modalOverlay .modal-container { transform: translateY(0); }
+
+        /* Trigger hiển thị các Modal Chi Tiết riêng biệt qua CSS */
+        <c:forEach var="item" items="${farmingPracticeList}">
+        #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} { opacity: 1; pointer-events: auto; }
+        #detailToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#detailModal-${item.maQuyTrinh} .modal-container { transform: translateY(0); }
+        
+        /* Ẩn hiện Form Sửa thuần CSS */
+        #editToggle-${item.maQuyTrinh}:checked ~ .view-mode-${item.maQuyTrinh} { display: none !important; }
+        #editToggle-${item.maQuyTrinh}:checked ~ .edit-mode-${item.maQuyTrinh} { display: block !important; }
+        </c:forEach>
 
         .modal-close {
             position: absolute; top: 20px; right: 20px; background: none; border: none;
-            font-size: 24px; color: #aaa; cursor: pointer;
+            font-size: 24px; color: #aaa; cursor: pointer; display: inline-block; line-height: 1;
         }
         .modal-close:hover { color: #333; }
 
         .modal-title { font-size: 22px; font-weight: 800; color: #1a2419; margin-top: 0; margin-bottom: 20px; }
         
-        .uc-info { font-size: 13px; color: #4a5c43; margin-bottom: 20px; background: rgba(87, 156, 63, 0.1); padding: 10px 12px; border-radius: 6px; border-left: 4px solid #579c3f; font-weight: 600; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: #1a2419; font-size: 14px; }
-        .form-group input[type="text"], .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        .form-group input[type="text"], .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
         
         .btn-submit { width: 100%; background: #579c3f; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
         .btn-submit:hover { background: #467e32; }
         .note-panel { margin-top: 20px; font-size: 12px; color: #c0392b; font-style: italic; background: #fdf2e9; padding: 10px; border-radius: 6px; border-left: 4px solid #e67e22; }
+
+        /* Chi tiết quy trình */
+        .detail-item { margin-bottom: 15px; font-size: 14px; line-height: 1.6; }
+        .detail-item strong { display: inline-block; width: 150px; color: #2e541f; }
+        .detail-description { background: #f9fbf9; padding: 15px; border-radius: 8px; border: 1px solid #e2ece2; margin-top: 10px; white-space: pre-line; }
+
+        /* Style cho nút sửa/hủy/lưu */
+        .btn-edit-trigger { background-color: #ffc107; color: black; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; display: inline-block; }
+        .btn-edit-trigger:hover { background-color: #e0a800; }
+        .btn-cancel { background-color: #6c757d; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; font-size: 14px; text-decoration: none; font-weight: bold; display: inline-block; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        .btn-save { background-color: #28a745; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; font-size: 14px; font-weight: bold; display: inline-block; }
+        .btn-save:hover { background-color: #218838; }
     </style>
 </head>
 <body>
+
+    <!-- Các thẻ Checkbox ẩn để xử lý đóng mở Modal bằng CSS -->
+    <input type="checkbox" id="createModalToggle" class="modal-toggle">
+    
+    <c:forEach var="item" items="${farmingPracticeList}">
+        <input type="checkbox" id="detailToggle-${item.maQuyTrinh}" class="modal-toggle">
+    </c:forEach>
 
     <jsp:include page="/views/common/sidebar.jsp">
         <jsp:param name="activePage" value="technician" />
@@ -136,7 +172,7 @@
         <main class="content-area">
             <div class="section-header">
                 <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
-                <button class="btn-add" id="openModalBtn">+ Tạo bộ quy chuẩn cây trồng</button>
+                <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn canh tác, sản xuất</label>
             </div>
 
             <div class="table-container">
@@ -146,7 +182,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Tên Quy Trình</th>
-                            <th>Giống Áp Dụng</th>
+                            <th>Ngày Tạo</th>
+                            <th>Người Tạo</th>
                             <th>Trạng Thái</th>
                             <th>Hành Động</th>
                         </tr>
@@ -154,26 +191,33 @@
                     <tbody>
                         <c:forEach var="item" items="${farmingPracticeList}">
                             <tr>
-                                <td>${item.id}</td>
-                                <td>${item.processName}</td>
-                                <td>${item.breedName}</td>
-                                <td><span class="status-badge">${item.status}</span></td>
+                                <td>${item.maQuyTrinh}</td>
+                                <td>${item.tenQuyTrinh}</td>
+                                <td>${item.ngayTao}</td>
+                                <td>${item.nguoiTao}</td>
                                 <td>
-                                    <a href="#" class="action-link">Chi tiết</a>
-                                    <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
+                                    <c:choose>
+                                        <c:when test="${item.trangThai}">
+                                            <span class="status-badge active-status">Hoạt động</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="status-badge">Bản nháp</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <label for="detailToggle-${item.maQuyTrinh}" class="action-link" style="color: #3498db;">Chi tiết</label>
+                                    <form action="${pageContext.request.contextPath}/technician" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa quy trình này không?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="${item.maQuyTrinh}">
+                                        <button type="submit" style="background:none; border:none; color:red; cursor:pointer; padding:0; font-family:inherit; font-size:inherit;"> Xóa </button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty farmingPracticeList}">
                             <tr>
-                                <td>1</td>
-                                <td>Quy trình chuẩn tối ưu năng suất cao</td>
-                                <td>Lúa ST25</td>
-                                <td><span class="status-badge">Bản nháp</span></td>
-                                <td>
-                                    <a href="#" class="action-link">Chi tiết</a>
-                                    <a href="#" class="action-link" style="color: #e74c3c;">Xóa</a>
-                                </td>
+                                <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 30px;">Chưa có quy trình nào được thiết lập. Hãy bấm nút tạo mới bên trên.</td>
                             </tr>
                         </c:if>
                     </tbody>
@@ -182,54 +226,120 @@
         </main>
     </div>
 
+    <!-- ================= MODAL TẠO MỚI QUY TRÌNH ================= -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-container">
-            <button class="modal-close" id="closeModalBtn">&times;</button>
-            <h3 class="modal-title">Tạo bộ quy chuẩn cây trồng</h3>
+            <label for="createModalToggle" class="modal-close">&times;</label>
+            <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>
             
-            <form action="${pageContext.request.contextPath}/FarmingPracticeServlet" method="POST">
+            <form action="${pageContext.request.contextPath}/technician" method="POST">
                 <div class="form-group">
                     <label for="processName">Tên Quy Trình Quy Chuẩn:</label>
                     <input type="text" id="processName" name="processName" placeholder="Nhập tên bộ quy chuẩn..." required>
                 </div>
 
                 <div class="form-group">
-                    <label for="breedId">Áp Dụng Cho Giống Cây Trồng / Vật Nuôi:</label>
-                    <select id="breedId" name="breedId" required>
-                        <option value="">-- Chọn giống từ danh sách --</option>
-                        <option value="1">Lúa ST25</option>
-                        <option value="2">Dưa lưới Huỳnh Long</option>
-                    </select>
+                    <label for="description">Mô tả quy trình:</label>
+                    <textarea id="description" name="description" rows="5" placeholder="Nhập mô tả tóm tắt cho quy trình canh tác này (ví dụ: mục tiêu, yêu cầu thổ nhưỡng, mùa vụ thích hợp...)" required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Lưu Khởi Tạo (Bản nháp)</button>
 
                 <div class="note-panel">
-                    * Lưu ý: Việc chuẩn hóa danh mục giống cây trồng cần được thực hiện trước để đảm bảo dữ liệu đầu vào không bị rác.
+                    * Lưu ý: Quy trình sau khi tạo sẽ nằm ở trạng thái "Bản nháp". Bạn cần phê duyệt để chính thức áp dụng.
                 </div>
             </form>
         </div>
     </div>
 
-    <script>
-        const openModalBtn = document.getElementById('openModalBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const modalOverlay = document.getElementById('modalOverlay');
+    <!-- ================= CÁC MODAL CHI TIẾT QUY TRÌNH (Vòng lặp tạo động qua CSS) ================= -->
+    <c:forEach var="item" items="${farmingPracticeList}">
+        <div class="modal-overlay" id="detailModal-${item.maQuyTrinh}">
+            <div class="modal-container">
+                <label for="detailToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
+                <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
+                
+                <!-- Checkbox ẩn để kích hoạt Chế độ Sửa của từng quy trình riêng biệt mà không dùng Javascript -->
+                <input type="checkbox" id="editToggle-${item.maQuyTrinh}" class="modal-toggle">
 
-        openModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-        });
+                <!-- 1. CHẾ ĐỘ XEM CHI TIẾT (MẶC ĐỊNH) -->
+                <div class="view-mode-${item.maQuyTrinh}" style="margin-top: 20px;">
+                    <div class="detail-item">
+                        <strong>ID Quy Trình:</strong> <span>${item.maQuyTrinh}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Tên Quy Trình:</strong> <span>${item.tenQuyTrinh}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Ngày Tạo:</strong> <span>${item.ngayTao}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Người Tạo (Mã):</strong> <span>${item.nguoiTao}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Trạng Thế:</strong> 
+                        <span class="status-badge ${item.trangThai ? 'active-status' : ''}">
+                            ${item.trangThai ? 'Hoạt động' : 'Bản nháp'}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-item" style="margin-top: 20px;">
+                        <label style="font-weight: 700; color: #1a2419;">Mô tả quy trình:</label>
+                        <div class="detail-description">${item.moTa != null ? item.moTa : 'Không có mô tả chi tiết.'}</div>
+                    </div>
 
-        closeModalBtn.addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
-        });
+                    <!-- Nút Sửa đặt ở góc dưới phần mô tả quy trình -->
+                    <div style="text-align: right; margin-top: 20px;">
+                        <label for="editToggle-${item.maQuyTrinh}" class="btn-edit-trigger">Sửa</label>
+                    </div>
+                </div>
 
-        // Đóng khi click ra vùng ngoài modal
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-            }
-        });
-    </script>
+                <!-- 2. CHẾ ĐỘ SỬA THÔNG TIN (ẨN ĐI, CHỈ HIỆN KHI ẤN NÚT "SỬA") -->
+                <div class="edit-mode-${item.maQuyTrinh}" style="margin-top: 20px; display: none;">
+                    <form action="${pageContext.request.contextPath}/technician" method="POST">
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="id" value="${item.maQuyTrinh}">
+
+                        <div class="detail-item">
+                            <strong>ID Quy Trình:</strong> <span>${item.maQuyTrinh}</span>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="editName-${item.maQuyTrinh}">Tên Quy Trình:</label>
+                            <input type="text" id="editName-${item.maQuyTrinh}" name="processName" value="${item.tenQuyTrinh}" required>
+                        </div>
+
+                        <div class="detail-item">
+                            <strong>Ngày Tạo:</strong> <span>${item.ngayTao}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Người Tạo (Mã):</strong> <span>${item.nguoiTao}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editStatus-${item.maQuyTrinh}">Trạng Thái:</label>
+                            <select id="editStatus-${item.maQuyTrinh}" name="status">
+                                <option value="false" ${!item.trangThai ? 'selected' : ''}>Bản nháp</option>
+                                <option value="true" ${item.trangThai ? 'selected' : ''}>Hoạt động</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editDesc-${item.maQuyTrinh}">Mô tả quy trình:</label>
+                            <textarea id="editDesc-${item.maQuyTrinh}" name="description" rows="5" required>${item.moTa}</textarea>
+                        </div>
+
+                        <!-- 2 Nút Hủy và Lưu góc dưới -->
+                        <div style="text-align: right; margin-top: 20px; gap: 10px; display: flex; justify-content: flex-end;">
+                            <label for="editToggle-${item.maQuyTrinh}" class="btn-cancel">Hủy</label>
+                            <button type="submit" class="btn-save">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </c:forEach>
+    
 </body>
 </html>
