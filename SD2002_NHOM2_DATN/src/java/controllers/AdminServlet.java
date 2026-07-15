@@ -44,16 +44,22 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if ("add".equals(action)) {
-            request.setAttribute("Form", "add");
-            request.setAttribute("Permission", adminSV.GetListPS());
-        }else if("detail".equals(action)){
-            request.setAttribute("Detail", "detail");
-            request.setAttribute(action, this);
+        try {
+            String action = request.getParameter("action");
+            if ("add".equals(action)) {
+                request.setAttribute("Form", "add");
+                request.setAttribute("Permission", adminSV.GetListPS());
+            } else if ("detail".equals(action)) {
+                request.setAttribute("Detail", "detail");
+                int maNhom = Integer.parseInt(request.getParameter("MaNhom"));
+                request.setAttribute("MaNhom", maNhom);
+                request.setAttribute("Permission", adminSV.GetListPS());
+                request.setAttribute("MaQuyen", adminSV.GetAllMaQuyen(maNhom));
+            }
+            request.setAttribute("LISTUG", adminSV.GetListUG());
+            request.getRequestDispatcher("./views/admin/admin.jsp").forward(request, response);
+        } catch (Exception e) {
         }
-        request.setAttribute("LISTUG", adminSV.GetListUG());
-        request.getRequestDispatcher("./views/admin/admin.jsp").forward(request, response);
     }
 
     @Override
@@ -70,11 +76,11 @@ public class AdminServlet extends HttpServlet {
                 }
                 String moTa = request.getParameter("MoTa");
                 int checkAdd = adminSV.AddUG(tenNhom, listMaQuyen, moTa);
-                if(checkAdd == 1){
+                if (checkAdd == 1) {
                     request.setAttribute("success", "Thêm nhóm người dùng thành công");
-                }else if(checkAdd == 2){
+                } else if (checkAdd == 2) {
                     request.setAttribute("errorName", "Tên nhóm đã bị trùng");
-                }else{
+                } else {
                     request.setAttribute("errorLog", "Hệ thống gặp sự cố, thêm thất bại");
                 }
             }
