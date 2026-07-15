@@ -423,27 +423,27 @@
                     <div class="page-toolbar">
                         <h2>Danh sách nhân viên</h2>
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <div class="search-box">
-                                <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID..." onkeydown="if (event.key === 'Enter')
-                                            openSearchModal()">
-                                <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
-                            </div>
-                            <button class="btn-add" onclick="openEmployeeForm('add')">Thêm nhân viên</button>
-                        </div>
+                            <form action="hr" method="GET" class="search-box" autocomplete="off">
+                                <input type="text" name="keyword" placeholder="Nhập tên hoặc ID..." 
+                                       value="${param.keyword}" autocomplete="off">
+                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
+                        </form>
+                        <button class="btn-add" onclick="openEmployeeForm('add')">Thêm nhân viên</button>
                     </div>
+                </div>
 
-                    <div class="table-card">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Họ và Tên</th>
-                                    <th>Nhóm</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="mainTableBody">
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và Tên</th>
+                                <th>Nhóm</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mainTableBody">
                             <c:forEach var="st" items="${LIST_STAFF}">
                                 <c:set var="userForStaff" value="${null}" />
                                 <c:forEach var="u" items="${LIST_USER}">
@@ -487,13 +487,13 @@
         <div class="modal-overlay" id="employeeModal">
             <div class="modal-content">
                 <div class="modal-header"><h3 id="employeeModalTitle">Thông tin</h3><button class="close-btn" onclick="closeModal('employeeModal')">&times;</button></div>
-                <form action="hr" method="POST">
+                <form action="hr" method="POST" autocomplete="off">
                     <input type="hidden" name="action" id="formAction" value="add"><input type="hidden" name="maNhanVien" id="editEmpId" value="">
-                    <div class="form-group"><label>Họ và tên</label><input type="text" name="hoTen" class="form-control" required></div>
-                    <div class="form-row"><div class="form-group"><label>Ngày sinh</label><input type="date" name="ngaySinh" class="form-control" required></div><div class="form-group"><label>Giới tính</label><select name="gioiTinh" class="form-control"><option value="1">Nam</option><option value="0">Nữ</option></select></div></div>
-                    <div class="form-row"><div class="form-group"><label>SĐT</label><input type="number" name="sdt" class="form-control" required></div><div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required></div></div>
-                    <div class="form-group"><label>Địa chỉ</label><input type="text" name="diaChi" class="form-control" required></div>
-                    <div class="form-group"><label>Lương</label><input type="number" name="luong" class="form-control" required></div>
+                    <div class="form-group"><label>Họ và tên</label><input type="text" name="hoTen" class="form-control" required autocomplete="off"></div>
+                    <div class="form-row"><div class="form-group"><label>Ngày sinh</label><input type="date" name="ngaySinh" class="form-control" required autocomplete="off"></div><div class="form-group"><label>Giới tính</label><select name="gioiTinh" class="form-control"><option value="1">Nam</option><option value="0">Nữ</option></select></div></div>
+                    <div class="form-row"><div class="form-group"><label>SĐT</label><input type="number" name="sdt" class="form-control" required autocomplete="off"></div><div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required autocomplete="off"></div></div>
+                    <div class="form-group"><label>Địa chỉ</label><input type="text" name="diaChi" class="form-control" required autocomplete="off"></div>
+                    <div class="form-group"><label>Lương</label><input type="number" name="luong" class="form-control" required autocomplete="off"></div>
                     <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeModal('employeeModal')">Hủy</button><button type="submit" class="btn-save">Lưu</button></div>
                 </form>
             </div>

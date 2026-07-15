@@ -32,15 +32,20 @@ public class HrManagerServlet extends HttpServlet {
     private UserDAO usDAO = new UserDAO();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    
+    String keyword = request.getParameter("keyword");
+    if (keyword != null && !keyword.trim().isEmpty()) {
+        request.setAttribute("LIST_STAFF", stDAO.SearchStaff(keyword));
+    } else {
         request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
-        request.setAttribute("LIST_USER", usDAO.SelectUser());
-        request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
     }
-
+    
+    request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
+    request.setAttribute("LIST_USER", usDAO.SelectUser());
+    request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
+}
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
