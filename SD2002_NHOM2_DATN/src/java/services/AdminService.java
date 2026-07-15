@@ -12,4 +12,5 @@ import models.User;
  * @author longd
  */
 public class AdminService {
+    
 }

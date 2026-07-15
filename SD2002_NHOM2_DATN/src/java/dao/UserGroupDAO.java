@@ -5,34 +5,35 @@ import java.util.ArrayList;
 import java.util.List;
 import models.UserGroup;
 import uril.DBConnect;
-
+import java.time.LocalDateTime;
 /**
  *
  * @author longd
  */
 public class UserGroupDAO {
-    
-    // 1. Lấy toàn bộ danh sách Nhóm người dùng để in ra web (thay vì code cứng Option 1, 2, 3)
+    private List<UserGroup> listUserGroup;
+    public UserGroupDAO(){
+        listUserGroup = new ArrayList<>();
+    }
     public List<UserGroup> SelectAllGroups() {
-        List<UserGroup> listGroup = new ArrayList<>();
-        String sql = "SELECT * FROM UserGroup";
+        listUserGroup.clear();
+        String select = "SELECT * FROM UserGroup";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(select);
             while (rs.next()) {
-                UserGroup ug = new UserGroup();
-                ug.setMaNhom(rs.getInt("MaNhom"));
-                ug.setTenNhom(rs.getString("TenNhom"));
-                ug.setMoTa(rs.getString("MoTa"));
-                ug.setTrangThai(rs.getBoolean("TrangThai"));
-                listGroup.add(ug);
+                int maNhom = rs.getInt("MaNhom");
+                String tenNhom = rs.getString("TenNhom");
+                String moTa = rs.getString("MoTa");
+                LocalDateTime ngayTao = rs.getObject("NgayTao", LocalDateTime.class);
+                boolean trangThai = rs.getBoolean("TrangThai");
+                listUserGroup.add(new UserGroup(maNhom, tenNhom, moTa, ngayTao, trangThai));
             }
+            return listUserGroup;
         } catch (SQLException e) {
-            e.printStackTrace();
+            return listUserGroup;
         }
-        return listGroup;
     }
 
-    // 2. Tạo một Nhóm mới toanh (Ví dụ: "Nhóm của Linh") và trả về Mã Nhóm vừa tạo
     public int InsertNewGroup(String tenNhom, String moTa) {
         String sql = "INSERT INTO UserGroup (TenNhom, MoTa, NgayTao, TrangThai) VALUES (?, ?, GETDATE(), 1)";
         try (Connection con = DBConnect.getConnection(); 

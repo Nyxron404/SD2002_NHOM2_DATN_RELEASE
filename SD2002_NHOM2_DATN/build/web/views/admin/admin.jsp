@@ -239,7 +239,7 @@
                         <!-- Thanh tìm kiếm -->
                         <div class="search-container">
                             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                            <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm..." onkeyup="filterTable()">
+                            <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm...">
                         </div>
                         <!-- Nút thêm nhóm -->
                         <a href="#" class="btn-action btn-add">
@@ -258,7 +258,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Dữ liệu mẫu -->
                         <tr>
                             <td>Ban Giám Đốc</td>
                             <td>2026-01-15</td>
@@ -267,43 +266,7 @@
                                 <div class="action-group">
                                     <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
                                     <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Ban Giám Đốc')"><i class="fa-solid fa-trash"></i> Xóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Quản Lý Kỹ Thuật</td>
-                            <td>2026-02-20</td>
-                            <td><span class="status-active">Hoạt động</span></td>
-                            <td>
-                                <div class="action-group">
-                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
-                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Quản Lý Kỹ Thuật')"><i class="fa-solid fa-trash"></i> Xóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nhân Viên Chăm Sóc</td>
-                            <td>2026-03-01</td>
-                            <td><span class="status-active">Hoạt động</span></td>
-                            <td>
-                                <div class="action-group">
-                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
-                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Nhân Viên Chăm Sóc')"><i class="fa-solid fa-trash"></i> Xóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nhóm Thử Nghiệm</td>
-                            <td>2026-05-10</td>
-                            <td><span class="status-inactive">Tạm dừng</span></td>
-                            <td>
-                                <div class="action-group">
-                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
-                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Nhóm Thử Nghiệm')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                    <button class="btn-action btn-delete" title="Xóa nhóm"><i class="fa-solid fa-trash"></i> Xóa</button>
                                 </div>
                             </td>
                         </tr>
@@ -313,37 +276,5 @@
         </div>
         
     </div>
-
-    <!-- Script xử lý sự kiện -->
-    <script>
-        // Hàm lọc tìm kiếm dữ liệu trực tiếp trên bảng bằng JS
-        function filterTable() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("rolesTable");
-            tr = table.getElementsByTagName("tr");
-
-            // Lặp qua tất cả các dòng của bảng (trừ dòng thead đầu tiên)
-            for (i = 1; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0]; // Tìm kiếm dựa trên cột đầu tiên (Tên nhóm)
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }       
-            }
-        }
-
-        // Hàm cảnh báo khi xóa
-        function confirmDelete(groupName) {
-            if (confirm("Bạn có chắc chắn muốn xóa nhóm '" + groupName + "' không?")) {
-                alert("Đã gửi yêu cầu xóa nhóm: " + groupName);
-            }
-        }
-    </script>
 </body>
 </html>
