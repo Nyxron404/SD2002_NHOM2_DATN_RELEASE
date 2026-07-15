@@ -150,7 +150,7 @@
             </c:if>
             <c:if test="${QuyenHan == 'InventoryManager' || QuyenHan == 'Admin'}">
                 <li>
-                    <a href="${pageContext.request.contextPath}/views/inventoryManager/inventoryManager.jsp" class="menu-item ${param.activePage == 'inventoryManager' ? 'active' : ''}">
+                    <a href="${pageContext.request.contextPath}/inventory" class="menu-item ${param.activePage == 'inventoryManager' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-2-1h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
                         Quản lý kho vật tư 
                     </a>
