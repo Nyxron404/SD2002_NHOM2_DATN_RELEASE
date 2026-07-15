@@ -5,6 +5,7 @@
 package controllers;
 
 import dao.StaffDAO;
+import dao.UserDAO;
 import dao.UserGroupDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,12 +29,15 @@ public class HrManagerServlet extends HttpServlet {
     private HrManagerService hrService = new HrManagerService();
     private StaffDAO stDAO = new StaffDAO();
     private UserGroupDAO ugDAO = new UserGroupDAO();
+    private UserDAO usDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("LIST_GROUP", ugDAO.SelectAllGroups());
+
+        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
         request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
+        request.setAttribute("LIST_USER", usDAO.SelectUser());
         request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
     }
 
@@ -64,10 +68,9 @@ public class HrManagerServlet extends HttpServlet {
 
                 // HỨNG KẾT QUẢ TỪ SERVICE TRẢ VỀ
                 int result = hrService.AddStaff(st);
-
-                // KIỂM TRA VÀ GÁN CÂU THÔNG BÁO TƯƠNG ỨNG
                 if (result == 1) {
-                    request.setAttribute("toastMessage", "Thêm nhân viên thành công!");
+                    // Chỉ hiển thị thông báo, vì Service đã lo phần tạo tài khoản và gửi email rồi
+                    request.setAttribute("toastMessage", "Thêm nhân viên thành công! Tài khoản đã được tạo và gửi về email.");
                     request.setAttribute("toastType", "success");
                 } else if (result == 2) {
                     request.setAttribute("toastMessage", "Lỗi: Số điện thoại không hợp lệ (Phải có 10 số và bắt đầu bằng số 0)!");
@@ -95,10 +98,10 @@ public class HrManagerServlet extends HttpServlet {
         else if ("updateRole".equals(action)) {
             List<String> myPermissions = (List<String>) request.getSession().getAttribute("QuyenHan");
             boolean isAdmin = myPermissions != null && myPermissions.contains("Admin");
-            
+
             int maNhanVien = Integer.parseInt(request.getParameter("maNhanVien"));
             int maNguoiDung = Integer.parseInt(request.getParameter("maNguoiDung"));
-            int selectedGroupId = Integer.parseInt(request.getParameter("selectedGroup")); 
+            int selectedGroupId = Integer.parseInt(request.getParameter("selectedGroup"));
 
             // --- BẢO MẬT: CHẶN HR GÁN TÀI KHOẢN VÀO NHÓM ADMIN (MÃ 1) ---
             if (selectedGroupId == 1 && !isAdmin) {
@@ -112,11 +115,11 @@ public class HrManagerServlet extends HttpServlet {
                     } else {
                         stDAO.UpdateStaffGroup(maNguoiDung, selectedGroupId); // Đổi nhóm nếu đã có tài khoản
                     }
-                    
-                    // stDAO.UpdateGroupPermissions(selectedGroupId, permissions); <-- ĐÃ XÓA/COMMENT DÒNG NÀY (Rất quan trọng)
-                    
                     request.setAttribute("toastMessage", "Gán chức vụ thành công!");
                     request.setAttribute("toastType", "success");
+                } else {
+                    request.setAttribute("toastMessage", "Lỗi: Không thể gán nhóm!");
+                    request.setAttribute("toastType", "error");
                 }
             }
         } // LUỒNG 3: SỬA THÔNG TIN
@@ -131,16 +134,32 @@ public class HrManagerServlet extends HttpServlet {
             st.setDiaChi(request.getParameter("diaChi"));
             st.setLuong(Double.parseDouble(request.getParameter("luong")));
             stDAO.UpdateStaff(st);
+            request.setAttribute("toastMessage", "Cập nhật thông tin thành công!");
+            request.setAttribute("toastType", "success");
         } // LUỒNG 4: KHÓA TÀI KHOẢN (TrangThai = false)
         else if ("lock".equals(action)) {
             int maNguoiDung = Integer.parseInt(request.getParameter("maNguoiDung"));
             // Nhận giá trị true/false từ giao diện (true: mở, false: khóa)
             boolean trangThai = Boolean.parseBoolean(request.getParameter("trangThai"));
             stDAO.UpdateStaffStatus(maNguoiDung, trangThai);
+        } // LUỒNG 5: XÓA NHÂN VIÊN VÀ TÀI KHOẢN
+        else if ("delete".equals(action)) {
+            int maNhanVien = Integer.parseInt(request.getParameter("maNhanVien"));
+            int maNguoiDung = Integer.parseInt(request.getParameter("maNguoiDung"));
+
+            boolean isDeleted = stDAO.DeleteStaff(maNhanVien, maNguoiDung);
+            if (isDeleted) {
+                request.setAttribute("toastMessage", "Đã xóa nhân viên và tài khoản!");
+                request.setAttribute("toastType", "success");
+            } else {
+                request.setAttribute("toastMessage", "Lỗi: Không thể xóa (Có thể nhân viên này đang dính dữ liệu ở bảng khác)!");
+                request.setAttribute("toastType", "error");
+            }
         }
 
-        request.setAttribute("LIST_GROUP", ugDAO.SelectAllGroups()); // Gửi danh sách Nhóm ra web
+        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups()); // Gửi danh sách Nhóm ra web
         request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
+        request.setAttribute("LIST_USER", new UserDAO().SelectUser());
         request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
     }
 
