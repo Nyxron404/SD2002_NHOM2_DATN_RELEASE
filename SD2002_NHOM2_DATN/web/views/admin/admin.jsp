@@ -1,6 +1,6 @@
 <%-- 
     Document   : admin
-    Created on : Jun 23, 2026, 2:11:11 PM
+    Created on : Jun 23, 2026, 2:11:11 PM
     Author     : longd
 --%>
 
@@ -10,7 +10,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Farmer - Trang Chủ Hệ Thống</title>
+    <title>Smart Farmer - Quản lý vai trò</title>
+    <!-- Thêm thư viện Font Awesome để sử dụng các icon đẹp mắt cho nút bấm -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -40,43 +42,182 @@
             overflow: hidden;
         }
 
-        .content-area { flex: 1; padding: 40px; overflow-y: auto; }
+        /* CSS bổ sung cho phần bảng dữ liệu */
+        .content-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
 
-        /* ================= BẢNG ĐIỀU KHIỂN ================= */
-        .welcome-panel {
-            background: linear-gradient(135deg, rgba(87, 156, 63, 0.95), rgba(46, 84, 31, 0.95));
-            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 16px; padding: 35px; color: #ffffff; margin-bottom: 35px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;
+        .table-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-top: 10px;
         }
-        .welcome-panel::after {
-            content: ""; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff15'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E");
-            background-size: cover; pointer-events: none;
-        }
-        
-        .welcome-panel h2 { 
-            margin: 0 0 12px 0; font-size: 28px; font-weight: 850; text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-            min-height: 35px; /* Giữ form khi chưa đổ Data */
-        }
-        .welcome-panel p { margin: 0; font-size: 16px; font-weight: 500; opacity: 0.95; line-height: 1.5; }
 
-        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .card {
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-radius: 16px; padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
-            display: flex; align-items: center; gap: 20px; transition: transform 0.3s ease;
+        /* Header của bảng: chứa Tiêu đề và Cụm công cụ (Tìm kiếm + Thêm mới) */
+        .table-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2e7d32;
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0px 12px 40px rgba(0, 0, 0, 0.25); }
-        .card-icon {
-            width: 70px; height: 70px; border-radius: 16px; background: linear-gradient(135deg, #579c3f, #396728);
-            display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(87, 156, 63, 0.4);
+
+        .table-title {
+            color: #2e7d32;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
-        .card-icon svg { width: 32px; height: 32px; fill: #ffffff; }
-        .card-info h3 { margin: 0 0 5px 0; font-size: 15px; color: #4a5c43; text-transform: uppercase; font-weight: 700; }
-        .card-info p { 
-            margin: 0; font-size: 34px; font-weight: 900; color: #1a2419; 
-            min-height: 40px; /* Giữ form khi chưa đổ Data */
+
+        /* Container cho thanh tìm kiếm và nút thêm */
+        .table-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Khung tìm kiếm */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 15px 10px 35px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            width: 220px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
+            width: 260px; /* Hiệu ứng dãn rộng nhẹ khi focus */
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            color: #888888;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Căn chữ ra GIỮA cho tất cả th (tiêu đề cột) và td (ô dữ liệu) */
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+            text-align: center; /* Căn giữa */
+        }
+
+        .data-table th {
+            background-color: #2e7d32;
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f1f8e9;
+        }
+
+        .status-active {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        /* Định dạng chung cho các nút hành động */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center; /* Căn giữa nội dung bên trong nút */
+            gap: 4px; /* Giảm gap một chút để text không bị tràn */
+            padding: 6px 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.8rem; /* Cho chữ nhỏ đi một chút cho thanh thoát */
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box; /* Đảm bảo padding không làm nở rộng size nút quá đà */
+        }
+
+        /* Áp dụng kích cỡ đồng đều cho các nút trong nhóm thao tác dòng */
+        .action-group .btn-action {
+            width: 90px;     /* Chiều rộng cố định, gọn gàng hơn trước */
+            height: 32px;    /* Chiều cao cố định đảm bảo 3 nút bằng nhau chằn chặn */
+            padding: 0;      /* Reset padding dọc để căn giữa hoàn hảo theo height */
+        }
+
+        /* Nút Thêm Nhóm (Nằm ở góc trên, không bị áp dụng chiều rộng 90px của dòng) */
+        .btn-add {
+            background-color: #2e7d32;
+            font-size: 0.95rem;
+            padding: 10px 18px;
+        }
+
+        .btn-add:hover {
+            background-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Nút Chi Tiết (Xanh dương) */
+        .btn-detail {
+            background-color: #1976d2;
+        }
+
+        .btn-detail:hover {
+            background-color: #115293;
+        }
+
+        /* Nút Sửa Nhóm (Màu cam ấm) */
+        .btn-edit {
+            background-color: #f57c00;
+        }
+
+        .btn-edit:hover {
+            background-color: #e65100;
+        }
+
+        /* Nút Xóa Nhóm (Màu đỏ) */
+        .btn-delete {
+            background-color: #d32f2f;
+        }
+
+        .btn-delete:hover {
+            background-color: #c62828;
+        }
+
+        /* Wrapper chứa các nút hành động cùng dòng */
+        .action-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center; /* Giữ các nút hành động ở giữa ô */
         }
     </style>
 </head>
@@ -86,41 +227,123 @@
     </jsp:include>
     <div class="main-wrapper">
         <jsp:include page="/views/common/header.jsp"></jsp:include>
-        <main class="content-area">
-            <div class="welcome-panel">
-                <h2>
-                    </h2>
-                <p>Khung điều hành trung tâm Smart Farmer. Tình trạng canh tác và thông số vật tư đang được hệ thống thu thập và xử lý thời gian thực.</p>
-            </div>
+        
+        <!-- Phần nội dung bảng hiển thị thông tin nhóm người dùng -->
+        <div class="content-container">
+            <div class="table-card">
+                
+                <!-- Khu vực Tiêu đề và Cụm hành động (Tìm kiếm + Thêm) -->
+                <div class="table-header-wrapper">
+                    <h2 class="table-title">Danh sách nhóm</h2>
+                    <div class="table-actions">
+                        <!-- Thanh tìm kiếm -->
+                        <div class="search-container">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm..." onkeyup="filterTable()">
+                        </div>
+                        <!-- Nút thêm nhóm -->
+                        <a href="#" class="btn-action btn-add">
+                            <i class="fa-solid fa-plus"></i> Thêm nhóm
+                        </a>
+                    </div>
+                </div>
 
-            <div class="dashboard-cards">
-                <div class="card">
-                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
-                    <div class="card-info">
-                        <h3>Công nhân ca làm</h3>
-                        <p>
-                            </p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
-                    <div class="card-info">
-                        <h3>Vật tư chạm đáy</h3>
-                        <p>
-                            </p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
-                    <div class="card-info">
-                        <h3>Đến hạn bảo trì</h3>
-                        <p>
-                            </p>
-                    </div>
-                </div>
+                <table class="data-table" id="rolesTable">
+                    <thead>
+                        <tr>
+                            <th>Tên nhóm người dùng</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu mẫu -->
+                        <tr>
+                            <td>Ban Giám Đốc</td>
+                            <td>2026-01-15</td>
+                            <td><span class="status-active">Hoạt động</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
+                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Ban Giám Đốc')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Quản Lý Kỹ Thuật</td>
+                            <td>2026-02-20</td>
+                            <td><span class="status-active">Hoạt động</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
+                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Quản Lý Kỹ Thuật')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nhân Viên Chăm Sóc</td>
+                            <td>2026-03-01</td>
+                            <td><span class="status-active">Hoạt động</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
+                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Nhân Viên Chăm Sóc')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nhóm Thử Nghiệm</td>
+                            <td>2026-05-10</td>
+                            <td><span class="status-inactive">Tạm dừng</span></td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
+                                    <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                    <button class="btn-action btn-delete" title="Xóa nhóm" onclick="confirmDelete('Nhóm Thử Nghiệm')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </main>
+        </div>
+        
     </div>
+
+    <!-- Script xử lý sự kiện -->
+    <script>
+        // Hàm lọc tìm kiếm dữ liệu trực tiếp trên bảng bằng JS
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("rolesTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Lặp qua tất cả các dòng của bảng (trừ dòng thead đầu tiên)
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; // Tìm kiếm dựa trên cột đầu tiên (Tên nhóm)
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }       
+            }
+        }
+
+        // Hàm cảnh báo khi xóa
+        function confirmDelete(groupName) {
+            if (confirm("Bạn có chắc chắn muốn xóa nhóm '" + groupName + "' không?")) {
+                alert("Đã gửi yêu cầu xóa nhóm: " + groupName);
+            }
+        }
+    </script>
 </body>
 </html>
-
