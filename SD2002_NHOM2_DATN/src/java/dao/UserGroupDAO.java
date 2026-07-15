@@ -15,7 +15,7 @@ public class UserGroupDAO {
     public UserGroupDAO(){
         listUserGroup = new ArrayList<>();
     }
-    public List<UserGroup> SelectAllGroups() {
+    public List<UserGroup> SelectUserGroups() {
         listUserGroup.clear();
         String select = "SELECT * FROM UserGroup";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {

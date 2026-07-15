@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import services.AdminService;
 
 /**
  *
@@ -19,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet(name="adminServlet", urlPatterns={"/admin"})
 public class AdminServlet extends HttpServlet {
-
+    private AdminService adminSV = new AdminService();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -40,6 +41,7 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        request.setAttribute("LISTUG", adminSV.GetListUG());
         request.getRequestDispatcher("./views/admin/admin.jsp").forward(request, response);
     } 
 

@@ -4,13 +4,19 @@
  */
 package services;
 
+import dao.UserGroupDAO;
 import java.util.List;
-import models.User;
+import models.UserGroup;
 
 /**
  *
  * @author longd
  */
 public class AdminService {
+    private UserGroupDAO userGroupDAO = new UserGroupDAO();
     
+    public List<UserGroup> GetListUG(){
+        List<UserGroup> listUserGroup = userGroupDAO.SelectUserGroups();
+        return listUserGroup;
+    }
 }
