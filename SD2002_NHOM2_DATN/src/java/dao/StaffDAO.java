@@ -240,7 +240,7 @@ public class StaffDAO {
                     + "<p style='font-size: 12px; color: #777;'><i>Lưu ý: Đây là email tự động, vui lòng không phản hồi thư này.</i></p>"
                     + "<p>Trân trọng,<br><b>Ban Quản Trị Smart Farm</b></p>"
                     + "</div>";
-            
+
             message.setContent(noiDungHtml, "text/html; charset=UTF-8");
 
             Transport.send(message);
@@ -377,7 +377,7 @@ public class StaffDAO {
             pstmt.setString(1, Email);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return 1; 
+                return 1;
             } else {
                 return 2;
             }
@@ -393,7 +393,7 @@ public class StaffDAO {
             pstmt.setString(1, SDT);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return 1; 
+                return 1;
             } else {
                 return 2;
             }
@@ -408,7 +408,7 @@ public class StaffDAO {
         String deleteUser = "DELETE FROM [User] WHERE MaNguoiDung = ?";
 
         try (Connection con = DBConnect.getConnection()) {
-            con.setAutoCommit(false); 
+            con.setAutoCommit(false);
             try {
                 try (PreparedStatement psStaff = con.prepareStatement(deleteStaff)) {
                     psStaff.setInt(1, maNhanVien);
@@ -425,7 +425,7 @@ public class StaffDAO {
                 con.commit();
                 return true;
             } catch (Exception ex) {
-                con.rollback(); 
+                con.rollback();
                 ex.printStackTrace();
                 return false;
             }
@@ -448,20 +448,22 @@ public class StaffDAO {
         }
         return 0;
     }
-    
+
     public List<Staff> SearchStaff(String keyword) {
         List<Staff> list = new ArrayList<>();
-        // Câu lệnh SQL: Tìm kiếm theo Tên hoặc ID (sử dụng LIKE)
-        String sql = "SELECT s.*, u.MaNhom, u.TrangThai FROM Staff s " +
-                     "LEFT JOIN [User] u ON s.MaNguoiDung = u.MaNguoiDung " +
-                     "WHERE s.HoTen LIKE ? OR CAST(s.MaNhanVien AS VARCHAR) LIKE ?";
-        
+        // Thêm JOIN với bảng UserGroup để lấy TenNhom và tìm kiếm theo đó
+        String sql = "SELECT s.*, u.MaNhom, u.TrangThai, ug.TenNhom FROM Staff s "
+                + "LEFT JOIN [User] u ON s.MaNguoiDung = u.MaNguoiDung "
+                + "LEFT JOIN UserGroup ug ON u.MaNhom = ug.MaNhom "
+                + "WHERE s.HoTen LIKE ? OR CAST(s.MaNhanVien AS VARCHAR) LIKE ? OR ug.TenNhom LIKE ?";
+
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             String query = "%" + keyword + "%";
             ps.setString(1, query);
             ps.setString(2, query);
+            ps.setString(3, query); 
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next()) {
                 int maNhanVien = rs.getInt("MaNhanVien");
                 String hoTen = rs.getString("HoTen");
@@ -476,15 +478,16 @@ public class StaffDAO {
                 boolean dangKy = rs.getBoolean("DangKy");
                 boolean trangThai = rs.getBoolean("TrangThai");
                 int maNhom = rs.getInt("MaNhom");
-                
-                // Khởi tạo đối tượng Staff
-                Staff st = new Staff(maNhanVien, hoTen, ngaySinh, gioiTinh, sdt, email, diaChi, ngayVaoLam, luong, maNguoiDung, dangKy);
-                
-                // Gán các thuộc tính mở rộng
-                st.setMaNhom(maNhom);
-                st.setDanhSachQuyen(GetDanhSachQuyen(maNhom));
-                st.setDangKy(trangThai);
-                
+                Staff st = new Staff(rs.getInt("MaNhanVien"), rs.getString("HoTen"),
+                        rs.getObject("NgaySinh", LocalDate.class), rs.getBoolean("GioiTinh"),
+                        rs.getString("SDT"), rs.getString("Email"), rs.getString("DiaChi"),
+                        rs.getObject("NgayVaoLam", LocalDate.class), rs.getDouble("Luong"),
+                        rs.getInt("MaNguoiDung"), rs.getBoolean("DangKy"));
+
+                st.setMaNhom(rs.getInt("MaNhom"));
+                st.setDanhSachQuyen(GetDanhSachQuyen(rs.getInt("MaNhom")));
+                st.setDangKy(rs.getBoolean("TrangThai"));
+
                 list.add(st);
             }
         } catch (SQLException e) {

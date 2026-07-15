@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Smart Farmer - Quản lý nhân sự</title>
+        <title>Quản lý nhân sự</title>
         <style>
             body {
                 margin: 0;
@@ -470,6 +470,11 @@
                             </c:forEach>
                         </tbody>
                     </table>
+                    <c:if test="${not empty param.keyword && empty LIST_STAFF}">
+                        <div style="text-align: center; padding: 20px; color: #777;">
+                            <p>Không tìm thấy nhân viên phù hợp với từ khóa: <strong>${param.keyword}</strong></p>
+                        </div>
+                    </c:if>
                 </div>
             </main>
         </div>

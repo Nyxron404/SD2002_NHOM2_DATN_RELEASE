@@ -41,7 +41,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
     } else {
         request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
     }
-    
     request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
     request.setAttribute("LIST_USER", usDAO.SelectUser());
     request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
