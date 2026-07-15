@@ -34,23 +34,15 @@ public class UserGroupDAO {
         }
     }
 
-    public int InsertNewGroup(String tenNhom, String moTa) {
-        String sql = "INSERT INTO UserGroup (TenNhom, MoTa, NgayTao, TrangThai) VALUES (?, ?, GETDATE(), 1)";
-        try (Connection con = DBConnect.getConnection(); 
-             PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+    public int InsertUG(String tenNhom,String moTa) {
+        String insert = "EXEC SP_InsertUG ?,?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(insert)) {
             pstmt.setString(1, tenNhom);
             pstmt.setString(2, moTa);
             pstmt.executeUpdate();
-            
-            // Lấy ID của Nhóm vừa tạo ra để gán luôn cho Nhân viên
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1); 
-            }
+            return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            return 0;
         }
-        return 0; // Thất bại
     }
 }

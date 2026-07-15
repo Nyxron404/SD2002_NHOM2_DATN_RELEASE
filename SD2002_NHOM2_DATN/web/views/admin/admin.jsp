@@ -455,6 +455,90 @@
                     opacity: 1;
                 }
             }
+            /* --- CSS CHO KHU VỰC THÔNG BÁO (ALERTS) --- */
+            .alert-container {
+                margin-bottom: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .alert {
+                padding: 12px 16px;
+                border-radius: 6px;
+                font-size: 0.95rem;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                animation: slideInAlert 0.4s ease-out forwards;
+            }
+
+            /* Hộp thoại thông báo thành công */
+            .alert-success {
+                background-color: #edf7ed;
+                color: #1e4620;
+                border-left: 5px solid #4caf50;
+            }
+
+            .alert-success i {
+                color: #4caf50;
+                font-size: 1.3rem;
+            }
+
+            /* Hộp thoại thông báo lỗi */
+            .alert-error {
+                background-color: #fdeded;
+                color: #5f2120;
+                border-left: 5px solid #ef5350;
+            }
+
+            .alert-error i {
+                color: #ef5350;
+                font-size: 1.3rem;
+            }
+
+            /* Hiệu ứng trượt vào mượt mà */
+            @keyframes slideInAlert {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            /* Định dạng thông báo nằm giữa bảng với màu sắc trực quan */
+            .message-container {
+                text-align: center;      /* Căn giữa chữ */
+                margin: 15px auto;       /* Tạo khoảng cách phía trên và dưới bảng */
+                font-size: 1.1rem;       /* Tăng kích thước chữ một chút cho dễ đọc */
+                font-weight: 600;        /* Làm chữ dày dặn hơn */
+                padding: 10px;
+                border-radius: 6px;
+                display: inline-block;   /* Đảm bảo khung bọc vừa vặn với dòng chữ */
+                width: 100%;             /* Chiếm trọn bề ngang để căn giữa chính xác */
+            }
+
+            /* Chữ thành công màu xanh lá */
+            .text-success {
+                color: #2e7d32;          /* Màu xanh lá đậm của Smart Farmer */
+                background-color: #edf7ed; /* Nền xanh nhạt dịu mắt */
+                padding: 8px 16px;
+                border-radius: 4px;
+                border: 1px solid #c3e6cb;
+            }
+
+            /* Chữ lỗi màu đỏ */
+            .text-error {
+                color: #c62828;          /* Màu đỏ đậm cảnh báo */
+                background-color: #fdeded; /* Nền đỏ nhạt */
+                padding: 8px 16px;
+                border-radius: 4px;
+                border: 1px solid #f5c6cb;
+            }
         </style>
     </head>
     <body>
@@ -486,7 +570,24 @@
 
                         </div>
                     </div>
-
+                    <!-- Khu vực hiển thị thông báo được căn giữa -->
+                    <div class="message-container">
+                        <c:if test="${success != null}">
+                            <span class="text-success">
+                                <i class="fa-solid fa-circle-check"></i> ${success}
+                            </span>
+                        </c:if>
+                        <c:if test="${errorName != null}">
+                            <span class="text-error">
+                                <i class="fa-solid fa-triangle-exclamation"></i> ${errorName}
+                            </span>
+                        </c:if>
+                        <c:if test="${errorLog != null}">
+                            <span class="text-error">
+                                <i class="fa-solid fa-bug"></i> ${errorLog}
+                            </span>
+                        </c:if>
+                    </div>
                     <table class="data-table" id="rolesTable">
                         <thead>
                             <tr>
@@ -524,27 +625,21 @@
                     </table>
                 </div>
             </div>
-            <div class="">
+            <div>
                 <!-- Khối hiển thị form thêm mới khi biến form có giá trị 'add' -->
-                <c:if test="${form == 'add' && form !=null}">
+                <c:if test="${Form == 'add' && Form !=null}">
                     <!-- Lớp nền mờ bao phủ toàn bộ màn hình -->
                     <div class="modal-overlay">
                         <!-- Khung chứa Form nhập liệu nổi lên trên -->
                         <div class="modal-box">
                             <div class="modal-header">
                                 <h3><i class="fa-solid fa-folder-plus"></i> Thêm Nhóm Người Dùng Mới</h3>
-                                <!-- Nút dấu X dùng để đóng/hủy form nhanh, quay lại trang quản lý chính -->
-                                <button type="button" class="close-modal-btn" onclick="window.location.href = '${pageContext.request.contextPath}/admin'">&times;</button>
                             </div>
 
                             <form action="${pageContext.request.contextPath}/admin" method="Post" class="modal-form">
-                                <!-- Input ẩn truyền hành động về cho Servlet xử lý dữ liệu -->
-                                <input type="hidden" name="action" value="store">
-
-                                <!-- Nhập tên nhóm -->
                                 <div class="form-group">
                                     <label for="modalTenNhom">Tên nhóm <span class="required">*</span></label>
-                                    <input type="text" id="modalTenNhom" name="tenNhom" placeholder="Nhập tên nhóm người dùng..." required autocomplete="off">
+                                    <input type="text" id="modalTenNhom" name="TenNhom" placeholder="Nhập tên nhóm người dùng..." required autocomplete="off">
                                 </div>
 
                                 <!-- Chọn đa quyền bằng Checkbox -->
@@ -552,45 +647,26 @@
                                     <label>Phân chia quyền hạn <span class="required">*</span></label>
                                     <small style="color: #666; display: block; margin-bottom: 8px;">(Tích chọn một hoặc nhiều quyền hạn cho nhóm này)</small>
                                     <div class="permissions-grid">
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="VIEW_DASHBOARD">
-                                            <span class="checkmark"></span> Xem bảng điều khiển
-                                        </label>
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="MANAGE_USERS">
-                                            <span class="checkmark"></span> Quản lý tài khoản
-                                        </label>
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="MANAGE_CROPS">
-                                            <span class="checkmark"></span> Quản lý mùa vụ
-                                        </label>
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="MANAGE_DEVICES">
-                                            <span class="checkmark"></span> Điều khiển thiết bị IoT
-                                        </label>
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="VIEW_REPORTS">
-                                            <span class="checkmark"></span> Xem báo cáo thống kê
-                                        </label>
-                                        <label class="checkbox-container">
-                                            <input type="checkbox" name="quyenhantao" value="SYSTEM_SETTINGS">
-                                            <span class="checkmark"></span> Cấu hình hệ thống
-                                        </label>
+                                        <c:forEach var="ps" items="${Permission}">
+                                            <label class="checkbox-container">
+                                                <input type="checkbox" name="Quyen" value="${ps.getMaQuyen()}">
+                                                <span class="checkmark"></span> ${ps.getTenQuyen()}
+                                            </label>
+                                        </c:forEach>
                                     </div>
                                 </div>
 
                                 <!-- Nhập mô tả -->
                                 <div class="form-group">
                                     <label for="modalMoTa">Mô tả chức năng</label>
-                                    <textarea id="modalMoTa" name="moTa" rows="3" placeholder="Tóm tắt ngắn gọn vai trò và trách nhiệm của nhóm này..."></textarea>
+                                    <textarea id="modalMoTa" name="MoTa" rows="3" placeholder="Tóm tắt ngắn gọn vai trò và trách nhiệm của nhóm này..."></textarea>
                                 </div>
-
                                 <!-- Cụm nút xác nhận / hủy bỏ hành động cuối form -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn-modal-action btn-modal-cancel" onclick="window.location.href = '${pageContext.request.contextPath}/admin'">
                                         Hủy bỏ
                                     </button>
-                                    <button type="submit" class="btn-modal-action btn-modal-submit">
+                                    <button type="submit" name="action" value="add&save" class="btn-modal-action btn-modal-submit">
                                         <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
                                     </button>
                                 </div>
