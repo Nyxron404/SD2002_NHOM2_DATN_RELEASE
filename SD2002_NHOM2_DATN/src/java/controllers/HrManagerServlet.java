@@ -62,11 +62,36 @@ public class HrManagerServlet extends HttpServlet {
                 st.setLuong(luong);
                 st.setDangKy(false);
 
-                hrService.AddStaff(st);
+                // HỨNG KẾT QUẢ TỪ SERVICE TRẢ VỀ
+                int result = hrService.AddStaff(st);
+
+                // KIỂM TRA VÀ GÁN CÂU THÔNG BÁO TƯƠNG ỨNG
+                if (result == 1) {
+                    request.setAttribute("toastMessage", "Thêm nhân viên thành công!");
+                    request.setAttribute("toastType", "success");
+                } else if (result == 2) {
+                    request.setAttribute("toastMessage", "Lỗi: Số điện thoại không hợp lệ (Phải có 10 số và bắt đầu bằng số 0)!");
+                    request.setAttribute("toastType", "error");
+                } else if (result == 3) {
+                    request.setAttribute("toastMessage", "Lỗi: Email không đúng định dạng!");
+                    request.setAttribute("toastType", "error");
+                } else if (result == 4) {
+                    request.setAttribute("toastMessage", "Lỗi: Email này đã được sử dụng!");
+                    request.setAttribute("toastType", "error");
+                } else if (result == 5) {
+                    request.setAttribute("toastMessage", "Lỗi: Số điện thoại này đã được sử dụng!");
+                    request.setAttribute("toastType", "error");
+                } else {
+                    request.setAttribute("toastMessage", "Lỗi CSDL: Kiểm tra lại log NetBeans để biết chi tiết!");
+                    request.setAttribute("toastType", "error");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
+                request.setAttribute("toastMessage", "Lỗi: Vui lòng điền đầy đủ và đúng định dạng các trường!");
+                request.setAttribute("toastType", "error");
             }
-        } // LUỒNG 2: XỬ LÝ GÁN NHÓM (CŨ/MỚI) VÀ SỬA QUYỀN
+        } // LUỒNG 2: XỬ LÝ GÁN NHÓM
         else if ("updateRole".equals(action)) {
             List<String> myPermissions = (List<String>) request.getSession().getAttribute("QuyenHan");
             boolean isAdmin = myPermissions != null && myPermissions.contains("Admin");
@@ -74,31 +99,24 @@ public class HrManagerServlet extends HttpServlet {
             int maNhanVien = Integer.parseInt(request.getParameter("maNhanVien"));
             int maNguoiDung = Integer.parseInt(request.getParameter("maNguoiDung"));
             int selectedGroupId = Integer.parseInt(request.getParameter("selectedGroup")); 
-            String[] permissions = request.getParameterValues("permissions"); 
 
-            // --- BẢO MẬT: CHẶN HR SỬA NHÓM ADMIN (MÃ 1) ---
+            // --- BẢO MẬT: CHẶN HR GÁN TÀI KHOẢN VÀO NHÓM ADMIN (MÃ 1) ---
             if (selectedGroupId == 1 && !isAdmin) {
-                // Bạn có thể thêm request.setAttribute("error", "Bạn không có quyền này!");
-                // Rồi dừng lại không làm gì tiếp cả
+                request.setAttribute("toastMessage", "Lỗi: Bạn không có quyền gán nhân viên thành Admin!");
+                request.setAttribute("toastType", "error");
             } else {
-                // XỬ LÝ 1: TẠO NHÓM MỚI (CHỈ ADMIN MỚI ĐƯỢC TẠO NHÓM NẾU CẦN)
-                if (selectedGroupId == -1) {
-                    if (!isAdmin) {
-                         // Nếu không phải Admin thì không được tạo nhóm mới
-                    } else {
-                         String newGroupName = request.getParameter("newGroupName");
-                         selectedGroupId = ugDAO.InsertNewGroup(newGroupName, "Nhóm tạo tùy chỉnh");
-                    }
-                }
-                
-                // XỬ LÝ 2 & 3: GÁN NHÓM VÀ CẬP NHẬT QUYỀN
+                // CHỈ GÁN NHÓM VÀO TÀI KHOẢN
                 if (selectedGroupId > 0) {
                     if (maNguoiDung == 0) {
-                        stDAO.CreateDraftUser(maNhanVien, selectedGroupId);
+                        stDAO.CreateDraftUser(maNhanVien, selectedGroupId); // Tạo nháp nếu chưa có tài khoản
                     } else {
-                        stDAO.UpdateStaffGroup(maNguoiDung, selectedGroupId);
+                        stDAO.UpdateStaffGroup(maNguoiDung, selectedGroupId); // Đổi nhóm nếu đã có tài khoản
                     }
-                    stDAO.UpdateGroupPermissions(selectedGroupId, permissions);
+                    
+                    // stDAO.UpdateGroupPermissions(selectedGroupId, permissions); <-- ĐÃ XÓA/COMMENT DÒNG NÀY (Rất quan trọng)
+                    
+                    request.setAttribute("toastMessage", "Gán chức vụ thành công!");
+                    request.setAttribute("toastType", "success");
                 }
             }
         } // LUỒNG 3: SỬA THÔNG TIN

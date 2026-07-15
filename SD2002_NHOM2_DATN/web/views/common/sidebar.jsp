@@ -133,7 +133,7 @@
             </c:if>
             <c:if test="${QuyenHan == 'FarmOwner' || QuyenHan == 'Admin'}">
                 <li>
-                    <a href="#" class="menu-item ${param.activePage == 'us1' ? 'active' : ''}">
+                    <a href="${pageContext.request.contextPath}/farmowner" class="menu-item ${param.activePage == 'farmOwner' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                         Báo cáo tổng quan 
                     </a>

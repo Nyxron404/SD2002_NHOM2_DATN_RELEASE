@@ -208,7 +208,8 @@ public class StaffDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
     
-    public void InsertStaff(Staff st) {
+    // 1. Sửa lại hàm InsertStaff: Trả về boolean (true/false) và in lỗi ra log
+    public boolean InsertStaff(Staff st) {
         String insert = "INSERT INTO Staff (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, Luong) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try (Connection con = DBConnect.getConnection(); 
             PreparedStatement pstmt = con.prepareStatement(insert)) {
@@ -219,22 +220,45 @@ public class StaffDAO {
             pstmt.setString(5, st.getEmail());
             pstmt.setString(6, st.getDiaChi());
             pstmt.setDouble(7, st.getLuong());
-            pstmt.executeUpdate();
+            
+            int rows = pstmt.executeUpdate();
+            return rows > 0; // Trả về true nếu có dữ liệu thêm vào DB
         } catch (Exception e) {
+            e.printStackTrace(); // In lỗi đỏ ra NetBeans để bạn biết sai chỗ nào
+            return false; // Trả về false để báo cho hệ thống biết là THẤT BẠI
         }
     }
     
+    // 2. Sửa lại hàm CheckEmail: Bỏ cái "AND DangKy = 0" đi để quét toàn bộ hệ thống
     public int CheckEmail(String Email){
-        String checkEmail = "SELECT 1 FROM Staff WHERE Email = ? AND DangKy = 0";
+        String checkEmail = "SELECT 1 FROM Staff WHERE Email = ?";
         try(Connection con = DBConnect.getConnection();PreparedStatement pstmt = con.prepareStatement(checkEmail)) {
             pstmt.setString(1, Email);
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()){
-                return 1;
+                return 1; // Đã tồn tại
             }else{
-                return 2;
+                return 2; // Hợp lệ
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // 3. Thêm hàm CheckSDT hoàn toàn mới
+    public int CheckSDT(String SDT){
+        String checkSDT = "SELECT 1 FROM Staff WHERE SDT = ?";
+        try(Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(checkSDT)) {
+            pstmt.setString(1, SDT);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                return 1; // Đã tồn tại
+            }else{
+                return 2; // Hợp lệ
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
             return 0;
         }
     }

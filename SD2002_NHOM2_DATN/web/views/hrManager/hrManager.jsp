@@ -38,53 +38,6 @@
                 overflow: hidden;
             }
 
-            .header {
-                height: 85px;
-                background: rgba(255, 255, 255, 0.85);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 40px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-                z-index: 5;
-            }
-
-            .header-title h1 {
-                margin: 0;
-                font-size: 26px;
-                font-weight: 800;
-                color: #1a2419;
-            }
-
-            .user-profile {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-            }
-            .notification {
-                position: relative;
-                cursor: pointer;
-                width: 45px;
-                height: 45px;
-                background: rgba(87, 156, 63, 0.1);
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                transition: background 0.3s;
-            }
-            .notification:hover {
-                background: rgba(87, 156, 63, 0.2);
-            }
-            .notification svg {
-                width: 22px;
-                height: 22px;
-                fill: #2e541f;
-            }
-
             .badge {
                 position: absolute;
                 top: 2px;
@@ -100,21 +53,6 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-            }
-
-            .avatar {
-                width: 45px;
-                height: 45px;
-                background: linear-gradient(135deg, #579c3f, #2e541f);
-                color: #ffffff;
-                border-radius: 12px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-weight: 800;
-                font-size: 18px;
-                cursor: pointer;
-                box-shadow: 0 4px 10px rgba(46, 84, 31, 0.3);
             }
 
             .content-area {
@@ -165,7 +103,9 @@
                 cursor: pointer;
                 transition: 0.3s;
             }
-            .btn-search:hover { background: #e67e22; }
+            .btn-search:hover {
+                background: #e67e22;
+            }
 
             .btn-add {
                 background: linear-gradient(135deg, #579c3f, #396728);
@@ -263,12 +203,24 @@
                 transition: 0.2s;
             }
 
-            .btn-edit { background: #f39c12; }
-            .btn-edit:hover { background: #e67e22; }
-            .btn-role { background: #3498db; }
-            .btn-role:hover { background: #2980b9; }
-            .btn-lock { background: #e74c3c; }
-            .btn-lock:hover { background: #c0392b; }
+            .btn-edit {
+                background: #f39c12;
+            }
+            .btn-edit:hover {
+                background: #e67e22;
+            }
+            .btn-role {
+                background: #3498db;
+            }
+            .btn-role:hover {
+                background: #2980b9;
+            }
+            .btn-lock {
+                background: #e74c3c;
+            }
+            .btn-lock:hover {
+                background: #c0392b;
+            }
 
             /* ================= MODAL ================= */
             .modal-overlay {
@@ -298,8 +250,14 @@
             }
 
             @keyframes slideIn {
-                from { transform: translateY(-30px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
+                from {
+                    transform: translateY(-30px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
             }
 
             .modal-header {
@@ -323,12 +281,21 @@
                 cursor: pointer;
                 color: #999;
             }
-            .close-btn:hover { color: #e74c3c; }
+            .close-btn:hover {
+                color: #e74c3c;
+            }
 
-            .form-row { display: flex; gap: 15px; }
-            .form-row .form-group { flex: 1; }
+            .form-row {
+                display: flex;
+                gap: 15px;
+            }
+            .form-row .form-group {
+                flex: 1;
+            }
 
-            .form-group { margin-bottom: 15px; }
+            .form-group {
+                margin-bottom: 15px;
+            }
             .form-group label {
                 display: block;
                 margin-bottom: 8px;
@@ -365,18 +332,82 @@
                 font-weight: 600;
                 cursor: pointer;
             }
-            .btn-cancel { background: #f1f2f6; color: #333; }
-            .btn-cancel:hover { background: #dfe4ea; }
-            .btn-save { background: #579c3f; color: white; }
-            .btn-save:hover { background: #467e32; }
+            .btn-cancel {
+                background: #f1f2f6;
+                color: #333;
+            }
+            .btn-cancel:hover {
+                background: #dfe4ea;
+            }
+            .btn-save {
+                background: #579c3f;
+                color: white;
+            }
+            .btn-save:hover {
+                background: #467e32;
+            }
 
             /* Checkbox styles */
             .checkbox-group {
-                display: flex; flex-direction: column; gap: 10px; margin-top: 10px;
-                background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 10px;
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #eee;
             }
-            .checkbox-group label { margin: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
-            .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+            .checkbox-group label {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                font-weight: 500;
+            }
+            .checkbox-group input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+            }
+            /* ================= TOAST NOTIFICATION ================= */
+            .toast {
+                position: fixed;
+                top: 25px;
+                right: 25px;
+                padding: 15px 25px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                font-size: 15px;
+                z-index: 9999;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                /* Hiệu ứng trượt vào */
+                animation: slideInRight 0.5s ease-out forwards;
+            }
+            .toast.success {
+                background-color: #2ecc71;
+                border-left: 6px solid #27ae60;
+            }
+            .toast.error {
+                background-color: #e74c3c;
+                border-left: 6px solid #c0392b;
+            }
+
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
         </style>
     </head>
     <body>
@@ -386,25 +417,20 @@
         </jsp:include>
 
         <div class="main-wrapper">
-            <header class="header">
-                <div class="header-title">
-                    <h1>Quản Lý Nhân Sự</h1>
-                </div>
-                <div class="user-profile">
-                    <div class="notification"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span class="badge"></span></div>
-                    <div class="avatar">A</div>
-                </div>
-            </header>
+            <jsp:include page="/views/common/header.jsp">
+                <jsp:param name="pageTitle" value="Quản Lý Nhân Sự" />
+            </jsp:include>
 
             <main class="content-area">
 
                 <div class="page-toolbar">
                     <h2>Danh sách nhân viên</h2>
-                    
+
                     <%-- THANH TÌM KIẾM ĐƯỢC CHÈN VÀO ĐÂY --%>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID nhân viên..." onkeydown="if(event.key === 'Enter') openSearchModal()">
+                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID nhân viên..." onkeydown="if (event.key === 'Enter')
+                                        openSearchModal()">
                             <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
                         </div>
 
@@ -483,7 +509,7 @@
                     <h3>Kết quả Tìm kiếm</h3>
                     <button class="close-btn" onclick="closeModal('searchModal')">&times;</button>
                 </div>
-                
+
                 <div class="table-card" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
@@ -500,7 +526,7 @@
                         </thead>
                         <%-- Tbody rỗng, JS sẽ nhét kết quả vào đây --%>
                         <tbody id="searchResultBody">
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -566,10 +592,11 @@
             </div>
         </div>
 
+        <!-- MODAL CẤP CHỨC VỤ -->
         <div class="modal-overlay" id="roleModal">
-            <div class="modal-content" style="width: 450px;">
+            <div class="modal-content" style="width: 400px;">
                 <div class="modal-header">
-                    <h3>Gán Chức vụ & Quyền hạn</h3>
+                    <h3>Gán Chức vụ (Nhóm)</h3>
                     <button class="close-btn" onclick="closeModal('roleModal')">&times;</button>
                 </div>
                 <form action="hr" method="POST">
@@ -578,36 +605,15 @@
                     <input type="hidden" name="maNguoiDung" id="roleUserId" value="">
 
                     <div class="form-group">
-                        <label style="color:#2e541f; font-size:16px;">1. Gán vào Chức vụ (Nhóm):</label>
-                        <p style="font-size:12px; color:#666; margin-top:0;">*Lưu ý: Sửa quyền của nhóm sẽ áp dụng cho tất cả những người đang ở trong nhóm đó.</p>
+                        <label style="color:#2e541f; font-size:16px; margin-bottom: 15px;">Chọn chức vụ cho nhân viên:</label>
 
-                        <div class="checkbox-group" style="max-height: 150px; overflow-y: auto;">
+                        <div class="checkbox-group" style="max-height: 250px; overflow-y: auto;">
                             <c:forEach var="group" items="${LIST_GROUP}">
-                                <label>
-                                    <input type="radio" name="selectedGroup" value="${group.getMaNhom()}" onclick="toggleNewGroupInput()"> 
+                                <label style="padding: 5px 0;">
+                                    <input type="radio" name="selectedGroup" value="${group.getMaNhom()}" required> 
                                     ${group.getTenNhom()}
                                 </label>
                             </c:forEach>
-                            <label style="color:#e74c3c; font-weight:700;">
-                                <input type="radio" name="selectedGroup" id="radioNewGroup" value="-1" onclick="toggleNewGroupInput()"> 
-                                + Tạo chức vụ mới (Tùy chỉnh riêng)
-                            </label>
-                        </div>
-                        <div id="divNewGroupName" style="display:none; margin-top:10px;">
-                            <input type="text" name="newGroupName" class="form-control" placeholder="Nhập tên chức vụ mới (Ví dụ: Giám sát sảnh)...">
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-top:20px;">
-                        <label style="color:#2e541f; font-size:16px;">2. Các quyền cấp cho chức vụ trên:</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="permissions" value="1"> Admin</label>
-                            <label><input type="checkbox" name="permissions" value="2"> Farm Owner</label>
-                            <label><input type="checkbox" name="permissions" value="3"> HR Manager</label>
-                            <label><input type="checkbox" name="permissions" value="4"> Inventory Manager</label>
-                            <label><input type="checkbox" name="permissions" value="5"> Technician</label>
-                            <label><input type="checkbox" name="permissions" value="6"> Worker</label>
-                            <label><input type="checkbox" name="permissions" value="7"> Equipment Manager</label>
                         </div>
                     </div>
 
@@ -643,9 +649,9 @@
                 // Lấy từ khóa, chuyển thành chữ thường để tìm kiếm không phân biệt hoa/thường
                 let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
                 let resultBody = document.getElementById('searchResultBody');
-                
+
                 // Xóa dữ liệu kết quả của lần tìm trước đó
-                resultBody.innerHTML = ''; 
+                resultBody.innerHTML = '';
 
                 if (keyword === '') {
                     alert("Vui lòng nhập tên hoặc ID để tìm kiếm!");
@@ -684,13 +690,13 @@
             function openEmployeeForm(mode, id, ten, ngaysinh, gioitinh, sdt, email, diachi, luong) {
                 // Đóng luôn cái modal tìm kiếm nếu đang mở (để tránh chồng chéo 2 cái modal)
                 closeModal('searchModal');
-                
+
                 const modal = document.getElementById('employeeModal');
                 const title = document.getElementById('employeeModalTitle');
                 const actionInput = document.getElementById('formAction');
                 const form = modal.querySelector('form');
 
-                form.reset(); 
+                form.reset();
 
                 if (mode === 'add') {
                     title.innerText = 'Thêm nhân viên mới';
@@ -711,18 +717,20 @@
             }
 
             function openRoleForm(maNhanVien, maNguoiDung, maNhomHienTai) {
-                closeModal('searchModal'); // Đóng bảng tìm kiếm nếu bấm từ bên trong nó
+                closeModal('searchModal');
                 document.getElementById('roleEmployeeId').value = maNhanVien;
                 document.getElementById('roleUserId').value = maNguoiDung || '0';
+
                 let radios = document.getElementsByName('selectedGroup');
                 for (let i = 0; i < radios.length; i++) {
                     if (radios[i].value == maNhomHienTai) {
                         radios[i].checked = true;
                     }
                 }
-                toggleNewGroupInput();
+                // Đã xóa toggleNewGroupInput();
                 document.getElementById('roleModal').style.display = 'flex';
             }
+            // ĐÃ XÓA HÀM toggleNewGroupInput() Ở ĐÂY
 
             function toggleNewGroupInput() {
                 let isNew = document.getElementById('radioNewGroup').checked;
@@ -744,12 +752,36 @@
                 let roleModal = document.getElementById('roleModal');
                 let lockModal = document.getElementById('lockModal');
                 let searchModal = document.getElementById('searchModal');
-                
-                if (event.target === empModal) empModal.style.display = "none";
-                if (event.target === roleModal) roleModal.style.display = "none";
-                if (event.target === lockModal) lockModal.style.display = "none";
-                if (event.target === searchModal) searchModal.style.display = "none";
+
+                if (event.target === empModal)
+                    empModal.style.display = "none";
+                if (event.target === roleModal)
+                    roleModal.style.display = "none";
+                if (event.target === lockModal)
+                    lockModal.style.display = "none";
+                if (event.target === searchModal)
+                    searchModal.style.display = "none";
             }
+            // Tự động ẩn thông báo sau 5 giây (5000 milliseconds)
+            document.addEventListener("DOMContentLoaded", function () {
+                var toast = document.getElementById("toastNotification");
+                if (toast) {
+                    setTimeout(function () {
+                        // Thêm hiệu ứng mờ dần trước khi tắt
+                        toast.style.transition = "opacity 0.5s ease";
+                        toast.style.opacity = "0";
+                        // Đợi mờ xong thì ẩn hẳn
+                        setTimeout(() => toast.style.display = "none", 500);
+                    }, 5000);
+                }
+            });
         </script>
     </body>
+    <c:if test="${not empty toastMessage}">
+        <div id="toastNotification" class="toast ${toastType}">
+            <c:if test="${toastType == 'success'}">✅</c:if>
+            <c:if test="${toastType == 'error'}">⚠️</c:if>
+            ${toastMessage}
+        </div>
+    </c:if>
 </html>
