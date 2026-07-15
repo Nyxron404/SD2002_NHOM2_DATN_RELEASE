@@ -49,4 +49,8 @@ public class AdminService {
         }
         return 1;
     }
+    public List<Integer> GetAllMaQuyen(int maNhom){
+        List<Integer> listMaQuyen = userGroupPermissionDAO.SelectUGPS(maNhom);
+        return listMaQuyen;
+    }
 }

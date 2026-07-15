@@ -6,6 +6,7 @@ package dao;
 
 import java.util.List;
 import java.sql.*;
+import java.util.ArrayList;
 import uril.DBConnect;
 
 /**
@@ -41,5 +42,19 @@ public class UserGroupPermissionDAO {
             return 0;
         }
     }
-
+    public List<Integer> SelectUGPS(int maNhom){
+        String select = "SELECT MaQuyen FROM UserGroupPermission WHERE MaNhom = ?";
+        List<Integer> listMaQuyen = new ArrayList<>();
+        try(Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(select)) {
+            pstmt.setInt(1, maNhom);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                int maQuyen = rs.getInt("MaQuyen");
+                listMaQuyen.add(maQuyen);
+            }
+            return listMaQuyen;
+        } catch (SQLException e) {
+            return listMaQuyen;
+        }
+    }
 }
