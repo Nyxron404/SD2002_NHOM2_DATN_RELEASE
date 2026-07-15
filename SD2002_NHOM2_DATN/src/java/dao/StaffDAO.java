@@ -481,4 +481,48 @@ public class StaffDAO {
         }
         return 0;
     }
+    
+    public List<Staff> SearchStaff(String keyword) {
+        List<Staff> list = new ArrayList<>();
+        // Câu lệnh SQL: Tìm kiếm theo Tên hoặc ID (sử dụng LIKE)
+        String sql = "SELECT s.*, u.MaNhom, u.TrangThai FROM Staff s " +
+                     "LEFT JOIN [User] u ON s.MaNguoiDung = u.MaNguoiDung " +
+                     "WHERE s.HoTen LIKE ? OR CAST(s.MaNhanVien AS VARCHAR) LIKE ?";
+        
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            String query = "%" + keyword + "%";
+            ps.setString(1, query);
+            ps.setString(2, query);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                int maNhanVien = rs.getInt("MaNhanVien");
+                String hoTen = rs.getString("HoTen");
+                LocalDate ngaySinh = rs.getObject("NgaySinh", LocalDate.class);
+                boolean gioiTinh = rs.getBoolean("GioiTinh");
+                String sdt = rs.getString("SDT");
+                String email = rs.getString("Email");
+                String diaChi = rs.getString("DiaChi");
+                LocalDate ngayVaoLam = rs.getObject("NgayVaoLam", LocalDate.class);
+                double luong = rs.getDouble("Luong");
+                int maNguoiDung = rs.getInt("MaNguoiDung");
+                boolean dangKy = rs.getBoolean("DangKy");
+                boolean trangThai = rs.getBoolean("TrangThai");
+                int maNhom = rs.getInt("MaNhom");
+                
+                // Khởi tạo đối tượng Staff
+                Staff st = new Staff(maNhanVien, hoTen, ngaySinh, gioiTinh, sdt, email, diaChi, ngayVaoLam, luong, maNguoiDung, dangKy);
+                
+                // Gán các thuộc tính mở rộng
+                st.setMaNhom(maNhom);
+                st.setDanhSachQuyen(GetDanhSachQuyen(maNhom));
+                st.setDangKy(trangThai);
+                
+                list.add(st);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
