@@ -5,12 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Smart Farmer - Quản lý kho vật tư</title>
+        <title>Quản lý kho vật tư</title>
         <style>
             body {
                 margin: 0;
@@ -33,79 +35,6 @@
                 z-index: -1;
             }
 
-            /* ================= SIDEBAR ================= */
-            .sidebar {
-                width: 300px;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-right: 1px solid rgba(255, 255, 255, 0.4);
-                display: flex;
-                flex-direction: column;
-                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-                z-index: 10;
-            }
-
-            .logo-area {
-                height: 85px;
-                display: flex;
-                align-items: center;
-                padding: 0 25px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-                gap: 15px;
-            }
-
-            .logo-area svg {
-                width: 36px;
-                height: 36px;
-                filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
-            }
-            .logo-area h2 {
-                margin: 0;
-                font-size: 22px;
-                font-weight: 850;
-                background: linear-gradient(135deg, #1e4512, #467e32);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .menu {
-                list-style: none;
-                padding: 25px 0;
-                margin: 0;
-                flex: 1;
-                overflow-y: auto;
-            }
-            .menu-item {
-                padding: 14px 25px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                color: #1a2419;
-                text-decoration: none;
-                font-weight: 700;
-                font-size: 15px;
-                transition: all 0.3s ease;
-                border-left: 5px solid transparent;
-            }
-
-            .menu-item:hover, .menu-item.active {
-                background: linear-gradient(90deg, rgba(87, 156, 63, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
-                border-left-color: #579c3f;
-                color: #467e32;
-            }
-            .menu-item svg {
-                width: 22px;
-                height: 22px;
-                fill: currentColor;
-            }
-
-            .logout-btn {
-                border-top: 1px solid rgba(0, 0, 0, 0.08);
-                padding: 20px 0;
-            }
-
-            /* ================= HEADER & MAIN CONTENT ================= */
             .main-wrapper {
                 flex: 1;
                 display: flex;
@@ -117,7 +46,6 @@
                 height: 85px;
                 background: rgba(255, 255, 255, 0.85);
                 backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
                 border-bottom: 1px solid rgba(255, 255, 255, 0.4);
                 display: flex;
                 align-items: center;
@@ -126,14 +54,12 @@
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
                 z-index: 5;
             }
-
             .header-title h1 {
                 margin: 0;
                 font-size: 26px;
                 font-weight: 800;
                 color: #1a2419;
             }
-
             .user-profile {
                 display: flex;
                 align-items: center;
@@ -159,7 +85,6 @@
                 height: 22px;
                 fill: #2e541f;
             }
-
             .badge {
                 position: absolute;
                 top: 2px;
@@ -176,7 +101,6 @@
                 justify-content: center;
                 align-items: center;
             }
-
             .avatar {
                 width: 45px;
                 height: 45px;
@@ -198,20 +122,48 @@
                 overflow-y: auto;
             }
 
-            /* ================= PAGE STYLES ================= */
             .page-toolbar {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 25px;
             }
-
             .page-toolbar h2 {
                 margin: 0;
                 color: #ffffff;
                 font-size: 24px;
                 font-weight: 700;
                 text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+
+            /* ================= THANH TÌM KIẾM ================= */
+            .search-box {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 8px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .search-box input {
+                border: none;
+                outline: none;
+                padding: 8px 10px;
+                width: 250px;
+                font-size: 14px;
+            }
+            .btn-search {
+                background: #f39c12;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .btn-search:hover {
+                background: #e67e22;
             }
 
             .btn-add {
@@ -229,7 +181,6 @@
                 align-items: center;
                 gap: 8px;
             }
-
             .btn-add:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 6px 20px rgba(87, 156, 63, 0.6);
@@ -244,25 +195,21 @@
                 box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
                 overflow-x: auto;
             }
-
             table {
                 width: 100%;
                 border-collapse: collapse;
             }
-
             th, td {
                 padding: 16px;
                 text-align: left;
                 border-bottom: 1px solid rgba(0, 0, 0, 0.08);
             }
-
             th {
                 color: #4a5c43;
                 font-weight: 700;
                 text-transform: uppercase;
                 font-size: 13px;
             }
-
             td {
                 color: #1a2419;
                 font-weight: 500;
@@ -307,8 +254,8 @@
                 cursor: pointer;
                 color: white;
                 transition: 0.2s;
+                text-decoration: none;
             }
-
             .btn-edit {
                 background: #f39c12;
             }
@@ -322,7 +269,7 @@
                 background: #c0392b;
             }
 
-            /* ================= MODAL (FORM BẬT LÊN) ================= */
+            /* ================= MODAL ================= */
             .modal-overlay {
                 position: fixed;
                 top: 0;
@@ -336,7 +283,6 @@
                 align-items: center;
                 backdrop-filter: blur(5px);
             }
-
             .modal-content {
                 background: white;
                 width: 550px;
@@ -348,7 +294,6 @@
                 max-height: 90vh;
                 overflow-y: auto;
             }
-
             @keyframes slideIn {
                 from {
                     transform: translateY(-30px);
@@ -359,7 +304,6 @@
                     opacity: 1;
                 }
             }
-
             .modal-header {
                 display: flex;
                 justify-content: space-between;
@@ -392,7 +336,6 @@
             .form-row .form-group {
                 flex: 1;
             }
-
             .form-group {
                 margin-bottom: 15px;
             }
@@ -462,27 +405,28 @@
         </jsp:include>
 
         <div class="main-wrapper">
-            <header class="header">
-                <div class="header-title">
-                    <h1>Quản Lý Kho Vật Tư</h1>
-                </div>
-                <div class="user-profile">
-                    <div class="notification">
-                        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-                        <span class="badge"></span>
-                    </div>
-                    <div class="avatar">A</div>
-                </div>
-            </header>
+            <jsp:include page="/views/common/header.jsp">
+                <jsp:param name="pageTitle" value="Quản Lý Kho Vật Tư" />
+            </jsp:include>
+          
 
             <main class="content-area">
-
                 <div class="page-toolbar">
                     <h2>Danh sách vật tư</h2>
-                    <button class="btn-add" onclick="openSupplieForm('add')">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        Thêm vật tư
-                    </button>
+
+                    <%-- THANH TÌM KIẾM THEO GIAO DIỆN MỚI --%>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
+                                        openSearchModal()">
+                            <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                        </div>
+
+                        <button class="btn-add" onclick="openSupplieForm('add')">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            Thêm vật tư
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-card">
@@ -500,54 +444,86 @@
                                 <th>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Phân bón NPK</td>
-                                <td><span class="category-badge">Phân bón</span></td>
-                                <td>Bao</td>
-                                <td>150</td>
-                                <td>350,000</td>
-                                <td>30/06/2026</td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Sửa" onclick="openSupplieForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-delete" title="Xóa">Xóa</button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
+                        <tbody id="mainTableBody">
+                            <c:forEach var="item" items="${LIST_SUPPLIE}">
+                                <tr>
+                                    <td>${item.maVatTu}</td>
+                                    <td><strong>${item.tenVatTu}</strong></td>
+                                    <td><span class="category-badge">${item.loaiVatTu}</span></td>
+                                    <td>${item.donViTinh}</td>
+                                    <td>${item.soLuongTon}</td>
+                                    <td>${item.donGia}</td>
+                                    <td>${fn:substring(item.ngayNhapGanNhat, 0, 10)}</td>
+                                    <td>
+                                        <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
+                                            ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-action btn-edit" title="Sửa" onclick="openSupplieForm('edit')">Sửa</button>
+                                            <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.maVatTu}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
 
-                            <tr>
-                                <td>2</td>
-                                <td>Phân bón Kali</td>
-                                <td><span class="category-badge">Phân bón</span></td>
-                                <td>Bao</td>
-                                <td>80</td>
-                                <td>420,000</td>
-                                <td>02/07/2026</td>
-                                <td><span class="status-badge status-active">Hoạt động</span></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" onclick="openSupplieForm('edit')">Sửa</button>
-                                        <button class="btn-action btn-delete">Xóa</button>
-                                    </div>
-                                </td>
+                            <c:if test="${empty LIST_SUPPLIE}">
+                                <tr>
+                                    <td colspan="9" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                 </div>
             </main>
         </div>
 
+        <%-- MODAL KẾT QUẢ TÌM KIẾM --%>
+        <div class="modal-overlay" id="searchModal">
+            <div class="modal-content" style="width: 1000px; max-width: 95%;"> 
+                <div class="modal-header">
+                    <h3>Kết quả Tìm kiếm</h3>
+                    <button class="close-btn" onclick="closeModal('searchModal')">&times;</button>
+                </div>
+
+                <div class="table-card" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên vật tư</th>
+                                <th>Loại vật tư</th>
+                                <th>Đơn vị tính</th>
+                                <th>Tồn kho</th>
+                                <th>Đơn giá</th>
+                                <th>Ngày nhập</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <%-- Tbody rỗng, JS sẽ nhét kết quả vào đây --%>
+                        <tbody id="searchResultBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Form Thêm/Sửa -->
         <div class="modal-overlay" id="supplieModal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 id="supplieModalTitle">Thêm vật tư mới</h3>
                     <button class="close-btn" onclick="closeModal('supplieModal')">&times;</button>
                 </div>
-                <form action="SupplieServlet" method="POST">
+                <form action="${pageContext.request.contextPath}/inventory" method="POST">
                     <input type="hidden" name="action" id="formAction" value="add">
-                    <input type="hidden" name="maVatTu" id="maVatTu"> <div class="form-group">
+                    <input type="hidden" name="maVatTu" id="maVatTu">
+
+                    <div class="form-group">
                         <label>Tên vật tư</label>
                         <input type="text" name="tenVatTu" id="tenVatTu" class="form-control" placeholder="Nhập tên vật tư" required>
                     </div>
@@ -609,8 +585,54 @@
         </div>
 
         <script>
-            // Hàm mở Form Thêm/Sửa cho Vật Tư
+            // HÀM MỚI: TÌM KIẾM JS 
+            function openSearchModal() {
+                // Lấy từ khóa, chuyển thành chữ thường để tìm kiếm
+                let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+                let resultBody = document.getElementById('searchResultBody');
+
+                // Xóa dữ liệu kết quả cũ
+                resultBody.innerHTML = '';
+
+                if (keyword === '') {
+                    alert("Vui lòng nhập tên hoặc ID vật tư để tìm kiếm!");
+                    return;
+                }
+
+                // Lấy tất cả các dòng <tr> nằm trong <tbody> của bảng gốc
+                let mainTableRows = document.querySelectorAll('#mainTableBody tr');
+                let matchCount = 0;
+
+                mainTableRows.forEach(row => {
+                    // Bỏ qua dòng báo "Kho vật tư trống" nếu có
+                    if (row.cells.length > 1) {
+                        // Cột 0 là ID, Cột 1 là Tên vật tư
+                        let idText = row.cells[0].innerText.toLowerCase();
+                        let nameText = row.cells[1].innerText.toLowerCase();
+
+                        // Nếu ID hoặc Tên có chứa từ khóa
+                        if (idText.includes(keyword) || nameText.includes(keyword)) {
+                            // Copy nguyên dòng đó ném vào Modal
+                            let clonedRow = row.cloneNode(true);
+                            resultBody.appendChild(clonedRow);
+                            matchCount++;
+                        }
+                    }
+                });
+
+                // Nếu không có kết quả
+                if (matchCount === 0) {
+                    resultBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
+                }
+
+                // Bật Modal tìm kiếm
+                document.getElementById('searchModal').style.display = 'flex';
+            }
+
             function openSupplieForm(mode) {
+                // Đóng luôn cái modal tìm kiếm nếu đang mở
+                closeModal('searchModal');
+
                 const modal = document.getElementById('supplieModal');
                 const title = document.getElementById('supplieModalTitle');
                 const actionInput = document.getElementById('formAction');
@@ -618,28 +640,26 @@
                 if (mode === 'add') {
                     title.innerText = 'Thêm vật tư mới';
                     actionInput.value = 'add';
-                    // Đặt lại rỗng cho toàn bộ input
                     modal.querySelector('form').reset();
                 } else if (mode === 'edit') {
                     title.innerText = 'Sửa thông tin vật tư';
                     actionInput.value = 'edit';
-                    // Ở đây, bạn có thể thực hiện lấy data qua ID (vd dùng JS DOM hoặc Fetch API) để đổ lại vào form
                 }
-
                 modal.style.display = 'flex';
             }
 
-            // Hàm đóng Modal
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
 
-            // Bấm ra vùng tối để đóng Modal
             window.onclick = function (event) {
                 let supplieModal = document.getElementById('supplieModal');
-                if (event.target == supplieModal) {
+                let searchModal = document.getElementById('searchModal');
+
+                if (event.target == supplieModal)
                     supplieModal.style.display = "none";
-                }
+                if (event.target == searchModal)
+                    searchModal.style.display = "none";
             }
         </script>
     </body>

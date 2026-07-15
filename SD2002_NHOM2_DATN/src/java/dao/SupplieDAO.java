@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
  * @author longd
  */
 public class SupplieDAO {
-
     private List<Supplie> listSupplie;
 
     public SupplieDAO() {
@@ -24,28 +23,21 @@ public class SupplieDAO {
     }
 
     public List<Supplie> SelectSupplie() {
-        String select = "SELECT * FROM Supplie";
         listSupplie.clear();
+        String select = "SELECT * FROM Supplie";
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
             ResultSet rs = stmt.executeQuery(select);
             while (rs.next()) {
-                int MaVatTu = rs.getInt("MaVatTu");
-                String TenVatTu = rs.getString("TenVatTu");
-                String LoaiVatTu = rs.getString("LoaiVatTu");
-                String DonViTinh = rs.getString("DonViTinh");
-                int SoLuongTon = rs.getInt("SoLuongTon");
-                double DonGia = rs.getDouble("DonGia");
-                String MoTa = rs.getString("MoTa");
-                LocalDateTime NgayNhapGanNhat = rs.getTimestamp("NgayNhapGanNhat").toLocalDateTime();
-                boolean TrangThai = rs.getBoolean("TrangThai");
-
-                listSupplie.add(new Supplie(MaVatTu, TenVatTu, LoaiVatTu, DonViTinh, SoLuongTon, DonGia, MoTa, NgayNhapGanNhat, TrangThai));
+                listSupplie.add(new Supplie(
+                    rs.getInt("MaVatTu"), rs.getString("TenVatTu"), rs.getString("LoaiVatTu"),
+                    rs.getString("DonViTinh"), rs.getInt("SoLuongTon"), rs.getDouble("DonGia"),
+                    rs.getString("MoTa"), rs.getTimestamp("NgayNhapGanNhat").toLocalDateTime(), rs.getBoolean("TrangThai")
+                ));
             }
-            return listSupplie;
         } catch (SQLException e) {
             e.printStackTrace();
-            return listSupplie;
         }
+        return listSupplie;
     }
 
     public void addSupplie(Supplie s) {
@@ -59,6 +51,34 @@ public class SupplieDAO {
             pstmt.setString(6, s.getMoTa());
             pstmt.setTimestamp(7, Timestamp.valueOf(s.getNgayNhapGanNhat()));
             pstmt.setBoolean(8, s.isTrangThai());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSupplie(Supplie s) {
+        String update = "UPDATE Supplie SET TenVatTu=?, LoaiVatTu=?, DonViTinh=?, SoLuongTon=?, DonGia=?, MoTa=?, NgayNhapGanNhat=?, TrangThai=? WHERE MaVatTu=?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(update)) {
+            pstmt.setString(1, s.getTenVatTu());
+            pstmt.setString(2, s.getLoaiVatTu());
+            pstmt.setString(3, s.getDonViTinh());
+            pstmt.setInt(4, s.getSoLuongTon());
+            pstmt.setDouble(5, s.getDonGia());
+            pstmt.setString(6, s.getMoTa());
+            pstmt.setTimestamp(7, Timestamp.valueOf(s.getNgayNhapGanNhat()));
+            pstmt.setBoolean(8, s.isTrangThai());
+            pstmt.setInt(9, s.getMaVatTu());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSupplie(int maVatTu) {
+        String delete = "DELETE FROM Supplie WHERE MaVatTu=?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(delete)) {
+            pstmt.setInt(1, maVatTu);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
