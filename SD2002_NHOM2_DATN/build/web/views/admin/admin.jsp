@@ -153,12 +153,12 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center; /* Căn giữa nội dung bên trong nút */
-                gap: 4px; /* Giảm gap một chút để text không bị tràn */
-                padding: 6px 10px;
+                gap: 6px;
+                padding: 6px 12px;
                 color: white;
                 text-decoration: none;
                 border-radius: 4px;
-                font-size: 0.8rem; /* Cho chữ nhỏ đi một chút cho thanh thoát */
+                font-size: 0.85rem;
                 font-weight: 500;
                 transition: all 0.2s ease-in-out;
                 border: none;
@@ -166,14 +166,14 @@
                 box-sizing: border-box; /* Đảm bảo padding không làm nở rộng size nút quá đà */
             }
 
-            /* Áp dụng kích cỡ đồng đều cho các nút trong nhóm thao tác dòng */
+            /* Áp dụng kích cỡ đồng đều cho nút Chi tiết */
             .action-group .btn-action {
-                width: 90px;     /* Chiều rộng cố định, gọn gàng hơn trước */
-                height: 32px;    /* Chiều cao cố định đảm bảo 3 nút bằng nhau chằn chặn */
+                width: 100px;     /* Chiều rộng cố định, cân đối hơn */
+                height: 32px;    /* Chiều cao cố định đảm bảo căn giữa hoàn hảo theo height */
                 padding: 0;      /* Reset padding dọc để căn giữa hoàn hảo theo height */
             }
 
-            /* Nút Thêm Nhóm (Nằm ở góc trên, không bị áp dụng chiều rộng 90px của dòng) */
+            /* Nút Thêm Nhóm (Nằm ở góc trên, không bị áp dụng chiều rộng của dòng) */
             .btn-add {
                 background-color: #2e7d32;
                 font-size: 0.95rem;
@@ -195,30 +195,11 @@
                 background-color: #115293;
             }
 
-            /* Nút Sửa Nhóm (Màu cam ấm) */
-            .btn-edit {
-                background-color: #f57c00;
-            }
-
-            .btn-edit:hover {
-                background-color: #e65100;
-            }
-
-            /* Nút Xóa Nhóm (Màu đỏ) */
-            .btn-delete {
-                background-color: #d32f2f;
-            }
-
-            .btn-delete:hover {
-                background-color: #c62828;
-            }
-
             /* Wrapper chứa các nút hành động cùng dòng */
             .action-group {
                 display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-                justify-content: center; /* Giữ các nút hành động ở giữa ô */
+                justify-content: center; /* Giữ nút hành động ở chính giữa ô */
+                align-items: center;
             }
             /* --- CSS HỆ THỐNG DIỄN HỌA MODAL DIỆN RỘNG --- */
 
@@ -240,9 +221,10 @@
                 background-color: #ffffff;
                 width: 100%;
                 max-width: 550px;
+                max-height: 90vh; /* Giới hạn chiều cao để không bị tràn màn hình */
                 border-radius: 8px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                overflow: hidden;
+                overflow-y: auto; /* Cho phép cuộn bên trong hộp thoại nếu quá dài */
                 animation: slideUpBox 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
             }
 
@@ -254,6 +236,9 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 10;
             }
 
             .modal-header h3 {
@@ -319,6 +304,14 @@
             .form-group input[type="text"]:focus,
             .form-group textarea:focus {
                 border-color: #2e7d32;
+            }
+
+            /* CSS cho ô chỉ đọc (readonly) */
+            .form-group input[readonly] {
+                background-color: #f5f5f5;
+                color: #666666;
+                cursor: not-allowed;
+                border: 1px solid #dddddd;
             }
 
             /* Layout chia ô lưới cho danh sách chọn nhiều Quyền hạn (Checkbox) */
@@ -398,6 +391,7 @@
             .modal-footer {
                 display: flex;
                 justify-content: flex-end;
+                align-items: center;
                 gap: 12px;
                 border-top: 1px solid #eeeeee;
                 padding-top: 15px;
@@ -433,6 +427,19 @@
 
             .btn-modal-submit:hover {
                 background-color: #1b5e20;
+            }
+
+            /* Nút xóa màu đỏ nổi bật */
+            .btn-modal-danger {
+                background-color: #d32f2f;
+                color: white;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .btn-modal-danger:hover {
+                background-color: #c62828;
             }
 
             /* Hiệu ứng chuyển động mượt mà khi Modal bật lên */
@@ -539,6 +546,53 @@
                 border-radius: 4px;
                 border: 1px solid #f5c6cb;
             }
+            /* Màu chủ đạo xanh dương dành riêng cho Header của Modal Chi Tiết */
+            .header-detail {
+                background-color: #1976d2 !important;
+            }
+
+            /* Nút cập nhật màu xanh dương đồng bộ */
+            .btn-update {
+                background-color: #1976d2 !important;
+            }
+
+            .btn-update:hover {
+                background-color: #115293 !important;
+            }
+
+            /* Định dạng cho ô Select-box chọn trạng thái hoạt động */
+            .select-custom {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                font-family: inherit;
+                box-sizing: border-box;
+                outline: none;
+                transition: border-color 0.2s;
+                background-color: #ffffff;
+                cursor: pointer;
+            }
+
+            .select-custom:focus {
+                border-color: #1976d2;
+            }
+
+            /* Custom viền hộp thoại chi tiết */
+            .border-detail {
+                border-top: 4px solid #1976d2;
+            }
+            /* Ẩn thanh cuộn cho các trình duyệt dựa trên Webkit (Chrome, Safari, Edge, Opera) */
+            .modal-box::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Ẩn thanh cuộn cho Firefox và IE/Edge cũ */
+            .modal-box {
+                -ms-overflow-style: none;  /* IE và Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
         </style>
     </head>
     <body>
@@ -614,9 +668,10 @@
                                     </td>
                                     <td>
                                         <div class="action-group">
-                                            <button type="button" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</button>
-                                            <button type="button" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
-                                            <button type="button" class="btn-action btn-delete" title="Xóa nhóm"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                            <form method="Get" action="${pageContext.request.contextPath}/admin">
+                                                <input type="hidden" name="id" value="${ug.maNhom}"> <!-- Truyền ID nhóm cần xem -->
+                                                <button type="submit" name="action" value="detail" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -668,6 +723,114 @@
                                     </button>
                                     <button type="submit" name="action" value="add&save" class="btn-modal-action btn-modal-submit">
                                         <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </c:if>
+            </div>
+            <div>
+                <c:if test="${Detail == 'detail' && Detail !=null}">
+                    <!-- Lớp nền mờ bao phủ toàn bộ màn hình cho phần Chi tiết -->
+                    <div class="modal-overlay">
+                        <!-- Khung chứa Form thông tin chi tiết nổi lên trên -->
+                        <!-- Khung chứa Form thông tin chi tiết nổi lên trên -->
+                        <div class="modal-box border-detail">
+                            <div class="modal-header header-detail">
+                                <h3><i class="fa-solid fa-circle-info"></i> Chi Tiết & Chỉnh Sửa Nhóm</h3>
+
+                            </div>
+
+                            <!-- Form gửi dữ liệu cập nhật -->
+                            <form action="/admin" method="Post" class="modal-form">
+                                <!-- ID ẩn của nhóm để gửi về server -->
+                                <input type="hidden" name="id" value="ROLE_01">
+
+                                <!-- Mã Nhóm (Không thể cập nhật) -->
+                                <div class="form-group">
+                                    <label for="detailMaNhom">Mã nhóm <small style="color: #c62828;">(Không thể chỉnh sửa)</small></label>
+                                    <input type="text" id="detailMaNhom" name="MaNhom" value="ROLE_01" readonly>
+                                </div>
+
+                                <!-- Tên nhóm (Có thể cập nhật) -->
+                                <div class="form-group">
+                                    <label for="detailTenNhom">Tên nhóm <span class="required">*</span></label>
+                                    <input type="text" id="detailTenNhom" name="TenNhom" value="Ban Quản Trị" required autocomplete="off">
+                                </div>
+
+                                <!-- Ngày tạo (Không thể cập nhật) -->
+                                <div class="form-group">
+                                    <label for="detailNgayTao">Ngày tạo <small style="color: #c62828;">(Không thể chỉnh sửa)</small></label>
+                                    <input type="text" id="detailNgayTao" name="NgayTao" value="2026-06-23" readonly>
+                                </div>
+
+                                <!-- Trạng thái hoạt động (Có thể cập nhật) -->
+                                <div class="form-group">
+                                    <label for="detailTrangThai">Trạng thái hoạt động <span class="required">*</span></label>
+                                    <select id="detailTrangThai" name="TrangThai" class="select-custom">
+                                        <option value="true" selected>Hoạt động</option>
+                                        <option value="false">Tạm dừng</option>
+                                    </select>
+                                </div>
+
+                                <!-- Phân chia quyền hạn (Chọn nhiều ô Checkbox giống form thêm nhóm, đã tích sẵn mẫu) -->
+                                <div class="form-group">
+                                    <label>Quyền hạn được cấp <span class="required">*</span></label>
+                                    <small style="color: #666; display: block; margin-bottom: 8px;">(Tích chọn để thay đổi danh sách quyền của nhóm này)</small>
+                                    <div class="permissions-grid">
+                                        <!-- Quyền 1 (Tích sẵn) -->
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="Quyen" value="P_VIEW" checked>
+                                            <span class="checkmark"></span> Xem báo cáo
+                                        </label>
+                                        <!-- Quyền 2 (Tích sẵn) -->
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="Quyen" value="P_ADD" checked>
+                                            <span class="checkmark"></span> Thêm mới dữ liệu
+                                        </label>
+                                        <!-- Quyền 3 (Chưa tích) -->
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="Quyen" value="P_EDIT">
+                                            <span class="checkmark"></span> Chỉnh sửa hệ thống
+                                        </label>
+                                        <!-- Quyền 4 (Tích sẵn) -->
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="Quyen" value="P_DELETE" checked>
+                                            <span class="checkmark"></span> Xóa dữ liệu
+                                        </label>
+                                        <!-- Quyền 5 (Chưa tích) -->
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="Quyen" value="P_EXPORT">
+                                            <span class="checkmark"></span> Xuất file Excel
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Số lượng nhân viên (Không thể cập nhật) -->
+                                <div class="form-group">
+                                    <label for="detailSoLuong">Số lượng nhân viên <small style="color: #c62828;">(Không thể chỉnh sửa)</small></label>
+                                    <input type="text" id="detailSoLuong" name="SoLuongNV" value="5" readonly>
+                                </div>
+
+                                <!-- Mô tả chức năng (Có thể cập nhật - Ở dưới cùng bảng) -->
+                                <div class="form-group">
+                                    <label for="detailMoTa">Mô tả chức năng</label>
+                                    <textarea id="detailMoTa" name="MoTa" rows="3" placeholder="Mô tả vai trò của nhóm này...">Nhóm có toàn quyền quản trị hệ thống nông trại thông minh.</textarea>
+                                </div>
+
+                                <!-- Cụm nút bấm hành động -->
+                                <div class="modal-footer">
+                                    <!-- Nút xóa nằm bên tay trái -->
+                                    <button type="submit" name="action" value="delete" class="btn-modal-action btn-modal-danger" style="margin-right: auto;" onclick="return confirm('Bạn có chắc chắn muốn xóa nhóm này không?');">
+                                        <i class="fa-solid fa-trash-can"></i> Xóa nhóm
+                                    </button>
+
+                                    <button type="button" class="btn-modal-action btn-modal-cancel" onclick="window.location.href = '${pageContext.request.contextPath}/admin'">
+                                        Đóng lại
+                                    </button>
+                                    <button type="submit" name="action" value="update&save" class="btn-modal-action btn-modal-submit btn-update">
+                                        <i class="fa-solid fa-pen-to-square"></i> Cập nhật thay đổi
                                     </button>
                                 </div>
                             </form>

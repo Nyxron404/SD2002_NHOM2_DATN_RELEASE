@@ -48,6 +48,9 @@ public class AdminServlet extends HttpServlet {
         if ("add".equals(action)) {
             request.setAttribute("Form", "add");
             request.setAttribute("Permission", adminSV.GetListPS());
+        }else if("detail".equals(action)){
+            request.setAttribute("Detail", "detail");
+            request.setAttribute(action, this);
         }
         request.setAttribute("LISTUG", adminSV.GetListUG());
         request.getRequestDispatcher("./views/admin/admin.jsp").forward(request, response);
