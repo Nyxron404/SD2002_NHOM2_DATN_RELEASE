@@ -220,6 +220,241 @@
                 flex-wrap: wrap;
                 justify-content: center; /* Giữ các nút hành động ở giữa ô */
             }
+            /* --- CSS HỆ THỐNG DIỄN HỌA MODAL DIỆN RỘNG --- */
+
+            /* Lớp phủ làm mờ toàn màn hình phía sau */
+            .modal-overlay {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(0, 0, 0, 0.55); /* Tạo độ mờ tối màu sâu rộng */
+                backdrop-filter: blur(4px); /* Hiệu ứng kính mờ thời thượng */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999; /* Đảm bảo nổi lên trên mọi layout */
+                animation: fadeInOverlay 0.25s ease-out forwards;
+            }
+
+            /* Khung hộp thoại chính của Form nhập liệu */
+            .modal-box {
+                background-color: #ffffff;
+                width: 100%;
+                max-width: 550px;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+                animation: slideUpBox 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            }
+
+            /* Thanh tiêu đề Modal */
+            .modal-header {
+                background-color: #2e7d32;
+                color: white;
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-header h3 {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            /* Nút dấu X đóng nhanh */
+            .close-modal-btn {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.8rem;
+                cursor: pointer;
+                line-height: 1;
+                padding: 0;
+                transition: opacity 0.2s;
+            }
+
+            .close-modal-btn:hover {
+                opacity: 0.7;
+            }
+
+            /* Thân biểu mẫu */
+            .modal-form {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                color: #333333;
+                margin-bottom: 6px;
+                font-size: 0.95rem;
+            }
+
+            .form-group .required {
+                color: #d32f2f;
+            }
+
+            /* Ô nhập chữ và vùng văn bản mô tả */
+            .form-group input[type="text"],
+            .form-group textarea {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                font-family: inherit;
+                box-sizing: border-box;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .form-group input[type="text"]:focus,
+            .form-group textarea:focus {
+                border-color: #2e7d32;
+            }
+
+            /* Layout chia ô lưới cho danh sách chọn nhiều Quyền hạn (Checkbox) */
+            .permissions-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr); /* Tự động chia 2 cột đều nhau */
+                gap: 10px;
+                background-color: #f9f9f9;
+                padding: 12px;
+                border: 1px solid #e0e0e0;
+                border-radius: 4px;
+                max-height: 160px;
+                overflow-y: auto; /* Cuộn dọc tự động nếu danh sách quyền quá dài */
+            }
+
+            /* Custom hiển thị Checkbox cho thẩm mỹ */
+            .checkbox-container {
+                display: flex;
+                align-items: center;
+                position: relative;
+                padding-left: 26px;
+                cursor: pointer;
+                font-size: 0.88rem;
+                color: #444;
+                user-select: none;
+            }
+
+            .checkbox-container input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+
+            .checkmark {
+                position: absolute;
+                left: 0;
+                height: 18px;
+                width: 18px;
+                background-color: #eee;
+                border: 1px solid #bbb;
+                border-radius: 3px;
+                transition: all 0.2s;
+            }
+
+            .checkbox-container:hover input ~ .checkmark {
+                background-color: #ddd;
+            }
+
+            .checkbox-container input:checked ~ .checkmark {
+                background-color: #2e7d32;
+                border-color: #2e7d32;
+            }
+
+            .checkmark:after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+
+            .checkbox-container input:checked ~ .checkmark:after {
+                display: block;
+            }
+
+            .checkbox-container .checkmark:after {
+                left: 6px;
+                top: 2px;
+                width: 4px;
+                height: 9px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+
+            /* Khu vực chân biểu mẫu chứa cụm nút chính */
+            .modal-footer {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                border-top: 1px solid #eeeeee;
+                padding-top: 15px;
+                margin-top: 10px;
+            }
+
+            .btn-modal-action {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .btn-modal-cancel {
+                background-color: #e0e0e0;
+                color: #333333;
+            }
+
+            .btn-modal-cancel:hover {
+                background-color: #d5d5d5;
+            }
+
+            .btn-modal-submit {
+                background-color: #2e7d32;
+                color: white;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .btn-modal-submit:hover {
+                background-color: #1b5e20;
+            }
+
+            /* Hiệu ứng chuyển động mượt mà khi Modal bật lên */
+            @keyframes fadeInOverlay {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideUpBox {
+                from {
+                    transform: translateY(30px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
         </style>
     </head>
     <body>
@@ -243,41 +478,44 @@
                                     <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm...">
                                 </div>
                                 <!-- Nút thêm nhóm -->
-                                <a href="#" class="btn-action btn-add">
+                                <form method="Get" action="${pageContext.request.contextPath}/admin">
+                                <button type="submit" name="action" value="add" class="btn-action btn-add">
                                     <i class="fa-solid fa-plus"></i> Thêm nhóm
-                                </a>
-                            </div>
-                        </div>
+                                </button>
+                            </form>
 
-                        <table class="data-table" id="rolesTable">
-                            <thead>
-                                <tr>
-                                    <th>Tên nhóm người dùng</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        </div>
+                    </div>
+
+                    <table class="data-table" id="rolesTable">
+                        <thead>
+                            <tr>
+                                <th>Tên nhóm người dùng</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             <c:forEach var="ug" items="${LISTUG}">
                                 <tr>
-                                    <td>${ug.getTenNhom()}</td>
-                                    <td>${ug.getNgayTao()}</td>
+                                    <td>${ug.tenNhom}</td>
+                                    <td>${ug.ngayTao}</td>
                                     <td>
                                         <c:choose>
-                                            <c:when test="${ug.isTrangThai()== true}">
+                                            <c:when test="${ug.trangThai}">
                                                 <span class="status-active">Hoạt động</span>
                                             </c:when>
-                                            <c:otherwise >
+                                            <c:otherwise>
                                                 <span class="status-inactive">Tạm dừng</span>
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
                                     <td>
                                         <div class="action-group">
-                                            <a href="#" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</a>
-                                            <a href="#" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                                            <button class="btn-action btn-delete" title="Xóa nhóm"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                            <button type="button" class="btn-action btn-detail" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</button>
+                                            <button type="button" class="btn-action btn-edit" title="Sửa nhóm"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                                            <button type="button" class="btn-action btn-delete" title="Xóa nhóm"><i class="fa-solid fa-trash"></i> Xóa</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -286,7 +524,81 @@
                     </table>
                 </div>
             </div>
+            <div class="">
+                <!-- Khối hiển thị form thêm mới khi biến form có giá trị 'add' -->
+                <c:if test="${form == 'add' && form !=null}">
+                    <!-- Lớp nền mờ bao phủ toàn bộ màn hình -->
+                    <div class="modal-overlay">
+                        <!-- Khung chứa Form nhập liệu nổi lên trên -->
+                        <div class="modal-box">
+                            <div class="modal-header">
+                                <h3><i class="fa-solid fa-folder-plus"></i> Thêm Nhóm Người Dùng Mới</h3>
+                                <!-- Nút dấu X dùng để đóng/hủy form nhanh, quay lại trang quản lý chính -->
+                                <button type="button" class="close-modal-btn" onclick="window.location.href = '${pageContext.request.contextPath}/admin'">&times;</button>
+                            </div>
 
+                            <form action="${pageContext.request.contextPath}/admin" method="Post" class="modal-form">
+                                <!-- Input ẩn truyền hành động về cho Servlet xử lý dữ liệu -->
+                                <input type="hidden" name="action" value="store">
+
+                                <!-- Nhập tên nhóm -->
+                                <div class="form-group">
+                                    <label for="modalTenNhom">Tên nhóm <span class="required">*</span></label>
+                                    <input type="text" id="modalTenNhom" name="tenNhom" placeholder="Nhập tên nhóm người dùng..." required autocomplete="off">
+                                </div>
+
+                                <!-- Chọn đa quyền bằng Checkbox -->
+                                <div class="form-group">
+                                    <label>Phân chia quyền hạn <span class="required">*</span></label>
+                                    <small style="color: #666; display: block; margin-bottom: 8px;">(Tích chọn một hoặc nhiều quyền hạn cho nhóm này)</small>
+                                    <div class="permissions-grid">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="VIEW_DASHBOARD">
+                                            <span class="checkmark"></span> Xem bảng điều khiển
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="MANAGE_USERS">
+                                            <span class="checkmark"></span> Quản lý tài khoản
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="MANAGE_CROPS">
+                                            <span class="checkmark"></span> Quản lý mùa vụ
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="MANAGE_DEVICES">
+                                            <span class="checkmark"></span> Điều khiển thiết bị IoT
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="VIEW_REPORTS">
+                                            <span class="checkmark"></span> Xem báo cáo thống kê
+                                        </label>
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" name="quyenhantao" value="SYSTEM_SETTINGS">
+                                            <span class="checkmark"></span> Cấu hình hệ thống
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Nhập mô tả -->
+                                <div class="form-group">
+                                    <label for="modalMoTa">Mô tả chức năng</label>
+                                    <textarea id="modalMoTa" name="moTa" rows="3" placeholder="Tóm tắt ngắn gọn vai trò và trách nhiệm của nhóm này..."></textarea>
+                                </div>
+
+                                <!-- Cụm nút xác nhận / hủy bỏ hành động cuối form -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn-modal-action btn-modal-cancel" onclick="window.location.href = '${pageContext.request.contextPath}/admin'">
+                                        Hủy bỏ
+                                    </button>
+                                    <button type="submit" class="btn-modal-action btn-modal-submit">
+                                        <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </c:if>
+            </div>
         </div>
     </body>
 </html>
