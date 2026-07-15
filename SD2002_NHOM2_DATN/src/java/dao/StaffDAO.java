@@ -59,10 +59,8 @@ public class StaffDAO {
 
     // Viết thêm hàm mới: Chỉ nối 2 bảng Staff và User để lấy MaNhom
     public List<Staff> SelectStaffAndGroup() {
-        // Tạo hẳn 1 cái list mới như bạn muốn
         List<Staff> newList = new ArrayList<>();
 
-        // Câu SELECT ngắn gọn nối đúng 2 bảng
         String select = "SELECT s.*, u.MaNhom, u.TrangThai FROM Staff s LEFT JOIN [User] u ON s.MaNguoiDung = u.MaNguoiDung";
 
         try (Connection con = DBConnect.getConnection(); Statement stmt = con.createStatement()) {
@@ -87,7 +85,6 @@ public class StaffDAO {
                 // Khởi tạo Staff với data gốc
                 Staff st = new Staff(maNhanVien, hoTen, ngaySinh, gioiTinh, sdt, email, diaChi, ngayVaoLam, luong, maNguoiDung, dangKy);
 
-                // Nhét thêm Mã nhóm vào (Bạn nhớ thêm biến MaNhom và setMaNhom() trong file Model Staff nhé)
                 st.setMaNhom(maNhom);
 
                 st.setDanhSachQuyen(GetDanhSachQuyen(maNhom));
@@ -102,7 +99,6 @@ public class StaffDAO {
         return newList;
     }
 
-    // Hàm phụ: Lấy tất cả quyền gộp thành 1 chuỗi (VD: "Admin, HR") dựa vào Mã Nhóm
     public String GetDanhSachQuyen(int maNhom) {
         if (maNhom == 0) {
             return "Chưa phân quyền";
@@ -135,13 +131,11 @@ public class StaffDAO {
         String insert = "INSERT INTO UserGroupPermission (MaNhom, MaQuyen) VALUES (?, ?)";
 
         try (Connection con = DBConnect.getConnection()) {
-            // Bước 1: Xóa trắng tất cả quyền cũ của Nhóm này
             try (PreparedStatement pstmtDel = con.prepareStatement(delete)) {
                 pstmtDel.setInt(1, maNhom);
                 pstmtDel.executeUpdate();
             }
 
-            // Bước 2: Duyệt vòng lặp để Insert từng quyền mới (nếu có tick chọn)
             if (maQuyenList != null && maQuyenList.length > 0) {
                 try (PreparedStatement pstmtIns = con.prepareStatement(insert)) {
                     for (String quyen : maQuyenList) {
@@ -156,40 +150,32 @@ public class StaffDAO {
         }
     }
 
-    // 1. Hàm phụ: Xóa dấu tiếng Việt và chuyển Đ/đ thành D/d
     public String removeAccents(String str) {
         if (str == null) {
             return "";
         }
-        // Tách các dấu thanh ra khỏi chữ cái
         String temp = java.text.Normalizer.normalize(str, java.text.Normalizer.Form.NFD);
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        // Xóa dấu và xử lý riêng chữ đ/Đ
         return pattern.matcher(temp).replaceAll("").replace("Đ", "D").replace("đ", "d");
     }
 
-    // 2. Hàm phụ: Tạo Username (Ví dụ: Hà Quang Linh -> Linhhq)
     public String generateUsername(String fullName) {
         if (fullName == null || fullName.trim().isEmpty()) {
             return "";
         }
 
-        // Chuyển về chữ thường và xóa dấu
         String unaccented = removeAccents(fullName.trim().toLowerCase());
         String[] words = unaccented.split("\\s+");
 
-        // Nếu tên chỉ có 1 chữ, viết hoa chữ cái đầu rồi trả về luôn
         if (words.length == 1) {
             return words[0].substring(0, 1).toUpperCase() + words[0].substring(1);
         }
 
-        // Lấy Tên (từ cuối cùng) và viết hoa chữ cái đầu tiên
         String firstName = words[words.length - 1];
         String capitalizedName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
 
         StringBuilder username = new StringBuilder(capitalizedName);
 
-        // Ghép thêm chữ cái đầu của Họ và Đệm (giữ nguyên chữ thường)
         for (int i = 0; i < words.length - 1; i++) {
             username.append(words[i].charAt(0));
         }
@@ -197,7 +183,6 @@ public class StaffDAO {
         return username.toString();
     }
 
-    // 3. Hàm phụ: Kiểm tra xem username đã tồn tại chưa để tránh trùng lặp
     private boolean checkUsernameExists(String username) {
         String sql = "SELECT 1 FROM [User] WHERE TenDangNhap = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -210,10 +195,8 @@ public class StaffDAO {
         return false;
     }
 
-    // 1. Hàm tạo mật khẩu ngẫu nhiên đúng 9 số
     public String generateRandomPassword() {
         Random rnd = new Random();
-        // Tạo số ngẫu nhiên từ 100.000.000 đến 999.999.999
         int number = 100000000 + rnd.nextInt(900000000);
         return String.valueOf(number);
     }
@@ -267,12 +250,10 @@ public class StaffDAO {
         }
     }
 
-    // 3. Cập nhật lại hàm CreateDraftUser
     public void CreateDraftUser(int maNhanVien, int maNhom) {
         String hoTen = "";
         String email = "";
 
-        // Bước 1: Lấy Họ Tên VÀ EMAIL của nhân viên từ DB
         String getInfoSql = "SELECT HoTen, Email FROM Staff WHERE MaNhanVien = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(getInfoSql)) {
             ps.setInt(1, maNhanVien);
@@ -285,7 +266,6 @@ public class StaffDAO {
             e.printStackTrace();
         }
 
-        // Bước 2: Sinh Username
         String baseUsername = generateUsername(hoTen);
         String finalUsername = baseUsername;
         int counter = 1;
@@ -294,10 +274,8 @@ public class StaffDAO {
             counter++;
         }
 
-        // Bước 3: Sinh mật khẩu ngẫu nhiên 9 số
         String randomPassword = generateRandomPassword();
 
-        // Bước 4: Insert tài khoản vào DB và gửi Email
         String insertUser = "INSERT INTO [User] (TenDangNhap, MatKhau, MaNhom, TrangThai) VALUES (?, ?, ?, 1)";
         String updateStaff = "UPDATE Staff SET MaNguoiDung = ? WHERE MaNhanVien = ?";
 
@@ -317,7 +295,6 @@ public class StaffDAO {
                 pstmt2.setInt(2, maNhanVien);
 
                 int rowUpdated = pstmt2.executeUpdate();
-                // Đảm bảo đoạn này VẪN CÒN trong CreateDraftUser của StaffDAO
                 if (rowUpdated > 0 && email != null && !email.trim().isEmpty()) {
                     sendEmail(email, finalUsername, randomPassword); // Gọi trực tiếp, không dùng Thread nếu đang test
                 }
@@ -327,7 +304,6 @@ public class StaffDAO {
         }
     }
 
-    // Thêm hàm này để cập nhật Mã Nhóm mới cho nhân viên đã có tài khoản
     public void UpdateStaffGroup(int maNguoiDung, int newMaNhom) {
         String sql = "UPDATE [User] SET MaNhom = ? WHERE MaNguoiDung = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -339,7 +315,6 @@ public class StaffDAO {
         }
     }
 
-    // Hàm sửa thông tin nhân viên
     public void UpdateStaff(Staff st) {
         String sql = "UPDATE Staff SET HoTen=?, NgaySinh=?, GioiTinh=?, SDT=?, Email=?, DiaChi=?, Luong=? WHERE MaNhanVien=?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -357,7 +332,6 @@ public class StaffDAO {
         }
     }
 
-    // Hàm Khóa/Mở khóa dựa vào cột TrangThai (Boolean) trong bảng [User]
     public void UpdateStaffStatus(int maNguoiDung, boolean trangThai) {
         String sql = "UPDATE [User] SET TrangThai = ? WHERE MaNguoiDung = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -369,7 +343,6 @@ public class StaffDAO {
         }
     }
 
-    // Sửa lại hàm InsertStaff: Trả về ID (MaNhanVien) vừa tạo thay vì boolean
     public int InsertStaff(Staff st) {
         String insert = "INSERT INTO Staff (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, Luong) VALUES (?, ?, ?, ?, ?, ?, ?);";
         // THÊM Statement.RETURN_GENERATED_KEYS để lấy ID vừa tạo
@@ -398,16 +371,15 @@ public class StaffDAO {
         }
     }
 
-    // 2. Sửa lại hàm CheckEmail: Bỏ cái "AND DangKy = 0" đi để quét toàn bộ hệ thống
     public int CheckEmail(String Email) {
         String checkEmail = "SELECT 1 FROM Staff WHERE Email = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(checkEmail)) {
             pstmt.setString(1, Email);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return 1; // Đã tồn tại
+                return 1; 
             } else {
-                return 2; // Hợp lệ
+                return 2;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -415,16 +387,15 @@ public class StaffDAO {
         }
     }
 
-    // 3. Thêm hàm CheckSDT hoàn toàn mới
     public int CheckSDT(String SDT) {
         String checkSDT = "SELECT 1 FROM Staff WHERE SDT = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(checkSDT)) {
             pstmt.setString(1, SDT);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return 1; // Đã tồn tại
+                return 1; 
             } else {
-                return 2; // Hợp lệ
+                return 2;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -432,21 +403,18 @@ public class StaffDAO {
         }
     }
 
-    // Hàm Xóa nhân viên và tài khoản liên kết (Dùng Transaction để đảm bảo xóa cả 2 bảng)
     public boolean DeleteStaff(int maNhanVien, int maNguoiDung) {
         String deleteStaff = "DELETE FROM Staff WHERE MaNhanVien = ?";
         String deleteUser = "DELETE FROM [User] WHERE MaNguoiDung = ?";
 
         try (Connection con = DBConnect.getConnection()) {
-            con.setAutoCommit(false); // Bật chế độ Transaction
+            con.setAutoCommit(false); 
             try {
-                // 1. Xóa Nhân viên trước (Vì Staff chứa khóa phụ trỏ sang User)
                 try (PreparedStatement psStaff = con.prepareStatement(deleteStaff)) {
                     psStaff.setInt(1, maNhanVien);
                     psStaff.executeUpdate();
                 }
 
-                // 2. Xóa Tài khoản (nếu nhân viên này đã có tài khoản)
                 if (maNguoiDung > 0) {
                     try (PreparedStatement psUser = con.prepareStatement(deleteUser)) {
                         psUser.setInt(1, maNguoiDung);
@@ -454,10 +422,10 @@ public class StaffDAO {
                     }
                 }
 
-                con.commit(); // Thành công cả 2 lệnh thì mới lưu thay đổi
+                con.commit();
                 return true;
             } catch (Exception ex) {
-                con.rollback(); // Nếu lỗi 1 trong 2 thì hoàn tác lại toàn bộ
+                con.rollback(); 
                 ex.printStackTrace();
                 return false;
             }
@@ -467,7 +435,6 @@ public class StaffDAO {
         }
     }
 
-    // Hàm phụ để lấy Mã Nhân Viên vừa tạo dựa vào Email
     public int GetMaNhanVienByEmail(String email) {
         String sql = "SELECT MaNhanVien FROM Staff WHERE Email = ?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
