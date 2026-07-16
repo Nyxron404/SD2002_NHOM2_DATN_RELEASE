@@ -428,7 +428,7 @@
                                        value="${param.keyword}" autocomplete="off">
                             <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
                         </form>
-                        <button class="btn-add" onclick="openEmployeeForm('add')">Thêm nhân viên</button>
+                        <button class="btn-add" onclick="openEmployeeForm('add')"><svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Thêm nhân viên</button>
                     </div>
                 </div>
 
@@ -460,13 +460,11 @@
                                         </c:forEach>
                                     </td>
                                     <td>
-                                        <td>
                                         <c:if test="${st.isDangKy()}">
                                             <span class="status-badge ${userForStaff.trangThai ? 'status-active' : 'status-locked'}">
                                                 ${userForStaff.trangThai ? 'Bình thường' : 'Đã khóa'}
                                             </span>
                                         </c:if>
-                                    </td>
                                     </td>
                                     <td>
                                         <button class="btn-action" style="background: #27ae60;" 
@@ -514,7 +512,7 @@
 
         <%-- MODAL PHÂN QUYỀN --%>
         <div class="modal-overlay" id="roleModal">
-            <div class="modal-content"><div class="modal-header"><h3>Phân Quyền</h3><button class="close-btn" onclick="closeModal('roleModal')">&times;</button></div>
+            <div class="modal-content"><div class="modal-header"><h3>Phân Nhóm</h3><button class="close-btn" onclick="closeModal('roleModal')">&times;</button></div>
                 <form action="hr" method="POST"><input type="hidden" name="action" value="updateRole"><input type="hidden" name="maNhanVien" id="roleEmployeeId"><input type="hidden" name="maNguoiDung" id="roleUserId">
                     <div class="checkbox-group">
                         <c:forEach var="group" items="${LIST_GROUP}"><label><input type="radio" name="selectedGroup" value="${group.getMaNhom()}" required> ${group.getTenNhom()}</label></c:forEach>
@@ -556,7 +554,7 @@
 
                 document.getElementById('detailActions').innerHTML =
                         '<button class="btn-action" style="background:#f39c12;" onclick="openEmployeeForm(\'edit\', \'' + id + '\', \'' + ten + '\', \'' + ngaysinh + '\', \'' + gioitinh + '\', \'' + sdt + '\', \'' + email + '\', \'' + diachi + '\', \'' + luong + '\')">Sửa</button>' +
-                        '<button class="btn-action" style="background:#3498db;" onclick="openRoleForm(\'' + id + '\', \'' + maNguoiDung + '\', \'' + maNhom + '\')">Phân Quyền</button>' +
+                        '<button class="btn-action" style="background:#3498db;" onclick="openRoleForm(\'' + id + '\', \'' + maNguoiDung + '\', \'' + maNhom + '\')">Phân Nhóm</button>' +
                         '<button class="btn-action" style="background:#e74c3c;" onclick="openLockForm(\'' + maNguoiDung + '\')">Khóa</button>' +
                         '<button class="btn-action" style="background:#c0392b;" onclick="confirmDelete(\'' + id + '\', \'' + maNguoiDung + '\', \'' + ten + '\')">Xóa</button>';
                 document.getElementById('detailModal').style.display = 'flex';
