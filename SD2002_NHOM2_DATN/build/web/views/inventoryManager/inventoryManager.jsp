@@ -127,6 +127,8 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 25px;
+                flex-wrap: wrap;
+                gap: 15px;
             }
             .page-toolbar h2 {
                 margin: 0;
@@ -134,6 +136,25 @@
                 font-size: 24px;
                 font-weight: 700;
                 text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+
+            /* ================= THÔNG BÁO ================= */
+            .alert-banner {
+                padding: 14px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .alert-success {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border-left: 5px solid #2e7d32;
+            }
+            .alert-error {
+                background: #ffebee;
+                color: #c62828;
+                border-left: 5px solid #c62828;
             }
 
             /* ================= THANH TÌM KIẾM ================= */
@@ -149,7 +170,7 @@
                 border: none;
                 outline: none;
                 padding: 8px 10px;
-                width: 250px;
+                width: 220px;
                 font-size: 14px;
             }
             .btn-search {
@@ -170,7 +191,7 @@
                 background: linear-gradient(135deg, #579c3f, #396728);
                 color: white;
                 border: none;
-                padding: 12px 24px;
+                padding: 12px 20px;
                 border-radius: 8px;
                 font-size: 15px;
                 font-weight: bold;
@@ -184,6 +205,20 @@
             .btn-add:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 6px 20px rgba(87, 156, 63, 0.6);
+            }
+            .btn-import {
+                background: linear-gradient(135deg, #2980b9, #1f5f8b);
+                box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+            }
+            .btn-import:hover {
+                box-shadow: 0 6px 20px rgba(41, 128, 185, 0.6);
+            }
+            .btn-export {
+                background: linear-gradient(135deg, #d35400, #a94400);
+                box-shadow: 0 4px 15px rgba(211, 84, 0, 0.4);
+            }
+            .btn-export:hover {
+                box-shadow: 0 6px 20px rgba(211, 84, 0, 0.6);
             }
 
             .table-card {
@@ -239,6 +274,17 @@
                 font-size: 13px;
                 font-weight: 600;
                 border: 1px solid #dfe4ea;
+            }
+            .low-stock-badge {
+                display: inline-block;
+                margin-left: 8px;
+                font-size: 11px;
+                font-weight: 700;
+                color: #c0392b;
+                background: #ffebee;
+                padding: 2px 8px;
+                border-radius: 10px;
+                white-space: nowrap;
             }
 
             .action-btns {
@@ -396,6 +442,58 @@
             .btn-save:hover {
                 background: #467e32;
             }
+
+            /* ================= PHIẾU NHẬP / XUẤT KHO ================= */
+            .slip-row {
+                display: flex;
+                gap: 10px;
+                align-items: flex-start;
+                margin-bottom: 4px;
+            }
+            .slip-row .form-group {
+                margin-bottom: 0;
+            }
+            .slip-row-stock-hint {
+                font-size: 12px;
+                color: #888;
+                margin: 2px 0 14px 2px;
+                min-height: 14px;
+            }
+            .btn-remove-row {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
+                cursor: pointer;
+                flex-shrink: 0;
+                margin-top: 26px;
+            }
+            .btn-remove-row:hover {
+                background: #c0392b;
+            }
+            .btn-add-row {
+                background: #f1f2f6;
+                color: #2e541f;
+                border: 1px dashed #579c3f;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                width: 100%;
+                margin: 6px 0 16px 0;
+            }
+            .btn-add-row:hover {
+                background: #e8f5e9;
+            }
+            .slip-total {
+                text-align: right;
+                font-weight: 700;
+                color: #2e541f;
+                font-size: 15px;
+            }
         </style>
     </head>
     <body>
@@ -411,16 +509,34 @@
 
 
             <main class="content-area">
+
+                <c:if test="${not empty SUCCESS_MSG}">
+                    <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
+                </c:if>
+                <c:if test="${not empty ERROR_MSG}">
+                    <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
+                </c:if>
+
                 <div class="page-toolbar">
                     <h2>Danh sách vật tư</h2>
 
-                    <%-- THANH TÌM KIẾM THEO GIAO DIỆN MỚI --%>
-                    <div style="display: flex; align-items: center; gap: 15px;">
+                    <%-- THANH TÌM KIẾM + CÁC NÚT THAO TÁC --%>
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                         <div class="search-box">
                             <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
                                         openSearchModal()">
                             <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
                         </div>
+
+                        <button class="btn-add btn-import" onclick="openWarehouseSlipForm('import')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19 12l-7 7-7-7h4V4h6v8z"/></svg>
+                            Nhập kho
+                        </button>
+
+                        <button class="btn-add btn-export" onclick="openWarehouseSlipForm('export')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M5 12l7-7 7 7h-4v8H9v-8z"/></svg>
+                            Xuất kho
+                        </button>
 
                         <button class="btn-add" onclick="openSupplieForm('add')">
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
@@ -452,7 +568,12 @@
                                     <td><strong>${item.tenVatTu}</strong></td>
                                     <td><span class="category-badge">${item.loaiVatTu}</span></td>
                                     <td>${item.donViTinh}</td>
-                                    <td>${item.soLuongTon}</td>
+                                    <td>
+                                        ${item.soLuongTon}
+                                        <c:if test="${item.tonKhoThap}">
+                                            <span class="low-stock-badge" title="Giới hạn tồn kho tối thiểu bạn đã đặt: ${item.soLuongToiThieu}">⚠ Tồn thấp</span>
+                                        </c:if>
+                                    </td>
                                     <td>${item.donGia}</td>
                                     <td>${fn:substring(item.ngayNhapGanNhat, 0, 10)}</td>
                                     <td>
@@ -462,10 +583,18 @@
                                     </td>
                                     <td>
                                         <div class="action-btns">
-                                            <button type="button" class="btn-action btn-edit" title="Sửa" 
-                                                    onclick="openEditModal('${item.maVatTu}', '${item.tenVatTu}', '${item.loaiVatTu}', '${item.donViTinh}', '${item.soLuongTon}', '${item.donGia}', '${item.moTa}', '${item.ngayNhapGanNhat}', '${item.trangThai}')">
-                                                Sửa
-                                            </button>
+                                            <button class="btn-action btn-edit" title="Sửa"
+                                                    data-id="${item.maVatTu}"
+                                                    data-ten="${fn:escapeXml(item.tenVatTu)}"
+                                                    data-loai="${fn:escapeXml(item.loaiVatTu)}"
+                                                    data-donvi="${fn:escapeXml(item.donViTinh)}"
+                                                    data-soluong="${item.soLuongTon}"
+                                                    data-gioihan="${item.soLuongToiThieu}"
+                                                    data-dongia="${item.donGia}"
+                                                    data-mota="${fn:escapeXml(item.moTa)}"
+                                                    data-ngay="${item.ngayNhapGanNhat}"
+                                                    data-trangthai="${item.trangThai}"
+                                                    onclick="openSupplieForm('edit', this)">Sửa</button>
                                             <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.maVatTu}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
                                         </div>
                                     </td>
@@ -555,12 +684,16 @@
                             <input type="number" name="soLuongTon" id="soLuongTon" class="form-control" placeholder="0" min="0" required>
                         </div>
                         <div class="form-group">
-                            <label>Đơn giá (VNĐ)</label>
-                            <input type="number" step="0.01" name="donGia" id="donGia" class="form-control" placeholder="0.0" min="0" required>
+                            <label>Giới hạn tồn kho tối thiểu</label>
+                            <input type="number" name="soLuongToiThieu" id="soLuongToiThieu" class="form-control" placeholder="Vd: 10" min="0" required>
                         </div>
                     </div>
 
                     <div class="form-row">
+                        <div class="form-group">
+                            <label>Đơn giá (VNĐ)</label>
+                            <input type="number" step="0.01" name="donGia" id="donGia" class="form-control" placeholder="0.0" min="0" required>
+                        </div>
                         <div class="form-group">
                             <label>Ngày nhập gần nhất</label>
                             <input type="datetime-local" name="ngayNhapGanNhat" id="ngayNhapGanNhat" class="form-control" required>
@@ -587,14 +720,72 @@
             </div>
         </div>
 
+        <!-- Modal Lập phiếu Nhập / Xuất kho -->
+        <div class="modal-overlay" id="warehouseSlipModal">
+            <div class="modal-content" style="width: 780px;">
+                <div class="modal-header">
+                    <h3 id="warehouseSlipModalTitle">Lập phiếu Nhập kho</h3>
+                    <button class="close-btn" onclick="closeModal('warehouseSlipModal')">&times;</button>
+                </div>
+
+                <form action="${pageContext.request.contextPath}/warehouseSlip" method="POST" id="warehouseSlipForm">
+                    <input type="hidden" name="action" id="slipAction" value="import">
+
+                    <div class="form-group">
+                        <label>Ghi chú phiếu</label>
+                        <textarea name="ghiChu" class="form-control" placeholder="Ví dụ: Nhập từ nhà cung cấp A / Xuất cho khu vực trồng B..."></textarea>
+                    </div>
+
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#444; font-size:14px;">Danh sách vật tư</label>
+                    <div id="slipRowsContainer"></div>
+
+                    <button type="button" class="btn-add-row" onclick="addSlipRow()">+ Thêm dòng vật tư</button>
+
+                    <div class="slip-total">Tổng cộng: <span id="slipTotal">0</span> VNĐ</div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="closeModal('warehouseSlipModal')">Hủy bỏ</button>
+                        <button type="submit" class="btn-save" id="slipSubmitBtn">Lập phiếu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <%-- TEMPLATE 1 DÒNG VẬT TƯ TRONG PHIẾU NHẬP/XUẤT KHO (JS sẽ nhân bản khi bấm "+ Thêm dòng") --%>
+        <template id="slipRowTemplate">
+            <div class="slip-row">
+                <div class="form-group" style="flex: 2;">
+                    <label>Vật tư</label>
+                    <select class="form-control slip-select" name="maVatTu[]" onchange="onSlipRowSelectChange(this)" required>
+                        <option value="" disabled selected>-- Chọn vật tư --</option>
+                        <c:forEach var="item" items="${LIST_SUPPLIE}">
+                            <option value="${item.maVatTu}"
+                                    data-dongia="${item.donGia}"
+                                    data-soluongton="${item.soLuongTon}"
+                                    data-donvi="${fn:escapeXml(item.donViTinh)}">
+                                ${fn:escapeXml(item.tenVatTu)} (Tồn: ${item.soLuongTon} ${fn:escapeXml(item.donViTinh)})
+                            </option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Số lượng</label>
+                    <input type="number" name="soLuong[]" class="form-control slip-soluong" min="1" step="1" onchange="onSlipRowChange(this)" oninput="onSlipRowChange(this)" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Đơn giá</label>
+                    <input type="number" name="donGia[]" class="form-control slip-dongia" min="0" step="0.01" onchange="onSlipRowChange(this)" oninput="onSlipRowChange(this)" required>
+                </div>
+                <button type="button" class="btn-remove-row" onclick="removeSlipRow(this)" title="Xóa dòng">&times;</button>
+            </div>
+            <div class="slip-row-stock-hint"></div>
+        </template>
+
         <script>
-            // HÀM MỚI: TÌM KIẾM JS 
+            // ============== TÌM KIẾM ==============
             function openSearchModal() {
-                // Lấy từ khóa, chuyển thành chữ thường để tìm kiếm
                 let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
                 let resultBody = document.getElementById('searchResultBody');
-
-                // Xóa dữ liệu kết quả cũ
                 resultBody.innerHTML = '';
 
                 if (keyword === '') {
@@ -602,20 +793,15 @@
                     return;
                 }
 
-                // Lấy tất cả các dòng <tr> nằm trong <tbody> của bảng gốc
                 let mainTableRows = document.querySelectorAll('#mainTableBody tr');
                 let matchCount = 0;
 
                 mainTableRows.forEach(row => {
-                    // Bỏ qua dòng báo "Kho vật tư trống" nếu có
                     if (row.cells.length > 1) {
-                        // Cột 0 là ID, Cột 1 là Tên vật tư
                         let idText = row.cells[0].innerText.toLowerCase();
                         let nameText = row.cells[1].innerText.toLowerCase();
 
-                        // Nếu ID hoặc Tên có chứa từ khóa
                         if (idText.includes(keyword) || nameText.includes(keyword)) {
-                            // Copy nguyên dòng đó ném vào Modal
                             let clonedRow = row.cloneNode(true);
                             resultBody.appendChild(clonedRow);
                             matchCount++;
@@ -623,72 +809,173 @@
                     }
                 });
 
-                // Nếu không có kết quả
                 if (matchCount === 0) {
                     resultBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
                 }
 
-                // Bật Modal tìm kiếm
                 document.getElementById('searchModal').style.display = 'flex';
             }
 
-            function openSupplieForm(mode) {
-                // Đóng luôn cái modal tìm kiếm nếu đang mở
+            // ============== THÊM / SỬA VẬT TƯ ==============
+            function openSupplieForm(mode, btn) {
                 closeModal('searchModal');
 
                 const modal = document.getElementById('supplieModal');
                 const title = document.getElementById('supplieModalTitle');
                 const actionInput = document.getElementById('formAction');
+                const form = modal.querySelector('form');
 
                 if (mode === 'add') {
                     title.innerText = 'Thêm vật tư mới';
                     actionInput.value = 'add';
-                    modal.querySelector('form').reset();
-                } else if (mode === 'edit') {
+                    form.reset();
+                    document.getElementById('maVatTu').value = '';
+                } else if (mode === 'edit' && btn) {
                     title.innerText = 'Sửa thông tin vật tư';
                     actionInput.value = 'edit';
+
+                    document.getElementById('maVatTu').value = btn.dataset.id;
+                    document.getElementById('tenVatTu').value = btn.dataset.ten;
+                    document.getElementById('loaiVatTu').value = btn.dataset.loai;
+                    document.getElementById('donViTinh').value = btn.dataset.donvi;
+                    document.getElementById('soLuongTon').value = btn.dataset.soluong;
+                    document.getElementById('donGia').value = btn.dataset.dongia;
+                    document.getElementById('moTa').value = btn.dataset.mota;
+                    // LocalDateTime -> "yyyy-MM-ddTHH:mm" mà input datetime-local cần
+                    document.getElementById('ngayNhapGanNhat').value = btn.dataset.ngay ? btn.dataset.ngay.substring(0, 16) : '';
+                    document.getElementById('trangThai').value = btn.dataset.trangthai;
                 }
                 modal.style.display = 'flex';
             }
 
+            // ============== LẬP PHIẾU NHẬP / XUẤT KHO ==============
+            function openWarehouseSlipForm(type) {
+                closeModal('searchModal');
+
+                const modal = document.getElementById('warehouseSlipModal');
+                const title = document.getElementById('warehouseSlipModalTitle');
+                const actionInput = document.getElementById('slipAction');
+                const submitBtn = document.getElementById('slipSubmitBtn');
+
+                actionInput.value = type; // 'import' hoặc 'export'
+                title.innerText = type === 'import' ? 'Lập phiếu Nhập kho' : 'Lập phiếu Xuất kho';
+                submitBtn.innerText = type === 'import' ? 'Lập phiếu Nhập' : 'Lập phiếu Xuất';
+
+                document.getElementById('warehouseSlipForm').reset();
+                document.getElementById('slipRowsContainer').innerHTML = '';
+                addSlipRow();
+                updateSlipTotal();
+
+                modal.style.display = 'flex';
+            }
+
+            function addSlipRow() {
+                const template = document.getElementById('slipRowTemplate');
+                const clone = template.content.cloneNode(true);
+                document.getElementById('slipRowsContainer').appendChild(clone);
+            }
+
+            function removeSlipRow(btn) {
+                const row = btn.closest('.slip-row');
+                const hint = row.nextElementSibling;
+                row.remove();
+                if (hint && hint.classList.contains('slip-row-stock-hint')) {
+                    hint.remove();
+                }
+                updateSlipTotal();
+            }
+
+            function onSlipRowSelectChange(selectEl) {
+                const row = selectEl.closest('.slip-row');
+                const opt = selectEl.options[selectEl.selectedIndex];
+                const donGiaInput = row.querySelector('.slip-dongia');
+                donGiaInput.value = opt.dataset.dongia || 0;
+
+                checkSlipRowStock(row);
+                updateSlipTotal();
+            }
+
+            function onSlipRowChange(inputEl) {
+                const row = inputEl.closest('.slip-row');
+                checkSlipRowStock(row);
+                updateSlipTotal();
+            }
+
+            // Kiểm tra tồn kho ngay trên form (kiểm tra phía client cho người dùng thấy ngay;
+            // server vẫn kiểm tra lại lần cuối trước khi ghi vào CSDL).
+            function checkSlipRowStock(row) {
+                const hint = row.nextElementSibling;
+                if (!hint || !hint.classList.contains('slip-row-stock-hint')) {
+                    return;
+                }
+
+                const selectEl = row.querySelector('.slip-select');
+                const opt = selectEl.options[selectEl.selectedIndex];
+                if (!opt || !opt.value) {
+                    hint.textContent = '';
+                    return;
+                }
+
+                const stock = parseInt(opt.dataset.soluongton || '0', 10);
+                const donVi = opt.dataset.donvi || '';
+                const soLuongInput = row.querySelector('.slip-soluong');
+                const need = parseInt(soLuongInput.value || '0', 10);
+                const action = document.getElementById('slipAction').value;
+
+                if (action === 'export' && need > stock) {
+                    hint.style.color = '#c0392b';
+                    hint.textContent = 'Không đủ tồn kho! Hiện còn ' + stock + ' ' + donVi + ', đang yêu cầu xuất ' + need + '.';
+                    soLuongInput.setCustomValidity('Không đủ tồn kho');
+                } else {
+                    hint.style.color = '#888';
+                    hint.textContent = 'Tồn kho hiện tại: ' + stock + ' ' + donVi;
+                    soLuongInput.setCustomValidity('');
+                }
+            }
+
+            function updateSlipTotal() {
+                let total = 0;
+                document.querySelectorAll('#slipRowsContainer .slip-row').forEach(row => {
+                    const sl = parseFloat(row.querySelector('.slip-soluong').value) || 0;
+                    const dg = parseFloat(row.querySelector('.slip-dongia').value) || 0;
+                    total += sl * dg;
+                });
+                document.getElementById('slipTotal').textContent = total.toLocaleString('vi-VN');
+            }
+
+            document.getElementById('warehouseSlipForm').addEventListener('submit', function (e) {
+                const rows = document.querySelectorAll('#slipRowsContainer .slip-row');
+                if (rows.length === 0) {
+                    e.preventDefault();
+                    alert('Vui lòng thêm ít nhất 1 dòng vật tư.');
+                    return;
+                }
+                for (const row of rows) {
+                    const soLuongInput = row.querySelector('.slip-soluong');
+                    if (soLuongInput.validationMessage) {
+                        e.preventDefault();
+                        alert('Vui lòng kiểm tra lại: có dòng vật tư vượt quá số lượng tồn kho hiện có.');
+                        return;
+                    }
+                }
+            });
+
+            // ============== MODAL DÙNG CHUNG ==============
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
-            }
-
-            function openEditModal(id, ten, loai, dvt, sl, gia, mota, ngay, trangthai) {
-                // 1. Mở modal lên
-                const modal = document.getElementById('supplieModal');
-                modal.style.display = 'flex';
-
-                // 2. Thiết lập tiêu đề và giá trị action
-                document.getElementById('supplieModalTitle').innerText = 'Sửa thông tin vật tư';
-                document.getElementById('formAction').value = 'edit';
-
-                // 3. Đổ dữ liệu vào form
-                document.getElementById('maVatTu').value = id;
-                document.getElementById('tenVatTu').value = ten;
-                document.getElementById('loaiVatTu').value = loai;
-                document.getElementById('donViTinh').value = dvt;
-                document.getElementById('soLuongTon').value = sl;
-                document.getElementById('donGia').value = gia;
-                document.getElementById('moTa').value = mota;
-
-                // Xử lý ngày tháng (cắt 16 ký tự đầu để đúng chuẩn datetime-local)
-                if (ngay && ngay !== 'null') {
-                    document.getElementById('ngayNhapGanNhat').value = ngay.replace(' ', 'T').substring(0, 16);
-                }
-
-                document.getElementById('trangThai').value = (trangthai === 'true') ? 'true' : 'false';
             }
 
             window.onclick = function (event) {
                 let supplieModal = document.getElementById('supplieModal');
                 let searchModal = document.getElementById('searchModal');
+                let warehouseSlipModal = document.getElementById('warehouseSlipModal');
 
                 if (event.target == supplieModal)
                     supplieModal.style.display = "none";
                 if (event.target == searchModal)
                     searchModal.style.display = "none";
+                if (event.target == warehouseSlipModal)
+                    warehouseSlipModal.style.display = "none";
             }
         </script>
     </body>
