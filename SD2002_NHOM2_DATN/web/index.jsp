@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <jsp:forward page="./views/auth/register.jsp" />
+        <jsp:forward page="./views/auth/login.jsp" />
     </body>
 </html>
