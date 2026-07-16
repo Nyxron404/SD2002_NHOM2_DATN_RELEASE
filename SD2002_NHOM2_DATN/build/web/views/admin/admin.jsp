@@ -611,12 +611,16 @@
                             <h2 class="table-title">Danh sách nhóm</h2>
                             <div class="table-actions">
                                 <!-- Thanh tìm kiếm -->
+
                                 <div class="search-container">
                                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                                    <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm...">
-                                </div>
-                                <!-- Nút thêm nhóm -->
-                                <form method="Get" action="${pageContext.request.contextPath}/admin">
+                                    <form method="Get" action="${pageContext.request.contextPath}/admin">
+                                        <input type="hidden" name="action" value="search">
+                                        <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm nhóm...">
+                                    </form>
+                            </div>
+                            <!-- Nút thêm nhóm -->
+                            <form method="Get" action="${pageContext.request.contextPath}/admin">
                                 <button type="submit" name="action" value="add" class="btn-action btn-add">
                                     <i class="fa-solid fa-plus"></i> Thêm nhóm
                                 </button>
@@ -631,9 +635,9 @@
                                 <i class="fa-solid fa-circle-check"></i> ${success}
                             </span>
                         </c:if>
-                        <c:if test="${errorName != null}">
+                        <c:if test="${errorCheck != null}">
                             <span class="text-error">
-                                <i class="fa-solid fa-triangle-exclamation"></i> ${errorName}
+                                <i class="fa-solid fa-triangle-exclamation"></i> ${errorCheck}
                             </span>
                         </c:if>
                         <c:if test="${errorLog != null}">
@@ -754,6 +758,7 @@
                                         <div class="form-group">
                                             <label for="detailTenNhom">Tên nhóm <span class="required">*</span></label>
                                             <input type="text" id="detailTenNhom" name="TenNhom" value="${ug.getTenNhom()}" required autocomplete="off">
+                                            <input type="hidden" name="TenNhomGoc" value="${ug.getTenNhom()}">
                                         </div>
 
                                         <!-- Ngày tạo (Không thể cập nhật) -->
@@ -796,13 +801,13 @@
                                         <!-- Số lượng nhân viên (Không thể cập nhật) -->
                                         <div class="form-group">
                                             <label for="detailSoLuong">Số lượng nhân viên <small style="color: #c62828;">(Không thể chỉnh sửa)</small></label>
-                                            <input type="text" id="detailSoLuong" name="SoLuongNV" value="5" readonly>
+                                            <input type="text" id="detailSoLuong" name="SoLuongNV" value="${SLNV}" readonly>
                                         </div>
 
                                         <!-- Mô tả chức năng (Có thể cập nhật - Ở dưới cùng bảng) -->
                                         <div class="form-group">
                                             <label for="detailMoTa">Mô tả chức năng</label>
-                                            <textarea id="detailMoTa" name="MoTa" rows="3" placeholder="Mô tả vai trò của nhóm này...">Nhóm có toàn quyền quản trị hệ thống nông trại thông minh.</textarea>
+                                            <textarea id="detailMoTa" name="MoTa" rows="3" placeholder="Mô tả vai trò của nhóm này...">${ug.getMoTa()}</textarea>
                                         </div>
 
                                         <!-- Cụm nút bấm hành động -->

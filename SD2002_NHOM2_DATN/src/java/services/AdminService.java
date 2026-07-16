@@ -53,4 +53,29 @@ public class AdminService {
         List<Integer> listMaQuyen = userGroupPermissionDAO.SelectUGPS(maNhom);
         return listMaQuyen;
     }
+    public int GetSLNV(int maNhom){
+        int slnv = userGroupDAO.GetSLNV(maNhom);
+        return slnv;
+    }
+    public int EditUG(int maNhom, String tenNhom, boolean trangThai, List<Integer> listMaQuyen, String moTa, String tenNhomGoc){
+        int checkTenNhom = CheckTenNhom(tenNhom);
+        if(tenNhom.equalsIgnoreCase(tenNhomGoc) || checkTenNhom == 1){
+            int checkUpdateUG = userGroupDAO.UpdateUG(maNhom, tenNhom, trangThai, moTa);
+            int chechUpdateUGPS = userGroupPermissionDAO.UpdateUGPS(maNhom, listMaQuyen);
+            if(checkUpdateUG == 1 && chechUpdateUGPS == 1){
+                return 1;
+            }
+            return 0;
+        }
+        return 2;
+    }
+    public int Delete(int maNhom, int slnv){
+        if(slnv == 0){
+            int checkDelete = userGroupDAO.DeleteUG(maNhom);
+            return checkDelete;
+        }else{
+            return 2;
+        }
+    }
+        
 }

@@ -57,4 +57,20 @@ public class UserGroupPermissionDAO {
             return listMaQuyen;
         }
     }
+    public int UpdateUGPS(int maNhom, List<Integer> listMaQuyen){
+        String delete = "DELETE FROM UserGroupPermission WHERE MaNhom = ?";
+        String update = "INSERT INTO UserGroupPermission VALUES (?,?);";
+        try(Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(delete);PreparedStatement pstmt2 = con.prepareStatement(update)) {
+            pstmt.setInt(1, maNhom);
+            pstmt.executeUpdate();
+            pstmt2.setInt(1, maNhom);
+            for (Integer maQuyen : listMaQuyen) {
+                pstmt2.setInt(2, maQuyen);
+                pstmt2.executeUpdate();
+            }
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

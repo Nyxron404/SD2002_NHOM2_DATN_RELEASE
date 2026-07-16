@@ -25,7 +25,13 @@ public class UserGroup {
         this.NgayTao = NgayTao;
         this.TrangThai = TrangThai;
     }
-
+    
+    public UserGroup(String TenNhom, String MoTa, boolean TrangThai) {
+        this.TenNhom = TenNhom;
+        this.MoTa = MoTa;
+        this.TrangThai = TrangThai;
+    }
+    
     public int getMaNhom() {
         return MaNhom;
     }

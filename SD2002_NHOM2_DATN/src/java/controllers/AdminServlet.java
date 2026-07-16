@@ -55,6 +55,9 @@ public class AdminServlet extends HttpServlet {
                 request.setAttribute("MaNhom", maNhom);
                 request.setAttribute("Permission", adminSV.GetListPS());
                 request.setAttribute("MaQuyen", adminSV.GetAllMaQuyen(maNhom));
+                request.setAttribute("SLNV", adminSV.GetSLNV(maNhom));
+            }else if("search".equals(action)){
+                
             }
             request.setAttribute("LISTUG", adminSV.GetListUG());
             request.getRequestDispatcher("./views/admin/admin.jsp").forward(request, response);
@@ -79,9 +82,39 @@ public class AdminServlet extends HttpServlet {
                 if (checkAdd == 1) {
                     request.setAttribute("success", "Thêm nhóm người dùng thành công");
                 } else if (checkAdd == 2) {
-                    request.setAttribute("errorName", "Tên nhóm đã bị trùng");
+                    request.setAttribute("errorCheck", "Tên nhóm đã bị trùng");
                 } else {
                     request.setAttribute("errorLog", "Hệ thống gặp sự cố, thêm thất bại");
+                }
+            }else if("update&save".equals(action)){
+                String tenNhom = request.getParameter("TenNhom");
+                boolean trangThai = Boolean.parseBoolean(request.getParameter("TrangThai"));
+                String[] quyenArr = request.getParameterValues("Quyen");
+                List<Integer> listMaQuyen = new ArrayList<>();
+                for (String quyen : quyenArr) {
+                    listMaQuyen.add(Integer.parseInt(quyen));
+                }
+                String moTa = request.getParameter("MoTa");
+                String tenNhomGoc = request.getParameter("TenNhomGoc");
+                int maNhom = Integer.parseInt(request.getParameter("MaNhom"));
+                int checkUpdateUG = adminSV.EditUG(maNhom, tenNhom, trangThai, listMaQuyen, moTa, tenNhomGoc);
+                if(checkUpdateUG == 1){
+                    request.setAttribute("success", "Sửa nhóm người dùng thành công");
+                }else if(checkUpdateUG == 2){
+                    request.setAttribute("errorCheck", "Tên nhóm đã bị trùng");
+                }else{
+                    request.setAttribute("errorLog", "Hệ thống gặp sự cố, sửa thất bại");
+                }
+            }else if("delete".equals(action)){
+                int maNhom = Integer.parseInt(request.getParameter("MaNhom"));
+                int slnv = Integer.parseInt(request.getParameter("SoLuongNV"));
+                int checkDeleteUG = adminSV.Delete(maNhom, slnv);
+                if(checkDeleteUG == 1){
+                    request.setAttribute("success", "Xóa nhóm người dùng thành công");
+                }else if(checkDeleteUG == 2){
+                    request.setAttribute("errorCheck", "Nhóm còn nhân viên, không thể xóa");
+                }else{
+                    request.setAttribute("errorLog", "Hệ thống gặp sự cố, xóa thất bại");
                 }
             }
             request.setAttribute("LISTUG", adminSV.GetListUG());
