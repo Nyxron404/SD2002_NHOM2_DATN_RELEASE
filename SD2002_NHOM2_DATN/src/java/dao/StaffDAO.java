@@ -89,8 +89,6 @@ public class StaffDAO {
 
                 st.setDanhSachQuyen(GetDanhSachQuyen(maNhom));
 
-                st.setDangKy(trangThai);
-
                 newList.add(st);
             }
         } catch (SQLException e) {
@@ -344,8 +342,8 @@ public class StaffDAO {
     }
 
     public int InsertStaff(Staff st) {
-        String insert = "INSERT INTO Staff (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, Luong) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        // THÊM Statement.RETURN_GENERATED_KEYS để lấy ID vừa tạo
+        String insert = "INSERT INTO Staff (HoTen, NgaySinh, GioiTinh, SDT, Email, DiaChi, Luong, DangKy) VALUES (?, ?, ?, ?, ?, ?, ?, 1);";
+        
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, st.getHoTen());
@@ -486,7 +484,6 @@ public class StaffDAO {
 
                 st.setMaNhom(rs.getInt("MaNhom"));
                 st.setDanhSachQuyen(GetDanhSachQuyen(rs.getInt("MaNhom")));
-                st.setDangKy(rs.getBoolean("TrangThai"));
 
                 list.add(st);
             }
