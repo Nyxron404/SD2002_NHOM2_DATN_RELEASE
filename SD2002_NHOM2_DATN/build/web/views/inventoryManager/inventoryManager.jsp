@@ -408,7 +408,7 @@
             <jsp:include page="/views/common/header.jsp">
                 <jsp:param name="pageTitle" value="Quản Lý Kho Vật Tư" />
             </jsp:include>
-          
+
 
             <main class="content-area">
                 <div class="page-toolbar">
@@ -462,7 +462,10 @@
                                     </td>
                                     <td>
                                         <div class="action-btns">
-                                            <button class="btn-action btn-edit" title="Sửa" onclick="openSupplieForm('edit')">Sửa</button>
+                                            <button type="button" class="btn-action btn-edit" title="Sửa" 
+                                                    onclick="openEditModal('${item.maVatTu}', '${item.tenVatTu}', '${item.loaiVatTu}', '${item.donViTinh}', '${item.soLuongTon}', '${item.donGia}', '${item.moTa}', '${item.ngayNhapGanNhat}', '${item.trangThai}')">
+                                                Sửa
+                                            </button>
                                             <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.maVatTu}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
                                         </div>
                                     </td>
@@ -650,6 +653,32 @@
 
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
+            }
+
+            function openEditModal(id, ten, loai, dvt, sl, gia, mota, ngay, trangthai) {
+                // 1. Mở modal lên
+                const modal = document.getElementById('supplieModal');
+                modal.style.display = 'flex';
+
+                // 2. Thiết lập tiêu đề và giá trị action
+                document.getElementById('supplieModalTitle').innerText = 'Sửa thông tin vật tư';
+                document.getElementById('formAction').value = 'edit';
+
+                // 3. Đổ dữ liệu vào form
+                document.getElementById('maVatTu').value = id;
+                document.getElementById('tenVatTu').value = ten;
+                document.getElementById('loaiVatTu').value = loai;
+                document.getElementById('donViTinh').value = dvt;
+                document.getElementById('soLuongTon').value = sl;
+                document.getElementById('donGia').value = gia;
+                document.getElementById('moTa').value = mota;
+
+                // Xử lý ngày tháng (cắt 16 ký tự đầu để đúng chuẩn datetime-local)
+                if (ngay && ngay !== 'null') {
+                    document.getElementById('ngayNhapGanNhat').value = ngay.replace(' ', 'T').substring(0, 16);
+                }
+
+                document.getElementById('trangThai').value = (trangthai === 'true') ? 'true' : 'false';
             }
 
             window.onclick = function (event) {
