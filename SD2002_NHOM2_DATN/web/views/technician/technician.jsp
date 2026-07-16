@@ -145,7 +145,6 @@
 </head>
 <body>
 
-    <!-- Các thẻ Checkbox ẩn để xử lý đóng mở Modal bằng CSS -->
     <input type="checkbox" id="createModalToggle" class="modal-toggle">
     
     <c:forEach var="item" items="${farmingPracticeList}">
@@ -155,19 +154,11 @@
     <jsp:include page="/views/common/sidebar.jsp">
         <jsp:param name="activePage" value="technician" />
     </jsp:include>
-    
+
     <div class="main-wrapper">
-        <header class="header">
-            <div class="header-title">
-                <h1>Thiết Lập Quy Trình</h1>
-            </div>
-            <div class="user-profile">
-                <div class="notification">
-                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-                </div>
-                <div class="avatar">A</div>
-            </div>
-        </header>
+        <jsp:include page="/views/common/header.jsp">
+            <jsp:param name="pageTitle" value="Thiết Lập Quy Trình" />
+        </jsp:include>
         
         <main class="content-area">
             <div class="section-header">
@@ -252,14 +243,13 @@
         </div>
     </div>
 
-    <!-- ================= CÁC MODAL CHI TIẾT QUY TRÌNH (Vòng lặp tạo động qua CSS) ================= -->
+    <!-- ================= CÁC MODAL CHI TIẾT QUY TRÌNH ================= -->
     <c:forEach var="item" items="${farmingPracticeList}">
         <div class="modal-overlay" id="detailModal-${item.maQuyTrinh}">
             <div class="modal-container">
                 <label for="detailToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
                 <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Chi Tiết Quy Trình Canh Tác</h3>
                 
-                <!-- Checkbox ẩn để kích hoạt Chế độ Sửa của từng quy trình riêng biệt mà không dùng Javascript -->
                 <input type="checkbox" id="editToggle-${item.maQuyTrinh}" class="modal-toggle">
 
                 <!-- 1. CHẾ ĐỘ XEM CHI TIẾT (MẶC ĐỊNH) -->
@@ -288,13 +278,12 @@
                         <div class="detail-description">${item.moTa != null ? item.moTa : 'Không có mô tả chi tiết.'}</div>
                     </div>
 
-                    <!-- Nút Sửa đặt ở góc dưới phần mô tả quy trình -->
                     <div style="text-align: right; margin-top: 20px;">
                         <label for="editToggle-${item.maQuyTrinh}" class="btn-edit-trigger">Sửa</label>
                     </div>
                 </div>
 
-                <!-- 2. CHẾ ĐỘ SỬA THÔNG TIN (ẨN ĐI, CHỈ HIỆN KHI ẤN NÚT "SỬA") -->
+                <!-- 2. CHẾ ĐỘ SỬA THÔNG TIN -->
                 <div class="edit-mode-${item.maQuyTrinh}" style="margin-top: 20px; display: none;">
                     <form action="${pageContext.request.contextPath}/technician" method="POST">
                         <input type="hidden" name="action" value="update">
@@ -329,7 +318,6 @@
                             <textarea id="editDesc-${item.maQuyTrinh}" name="description" rows="5" required>${item.moTa}</textarea>
                         </div>
 
-                        <!-- 2 Nút Hủy và Lưu góc dưới -->
                         <div style="text-align: right; margin-top: 20px; gap: 10px; display: flex; justify-content: flex-end;">
                             <label for="editToggle-${item.maQuyTrinh}" class="btn-cancel">Hủy</label>
                             <button type="submit" class="btn-save">Lưu</button>
