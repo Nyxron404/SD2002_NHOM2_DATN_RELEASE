@@ -459,7 +459,15 @@
                                             <c:if test="${group.getMaNhom() == st.getMaNhom()}">${group.getTenNhom()}</c:if>
                                         </c:forEach>
                                     </td>
-                                    <td><span class="status-badge ${st.isDangKy() ? 'status-active' : 'status-locked'}">${st.isDangKy() ? 'Bình thường' : 'Đã khóa'}</span></td>
+                                    <td>
+                                        <td>
+                                        <c:if test="${st.isDangKy()}">
+                                            <span class="status-badge ${userForStaff.trangThai ? 'status-active' : 'status-locked'}">
+                                                ${userForStaff.trangThai ? 'Bình thường' : 'Đã khóa'}
+                                            </span>
+                                        </c:if>
+                                    </td>
+                                    </td>
                                     <td>
                                         <button class="btn-action" style="background: #27ae60;" 
                                                 onclick="openDetailModal('${st.getMaNhanVien()}', '${st.getHoTen()}', '${st.getNgaySinh()}', '${st.isGioiTinh() ? 1 : 0}', '${st.getSDT()}', '${st.getEmail()}', '${st.getDiaChi()}', '${st.getNgayVaoLam()}', '${st.getLuong()}', '${st.getMaNguoiDung()}', '${st.getMaNhom()}', '${userForStaff.tenDangNhap}', '${userForStaff.matKhau}', '${st.isDangKy()}')">
