@@ -3,78 +3,84 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package models;
+
 import java.time.LocalDate;
-/**
- *
- * @author longd
- */
+
 public class FarmingPractice {
-    private int MaQuyTrinh;
-    private String TenQuyTrinh;
-    private String MoTa;
-    private LocalDate NgayTao;
-    private int NguoiTao;
-    private boolean TrangThai;
+    private int maQuyTrinh;
+    private String tenQuyTrinh;
+    private String moTa;
+    private String loaiApDung;
+    private LocalDate ngayTao;
+    private int nguoiTao;
+    private boolean trangThai;
 
     public FarmingPractice() {
     }
 
-    public FarmingPractice(int MaQuyTrinh, String TenQuyTrinh, String MoTa, LocalDate NgayTao, int NguoiTao, boolean TrangThai) {
-        this.MaQuyTrinh = MaQuyTrinh;
-        this.TenQuyTrinh = TenQuyTrinh;
-        this.MoTa = MoTa;
-        this.NgayTao = NgayTao;
-        this.NguoiTao = NguoiTao;
-        this.TrangThai = TrangThai;
+    public FarmingPractice(int maQuyTrinh, String tenQuyTrinh, String moTa, String loaiApDung, LocalDate ngayTao, int nguoiTao, boolean trangThai) {
+        this.maQuyTrinh = maQuyTrinh;
+        this.tenQuyTrinh = tenQuyTrinh;
+        this.moTa = moTa;
+        this.loaiApDung = loaiApDung;
+        this.ngayTao = ngayTao;
+        this.nguoiTao = nguoiTao;
+        this.trangThai = trangThai;
     }
 
     public int getMaQuyTrinh() {
-        return MaQuyTrinh;
+        return maQuyTrinh;
     }
 
-    public void setMaQuyTrinh(int MaQuyTrinh) {
-        this.MaQuyTrinh = MaQuyTrinh;
+    public void setMaQuyTrinh(int maQuyTrinh) {
+        this.maQuyTrinh = maQuyTrinh;
     }
 
     public String getTenQuyTrinh() {
-        return TenQuyTrinh;
+        return tenQuyTrinh;
     }
 
-    public void setTenQuyTrinh(String TenQuyTrinh) {
-        this.TenQuyTrinh = TenQuyTrinh;
+    public void setTenQuyTrinh(String tenQuyTrinh) {
+        this.tenQuyTrinh = tenQuyTrinh;
     }
 
     public String getMoTa() {
-        return MoTa;
+        return moTa;
     }
 
-    public void setMoTa(String MoTa) {
-        this.MoTa = MoTa;
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
+    }
+
+    public String getLoaiApDung() {
+        return loaiApDung;
+    }
+
+    public void setLoaiApDung(String loaiApDung) {
+        this.loaiApDung = loaiApDung;
     }
 
     public LocalDate getNgayTao() {
-        return NgayTao;
+        return ngayTao;
     }
 
-    public void setNgayTao(LocalDate NgayTao) {
-        this.NgayTao = NgayTao;
+    public void setNgayTao(LocalDate ngayTao) {
+        this.ngayTao = ngayTao;
     }
 
     public int getNguoiTao() {
-        return NguoiTao;
+        return nguoiTao;
     }
 
-    public void setNguoiTao(int NguoiTao) {
-        this.NguoiTao = NguoiTao;
+    public void setNguoiTao(int nguoiTao) {
+        this.nguoiTao = nguoiTao;
     }
 
     public boolean isTrangThai() {
-        return TrangThai;
+        return trangThai;
     }
 
-    public void setTrangThai(boolean TrangThai) {
-        this.TrangThai = TrangThai;
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
-    
-    
 }

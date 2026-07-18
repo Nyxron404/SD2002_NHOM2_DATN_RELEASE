@@ -4,7 +4,6 @@
  */
 package services;
 
-
 import dao.FarmingPracticeDAO;
 import java.util.List;
 import models.FarmingPractice;
@@ -18,7 +17,6 @@ public class TechnicianService {
     }
 
     public boolean createFarmingPractice(FarmingPractice fp) {
-        // Bạn có thể thêm logic kiểm tra dữ liệu ở đây nếu cần trước khi gọi DAO
         if (fp.getTenQuyTrinh() == null || fp.getTenQuyTrinh().trim().isEmpty()) {
             return false;
         }
@@ -26,10 +24,10 @@ public class TechnicianService {
     }
     
     public boolean deleteFarmingPractice(int id) {
-    return farmingPracticeDAO.deleteFarmingPractice(id);
+        return farmingPracticeDAO.deleteFarmingPractice(id);
     }
     
-    public boolean updateFarmingPractice(int id, String tenQuyTrinh, String moTa, String trangThai) {
-    return farmingPracticeDAO.updateFarmingPractice(id, tenQuyTrinh, moTa, trangThai);
+    public boolean updateFarmingPractice(int id, String tenQuyTrinh, String moTa, String loaiApDung, String trangThai) {
+        return farmingPracticeDAO.updateFarmingPractice(id, tenQuyTrinh, moTa, loaiApDung, trangThai);
     }
 }

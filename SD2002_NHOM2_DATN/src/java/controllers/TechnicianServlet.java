@@ -5,7 +5,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,54 +28,54 @@ public class TechnicianServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    request.setCharacterEncoding("UTF-8");
-    
-    String action = request.getParameter("action");
-    
-    if ("delete".equals(action)) {
-        // --- XỬ LÝ XÓA ---
-        String idRaw = request.getParameter("id");
-        if (idRaw != null) {
-            try {
-                int id = Integer.parseInt(idRaw);
-                farmingPracticeService.deleteFarmingPractice(id);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+        request.setCharacterEncoding("UTF-8");
+        
+        String action = request.getParameter("action");
+        
+        if ("delete".equals(action)) {
+            String idRaw = request.getParameter("id");
+            if (idRaw != null) {
+                try {
+                    int id = Integer.parseInt(idRaw);
+                    farmingPracticeService.deleteFarmingPractice(id);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
-    else if ("update".equals(action)) {
-    String idRaw = request.getParameter("id");
-    String tenQuyTrinh = request.getParameter("processName");
-    String moTa = request.getParameter("description");
-    String trangThai = request.getParameter("status"); // Lấy trạng thái mới từ form
-    
-        if (idRaw != null) {
-            try {
-                int id = Integer.parseInt(idRaw);
-                farmingPracticeService.updateFarmingPractice(id, tenQuyTrinh, moTa, trangThai);
-            } catch (Exception e) {
+        else if ("update".equals(action)) {
+            String idRaw = request.getParameter("id");
+            String tenQuyTrinh = request.getParameter("processName");
+            String moTa = request.getParameter("description");
+            String loaiApDung = request.getParameter("loaiApDung");
+            String trangThai = request.getParameter("status");
+            
+            if (idRaw != null) {
+                try {
+                    int id = Integer.parseInt(idRaw);
+                    farmingPracticeService.updateFarmingPractice(id, tenQuyTrinh, moTa, loaiApDung, trangThai);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+        else {
+            String tenQuyTrinh = request.getParameter("processName");
+            String moTa = request.getParameter("description");
+            String loaiApDung = request.getParameter("loaiApDung");
+            
+            int nguoiTaoId = 11; 
+            
+            models.FarmingPractice fp = new models.FarmingPractice();
+            fp.setTenQuyTrinh(tenQuyTrinh);
+            fp.setMoTa(moTa);
+            fp.setLoaiApDung(loaiApDung);
+            fp.setNgayTao(java.time.LocalDate.now());
+            fp.setNguoiTao(nguoiTaoId);
+            
+            farmingPracticeService.createFarmingPractice(fp);
+        }
+        
+        response.sendRedirect(request.getContextPath() + "/technician");
     }
-    else {
-        // --- XỬ LÝ TẠO MỚI QUY TRÌNH (Code tạo mới cũ của bạn giữ nguyên ở đây) ---
-        String tenQuyTrinh = request.getParameter("processName");
-        String moTa = request.getParameter("description");
-        
-        // Lấy ID người tạo tự động từ Session đã viết ở bước trước...
-        int nguoiTaoId = 11; 
-        
-        models.FarmingPractice fp = new models.FarmingPractice();
-        fp.setTenQuyTrinh(tenQuyTrinh);
-        fp.setMoTa(moTa);
-        fp.setNgayTao(java.time.LocalDate.now());
-        fp.setNguoiTao(nguoiTaoId);
-        
-        farmingPracticeService.createFarmingPractice(fp);
-    }
-    
-    // Cuối cùng quay trở lại trang danh sách quy trình
-    response.sendRedirect(request.getContextPath() + "/technician");
-}
 }
