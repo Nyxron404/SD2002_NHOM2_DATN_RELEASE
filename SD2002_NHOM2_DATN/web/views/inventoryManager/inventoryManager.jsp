@@ -503,6 +503,70 @@
                 color: #c0392b;
                 font-weight: 800;
             }
+            /* ================= TAB CHUYỂN VIEW (VẬT TƯ / PHIẾU KHO) ================= */
+            .view-tabs {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            .tab-btn {
+                padding: 12px 24px;
+                background: rgba(255, 255, 255, 0.85);
+                color: #2e541f;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 14px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                transition: 0.3s;
+            }
+            .tab-btn:hover {
+                background: #ffffff;
+            }
+            .tab-btn.tab-active {
+                background: linear-gradient(135deg, #579c3f, #396728);
+                color: #ffffff;
+                box-shadow: 0 4px 15px rgba(87, 156, 63, 0.4);
+            }
+
+            /* ================= BỘ LỌC PHIẾU KHO ================= */
+            .filter-row {
+                flex-wrap: wrap;
+                align-items: flex-end;
+            }
+            .filter-row .form-group {
+                min-width: 160px;
+                margin-bottom: 0;
+            }
+            .btn-clear-filter {
+                display: inline-block;
+                text-align: center;
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                background: #f1f2f6;
+                color: #333;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+            .btn-clear-filter:hover {
+                background: #dfe4ea;
+            }
+
+            /* ================= MODAL CHI TIẾT PHIẾU KHO (CSS-only, dùng :target) ================= */
+            .modal-overlay:target {
+                display: flex;
+            }
+            .slip-detail-info {
+                margin: -10px 0 15px 0;
+                color: #666;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            .slip-detail-table th, .slip-detail-table td {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
         </style>
     </head>
     <body>
@@ -519,113 +583,255 @@
 
             <main class="content-area">
 
+                <div class="view-tabs">
+                    <a href="${pageContext.request.contextPath}/inventory?view=supplie"
+                       class="tab-btn ${ACTIVE_VIEW == 'supplie' ? 'tab-active' : ''}">📦 Danh sách vật tư</a>
+                    <a href="${pageContext.request.contextPath}/inventory?view=warehouse"
+                       class="tab-btn ${ACTIVE_VIEW == 'warehouse' ? 'tab-active' : ''}">📋 Danh sách phiếu kho</a>
+                </div>
+
                 <c:if test="${not empty SUCCESS_MSG}">
                     <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
                 </c:if>
                 <c:if test="${not empty ERROR_MSG}">
                     <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
                 </c:if>
+                <c:if test="${ACTIVE_VIEW == 'supplie'}">
+                    <div class="page-toolbar">
+                        <h2>Danh sách vật tư</h2>
 
-                <div class="page-toolbar">
-                    <h2>Danh sách vật tư</h2>
-
-                    <%-- THANH TÌM KIẾM + CÁC NÚT THAO TÁC --%>
-                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
+                        <%-- THANH TÌM KIẾM + CÁC NÚT THAO TÁC --%>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
                                         openSearchModal()">
-                            <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                                <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                            </div>
+
+                            <button class="btn-add btn-import" onclick="openWarehouseSlipForm('import')">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19 12l-7 7-7-7h4V4h6v8z"/></svg>
+                                Nhập kho
+                            </button>
+
+                            <button class="btn-add btn-export" onclick="openWarehouseSlipForm('export')">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M5 12l7-7 7 7h-4v8H9v-8z"/></svg>
+                                Xuất kho
+                            </button>
+
+                            <button class="btn-add" onclick="openSupplieForm('add')">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                Thêm vật tư
+                            </button>
                         </div>
-
-                        <button class="btn-add btn-import" onclick="openWarehouseSlipForm('import')">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19 12l-7 7-7-7h4V4h6v8z"/></svg>
-                            Nhập kho
-                        </button>
-
-                        <button class="btn-add btn-export" onclick="openWarehouseSlipForm('export')">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M5 12l7-7 7 7h-4v8H9v-8z"/></svg>
-                            Xuất kho
-                        </button>
-
-                        <button class="btn-add" onclick="openSupplieForm('add')">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                            Thêm vật tư
-                        </button>
                     </div>
-                </div>
 
-                <div class="table-card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên vật tư</th>
-                                <th>Loại vật tư</th>
-                                <th>Đơn vị tính</th>
-                                <th>Tồn kho</th>
-                                <th>Ngưỡng tối thiểu</th>
-                                <th>Đơn giá</th>
-                                <th>Ngày nhập</th>
-                                <th>Trạng thái</th>
-                                <th>Mô tả</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
-                        <tbody id="mainTableBody">
-                            <c:forEach var="item" items="${LIST_SUPPLIE}">
-                                <c:set var="isLow" value="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}" />
-                                <tr class="${isLow ? 'low-stock-row' : ''}">
-                                    <td class="${isLow ? 'low-stock-id' : ''}">${item.getMaVatTu()}</td>
-                                    <td><strong>${item.getTenVatTu()}</strong></td>
-                                    <td><span class="category-badge">${item.getLoaiVatTu()}</span></td>
-                                    <td>${item.getDonViTinh()}</td>
-                                    <td>
-                                        ${item.getSoLuongTon()}
-                                    </td>
-                                    <td>${item.getSoLuongToiThieu()}</td>
-                                    <td>${item.getDonGia()}</td>
-                                    <td>${fn:substring(item.getNgayNhapGanNhat(), 0, 10)}</td>
-                                    <td>
-                                        <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
-                                            ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
-                                        </span>
-                                    </td>
-                                    <td>${fn:escapeXml(item.getMoTa())}</td>
-                                    <td>
-                                        <div class="action-btns">
-                                            <button class="btn-action btn-edit" title="Sửa"
-                                                    data-id="${item.getMaVatTu()}"
-                                                    data-ten="${fn:escapeXml(item.getTenVatTu())}"
-                                                    data-loai="${fn:escapeXml(item.getLoaiVatTu())}"
-                                                    data-donvi="${fn:escapeXml(item.getDonViTinh())}"
-                                                    data-soluong="${item.getSoLuongTon()}"
-                                                    data-gioihan="${item.getSoLuongToiThieu()}"
-                                                    data-dongia="${item.getDonGia()}"
-                                                    data-mota="${fn:escapeXml(item.getMoTa())}"
-                                                    data-ngay="${item.getNgayNhapGanNhat()}"
-                                                    data-trangthai="${item.isTrangThai()}"
-                                                    onclick="openSupplieForm('edit', this)">Sửa</button>
-                                            <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.getMaVatTu()}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-
-                            <c:if test="${empty LIST_SUPPLIE}">
+                    <div class="table-card">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colspan="11" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                    <th>ID</th>
+                                    <th>Tên vật tư</th>
+                                    <th>Loại vật tư</th>
+                                    <th>Đơn vị tính</th>
+                                    <th>Tồn kho</th>
+                                    <th>Ngưỡng tối thiểu</th>
+                                    <th>Đơn giá</th>
+                                    <th>Ngày nhập</th>
+                                    <th>Trạng thái</th>
+                                    <th>Mô tả</th>
+                                    <th>Hành động</th>
                                 </tr>
-                            </c:if>
+                            </thead>
+                            <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
+                            <tbody id="mainTableBody">
+                                <c:forEach var="item" items="${LIST_SUPPLIE}">
+                                    <c:set var="isLow" value="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}" />
+                                    <tr class="${isLow ? 'low-stock-row' : ''}">
+                                        <td class="${isLow ? 'low-stock-id' : ''}">${item.getMaVatTu()}</td>
+                                        <td><strong>${item.getTenVatTu()}</strong></td>
+                                        <td><span class="category-badge">${item.getLoaiVatTu()}</span></td>
+                                        <td>${item.getDonViTinh()}</td>
+                                        <td>
+                                            ${item.getSoLuongTon()}
+                                        </td>
+                                        <td>${item.getSoLuongToiThieu()}</td>
+                                        <td>${item.getDonGia()}</td>
+                                        <td>${fn:substring(item.getNgayNhapGanNhat(), 0, 10)}</td>
+                                        <td>
+                                            <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
+                                                ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
+                                            </span>
+                                        </td>
+                                        <td>${fn:escapeXml(item.getMoTa())}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="btn-action btn-edit" title="Sửa"
+                                                        data-id="${item.getMaVatTu()}"
+                                                        data-ten="${fn:escapeXml(item.getTenVatTu())}"
+                                                        data-loai="${fn:escapeXml(item.getLoaiVatTu())}"
+                                                        data-donvi="${fn:escapeXml(item.getDonViTinh())}"
+                                                        data-soluong="${item.getSoLuongTon()}"
+                                                        data-gioihan="${item.getSoLuongToiThieu()}"
+                                                        data-dongia="${item.getDonGia()}"
+                                                        data-mota="${fn:escapeXml(item.getMoTa())}"
+                                                        data-ngay="${item.getNgayNhapGanNhat()}"
+                                                        data-trangthai="${item.isTrangThai()}"
+                                                        onclick="openSupplieForm('edit', this)">Sửa</button>
+                                                <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.getMaVatTu()}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
 
-                            <c:if test="${empty LIST_SUPPLIE}">
-                                <tr>
-                                    <td colspan="9" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
-                                </tr>
-                            </c:if>
-                        </tbody>
-                    </table>
+                                <c:if test="${empty LIST_SUPPLIE}">
+                                    <tr>
+                                        <td colspan="11" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                    </tr>
+                                </c:if>
+
+                                <c:if test="${empty LIST_SUPPLIE}">
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
                 </div>
+                </c:if>
+
+                <c:if test="${ACTIVE_VIEW == 'warehouse'}">
+
+                    <%-- ===== BỘ LỌC PHIẾU KHO ===== --%>
+                    <div class="table-card" style="margin-bottom: 20px;">
+                        <form action="${pageContext.request.contextPath}/inventory" method="GET">
+                            <input type="hidden" name="view" value="warehouse">
+                            <div class="form-row filter-row">
+                                <div class="form-group">
+                                    <label>Loại phiếu</label>
+                                    <select name="loaiPhieu" class="form-control">
+                                        <option value="" ${empty FILTER_LOAIPHIEU ? 'selected' : ''}>-- Tất cả --</option>
+                                        <option value="Nhập" ${FILTER_LOAIPHIEU == 'Nhập' ? 'selected' : ''}>Nhập kho</option>
+                                        <option value="Xuất" ${FILTER_LOAIPHIEU == 'Xuất' ? 'selected' : ''}>Xuất kho</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá trị phiếu</label>
+                                    <select name="giaKhoang" class="form-control">
+                                        <option value="" ${empty FILTER_GIAKHOANG ? 'selected' : ''}>-- Tất cả --</option>
+                                        <option value="duoi5" ${FILTER_GIAKHOANG == 'duoi5' ? 'selected' : ''}>Dưới 5 triệu</option>
+                                        <option value="5-10" ${FILTER_GIAKHOANG == '5-10' ? 'selected' : ''}>5 - 10 triệu</option>
+                                        <option value="10-20" ${FILTER_GIAKHOANG == '10-20' ? 'selected' : ''}>10 - 20 triệu</option>
+                                        <option value="tren20" ${FILTER_GIAKHOANG == 'tren20' ? 'selected' : ''}>Trên 20 triệu</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Từ ngày</label>
+                                    <input type="date" name="tuNgay" class="form-control" value="${FILTER_TUNGAY}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Đến ngày</label>
+                                    <input type="date" name="denNgay" class="form-control" value="${FILTER_DENNGAY}">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn-add">🔍 Lọc</button>
+                                </div>
+                                <div class="form-group">
+                                    <a href="${pageContext.request.contextPath}/inventory?view=warehouse" class="btn-clear-filter">Xóa lọc</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <%-- ===== BẢNG DANH SÁCH PHIẾU KHO ===== --%>
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã phiếu kho</th>
+                                    <th>Loại phiếu kho</th>
+                                    <th>Ngày lập</th>
+                                    <th>Người lập</th>
+                                    <th>Ghi chú</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="slip" items="${LIST_WAREHOUSE_SLIP}">
+                                    <tr>
+                                        <td><strong>${slip.getMaPhieuKho()}</strong></td>
+                                        <td>
+                                            <span class="status-badge ${slip.getLoaiPhieu() == 'Nhập' ? 'status-active' : 'status-locked'}">
+                                                ${slip.getLoaiPhieu()}
+                                            </span>
+                                        </td>
+                                        <td>${fn:substring(fn:replace(slip.getNgayLap(), 'T', ' '), 0, 16)}</td>
+                                        <td>${fn:escapeXml(slip.getTenNguoiLap())}</td>
+                                        <td>${fn:escapeXml(slip.getGhiChu())}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <a href="#slipDetail${slip.getMaPhieuKho()}" class="btn-action btn-edit">Xem chi tiết</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty LIST_WAREHOUSE_SLIP}">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Không có phiếu kho nào khớp với điều kiện lọc.</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <%-- ===== MODAL CHI TIẾT TỪNG PHIẾU KHO (CSS-only :target, không dùng JS) ===== --%>
+                    <c:forEach var="slip" items="${LIST_WAREHOUSE_SLIP}">
+                        <div class="modal-overlay" id="slipDetail${slip.getMaPhieuKho()}">
+                            <div class="modal-content" style="width: 720px;">
+                                <div class="modal-header">
+                                    <h3>Chi tiết phiếu ${slip.getLoaiPhieu()} kho #${slip.getMaPhieuKho()}</h3>
+                                    <a href="#" class="close-btn" style="text-decoration: none;">&times;</a>
+                                </div>
+
+                                <div class="slip-detail-info">
+                                    Người lập: <strong>${fn:escapeXml(slip.getTenNguoiLap())}</strong> &nbsp;|&nbsp;
+                                    Ngày lập: <strong>${fn:substring(fn:replace(slip.getNgayLap(), 'T', ' '), 0, 16)}</strong>
+                                    <c:if test="${not empty slip.getGhiChu()}">
+                                        <br>Ghi chú: ${fn:escapeXml(slip.getGhiChu())}
+                                    </c:if>
+                                </div>
+
+                                <table class="slip-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Vật tư</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="detail" items="${MAP_SLIP_DETAILS[slip.getMaPhieuKho()]}">
+                                            <tr>
+                                                <td>${fn:escapeXml(detail.getTenVatTu())}</td>
+                                                <td>${detail.getSoLuong()} ${fn:escapeXml(detail.getDonViTinh())}</td>
+                                                <td>${detail.getDonGia()}</td>
+                                                <td>${detail.getThanhTien()}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+
+                                <hr style="margin: 20px 0; border: none; border-top: 2px solid #ddd;">
+                                <div class="slip-total">Tổng cộng: ${slip.getTongTien()} VNĐ</div>
+
+                                <div class="modal-footer">
+                                    <a href="#" class="btn-cancel" style="text-decoration: none;">Đóng</a>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+
+                </c:if>
             </main>
         </div>
 

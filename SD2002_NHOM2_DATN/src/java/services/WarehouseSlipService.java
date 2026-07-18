@@ -15,7 +15,9 @@ import models.DetailedWarehouseSlip;
 import models.Supplie;
 import models.WarehouseSlip;
 import uril.DBConnect;
-
+import java.time.LocalDate;
+import models.DetailedWarehouseSlipView;
+import models.WarehouseSlipView;
 /**
  * Xử lý nghiệp vụ lập phiếu Nhập kho / Xuất kho. Mỗi phiếu có thể gồm nhiều
  * dòng vật tư (DetailedWarehouseSlip). Toàn bộ việc tạo phiếu + tạo chi tiết +
@@ -156,5 +158,20 @@ public class WarehouseSlipService {
 
     public List<DetailedWarehouseSlip> getDetailsBySlip(int maPhieuKho) {
         return detailDAO.getDetailsByPhieuKho(maPhieuKho);
+    }
+    /**
+     * Lấy danh sách phiếu kho đã lọc (kèm Tên người lập + Tổng tiền) cho màn hình
+     * "Danh sách phiếu kho". Các tham số lọc có thể truyền null để bỏ qua điều kiện đó.
+     */
+    public List<WarehouseSlipView> getFilteredSlips(String loaiPhieu, Double giaTienTu, Double giaTienDen,
+            LocalDate tuNgay, LocalDate denNgay) {
+        return warehouseSlipDAO.getWarehouseSlipsFiltered(loaiPhieu, giaTienTu, giaTienDen, tuNgay, denNgay);
+    }
+
+    /**
+     * Lấy chi tiết 1 phiếu kho kèm Tên vật tư, dùng cho form "Xem chi tiết".
+     */
+    public List<DetailedWarehouseSlipView> getDetailsWithName(int maPhieuKho) {
+        return detailDAO.getDetailsWithNameByPhieuKho(maPhieuKho);
     }
 }

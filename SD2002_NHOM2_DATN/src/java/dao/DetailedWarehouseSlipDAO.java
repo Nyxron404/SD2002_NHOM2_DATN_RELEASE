@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import models.DetailedWarehouseSlip;
 import uril.DBConnect;
+import models.DetailedWarehouseSlipView;
 
 /**
  * DAO cho bảng DetailedWarehouseSlip (chi tiết từng dòng vật tư trong 1 phiếu Nhập/Xuất kho).
@@ -55,6 +56,35 @@ public class DetailedWarehouseSlipDAO {
                     list.add(new DetailedWarehouseSlip(
                         rs.getInt("MaChiTiet"), rs.getInt("MaPhieuKho"), rs.getInt("MaVatTu"),
                         rs.getInt("SoLuong"), rs.getDouble("DonGia"), rs.getDouble("ThanhTien")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    /**
+     * Lấy toàn bộ chi tiết của 1 phiếu kho kèm Tên vật tư + Đơn vị tính
+     * (join Supplie), dùng cho form "Xem chi tiết" phiếu kho ở màn hình danh sách.
+     */
+    public List<DetailedWarehouseSlipView> getDetailsWithNameByPhieuKho(int maPhieuKho) {
+        List<DetailedWarehouseSlipView> list = new ArrayList<>();
+        String select = "SELECT d.MaChiTiet, d.MaPhieuKho, d.MaVatTu, sp.TenVatTu, sp.DonViTinh, "
+                + "d.SoLuong, d.DonGia, d.ThanhTien "
+                + "FROM DetailedWarehouseSlip d "
+                + "LEFT JOIN Supplie sp ON d.MaVatTu = sp.MaVatTu "
+                + "WHERE d.MaPhieuKho = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(select)) {
+            pstmt.setInt(1, maPhieuKho);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String tenVatTu = rs.getString("TenVatTu");
+                    list.add(new DetailedWarehouseSlipView(
+                            rs.getInt("MaChiTiet"), rs.getInt("MaPhieuKho"), rs.getInt("MaVatTu"),
+                            tenVatTu != null ? tenVatTu : "(Vật tư đã bị xóa)",
+                            rs.getString("DonViTinh"),
+                            rs.getInt("SoLuong"), rs.getDouble("DonGia"), rs.getDouble("ThanhTien")
                     ));
                 }
             }
