@@ -17,10 +17,10 @@ import models.WarehouseSlip;
 import uril.DBConnect;
 
 /**
- * Xử lý nghiệp vụ lập phiếu Nhập kho / Xuất kho.
- * Mỗi phiếu có thể gồm nhiều dòng vật tư (DetailedWarehouseSlip). Toàn bộ việc
- * tạo phiếu + tạo chi tiết + cập nhật tồn kho chạy trong CÙNG 1 transaction:
- * nếu 1 dòng lỗi (vd không đủ tồn kho khi xuất) thì rollback toàn bộ phiếu.
+ * Xử lý nghiệp vụ lập phiếu Nhập kho / Xuất kho. Mỗi phiếu có thể gồm nhiều
+ * dòng vật tư (DetailedWarehouseSlip). Toàn bộ việc tạo phiếu + tạo chi tiết +
+ * cập nhật tồn kho chạy trong CÙNG 1 transaction: nếu 1 dòng lỗi (vd không đủ
+ * tồn kho khi xuất) thì rollback toàn bộ phiếu.
  *
  * @author longd
  */
@@ -35,20 +35,31 @@ public class WarehouseSlipService {
 
     /**
      * Lập phiếu NHẬP kho: cộng số lượng tồn cho từng vật tư trong danh sách.
-     * @return null nếu thành công, ngược lại trả về thông báo lỗi để hiển thị cho người dùng.
+     *
+     * @return null nếu thành công, ngược lại trả về thông báo lỗi để hiển thị
+     * cho người dùng.
      */
     public String createImportSlip(int nguoiLap, String ghiChu, List<DetailedWarehouseSlip> chiTietList) {
         String validate = validateCommon(chiTietList);
         if (validate != null) {
             return validate;
         }
+        // Kiểm tra vật tư có tồn tại trước khi lập phiếu (tránh lỗi FK khó hiểu khi ghi CSDL)
+        for (DetailedWarehouseSlip ct : chiTietList) {
+            Supplie s = supplieDAO.getSupplieById(ct.getMaVatTu());
+            if (s == null) {
+                return "Vật tư mã " + ct.getMaVatTu() + " không tồn tại.";
+            }
+        }
         return createSlip(PHIEU_NHAP, nguoiLap, ghiChu, chiTietList);
     }
 
     /**
-     * Lập phiếu XUẤT kho: kiểm tra đủ tồn kho cho TỪNG vật tư trước khi cho lập phiếu,
-     * sau đó trừ số lượng tồn tương ứng.
-     * @return null nếu thành công, ngược lại trả về thông báo lỗi để hiển thị cho người dùng.
+     * Lập phiếu XUẤT kho: kiểm tra đủ tồn kho cho TỪNG vật tư trước khi cho lập
+     * phiếu, sau đó trừ số lượng tồn tương ứng.
+     *
+     * @return null nếu thành công, ngược lại trả về thông báo lỗi để hiển thị
+     * cho người dùng.
      */
     public String createExportSlip(int nguoiLap, String ghiChu, List<DetailedWarehouseSlip> chiTietList) {
         String validate = validateCommon(chiTietList);

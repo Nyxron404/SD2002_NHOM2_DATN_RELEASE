@@ -274,6 +274,8 @@
                 font-size: 13px;
                 font-weight: 600;
                 border: 1px solid #dfe4ea;
+                white-space: nowrap;
+                display: inline-block;
             }
             .low-stock-badge {
                 display: inline-block;
@@ -494,6 +496,13 @@
                 color: #2e541f;
                 font-size: 15px;
             }
+            .low-stock-row {
+                background: rgba(231, 76, 60, 0.07);
+            }
+            .low-stock-id {
+                color: #c0392b;
+                font-weight: 800;
+            }
         </style>
     </head>
     <body>
@@ -554,26 +563,27 @@
                                 <th>Loại vật tư</th>
                                 <th>Đơn vị tính</th>
                                 <th>Tồn kho</th>
+                                <th>Ngưỡng tối thiểu</th>
                                 <th>Đơn giá</th>
                                 <th>Ngày nhập</th>
                                 <th>Trạng thái</th>
+                                <th>Mô tả</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
                         <tbody id="mainTableBody">
                             <c:forEach var="item" items="${LIST_SUPPLIE}">
-                                <tr>
-                                    <td>${item.getMaVatTu()}</td>
+                                <c:set var="isLow" value="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}" />
+                                <tr class="${isLow ? 'low-stock-row' : ''}">
+                                    <td class="${isLow ? 'low-stock-id' : ''}">${item.getMaVatTu()}</td>
                                     <td><strong>${item.getTenVatTu()}</strong></td>
                                     <td><span class="category-badge">${item.getLoaiVatTu()}</span></td>
                                     <td>${item.getDonViTinh()}</td>
                                     <td>
                                         ${item.getSoLuongTon()}
-                                        <c:if test="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}">
-                                            <span class="low-stock-badge" title="Giới hạn tồn kho tối thiểu bạn đã đặt: ${item.getSoLuongToiThieu()}">⚠ Tồn thấp</span>
-                                        </c:if>
                                     </td>
+                                    <td>${item.getSoLuongToiThieu()}</td>
                                     <td>${item.getDonGia()}</td>
                                     <td>${fn:substring(item.getNgayNhapGanNhat(), 0, 10)}</td>
                                     <td>
@@ -581,6 +591,7 @@
                                             ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
                                         </span>
                                     </td>
+                                    <td>${fn:escapeXml(item.getMoTa())}</td>
                                     <td>
                                         <div class="action-btns">
                                             <button class="btn-action btn-edit" title="Sửa"
@@ -600,6 +611,12 @@
                                     </td>
                                 </tr>
                             </c:forEach>
+
+                            <c:if test="${empty LIST_SUPPLIE}">
+                                <tr>
+                                    <td colspan="11" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                </tr>
+                            </c:if>
 
                             <c:if test="${empty LIST_SUPPLIE}">
                                 <tr>
@@ -629,9 +646,11 @@
                                 <th>Loại vật tư</th>
                                 <th>Đơn vị tính</th>
                                 <th>Tồn kho</th>
+                                <th>Ngưỡng tối thiểu</th>
                                 <th>Đơn giá</th>
                                 <th>Ngày nhập</th>
                                 <th>Trạng thái</th>
+                                <th>Mô tả</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -651,6 +670,7 @@
                     <h3 id="supplieModalTitle">Thêm vật tư mới</h3>
                     <button class="close-btn" onclick="closeModal('supplieModal')">&times;</button>
                 </div>
+                <div id="supplieFormError" class="alert-banner alert-error" style="display:none; margin-bottom:15px;"></div>
                 <form action="${pageContext.request.contextPath}/inventory" method="POST">
                     <input type="hidden" name="action" id="formAction" value="add">
                     <input type="hidden" name="maVatTu" id="maVatTu">
@@ -810,7 +830,7 @@
                 });
 
                 if (matchCount === 0) {
-                    resultBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
+                    resultBody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
                 }
 
                 document.getElementById('searchModal').style.display = 'flex';
@@ -819,7 +839,7 @@
             // ============== THÊM / SỬA VẬT TƯ ==============
             function openSupplieForm(mode, btn) {
                 closeModal('searchModal');
-
+                showSupplieFormError(null);
                 const modal = document.getElementById('supplieModal');
                 const title = document.getElementById('supplieModalTitle');
                 const actionInput = document.getElementById('formAction');
@@ -977,6 +997,52 @@
                 if (event.target == warehouseSlipModal)
                     warehouseSlipModal.style.display = "none";
             }
+            function showSupplieFormError(msg) {
+                const box = document.getElementById('supplieFormError');
+                if (msg) {
+                    box.textContent = '✖ ' + msg;
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const errData = document.getElementById('formErrorData');
+                if (!errData)
+                    return;
+
+                const action = errData.dataset.action === 'edit' ? 'edit' : 'add';
+                openSupplieForm(action);
+                document.getElementById('formAction').value = action;
+                document.getElementById('maVatTu').value = errData.dataset.mavattu || '';
+                document.getElementById('tenVatTu').value = errData.dataset.tenvattu || '';
+                document.getElementById('loaiVatTu').value = errData.dataset.loaivattu || '';
+                document.getElementById('donViTinh').value = errData.dataset.donvitinh || '';
+                document.getElementById('soLuongTon').value = errData.dataset.soluongton || '';
+                document.getElementById('soLuongToiThieu').value = errData.dataset.soluongtoithieu || '';
+                document.getElementById('donGia').value = errData.dataset.dongia || '';
+                document.getElementById('moTa').value = errData.dataset.mota || '';
+                document.getElementById('ngayNhapGanNhat').value = errData.dataset.ngaynhap ? errData.dataset.ngaynhap.substring(0, 16) : '';
+                document.getElementById('trangThai').value = errData.dataset.trangthai || 'true';
+                document.getElementById('supplieModalTitle').innerText = action === 'edit' ? 'Sửa thông tin vật tư' : 'Thêm vật tư mới';
+                showSupplieFormError(errData.dataset.error);
+            });
         </script>
+        <c:if test="${not empty FORM_ERROR_MSG}">
+            <div id="formErrorData" style="display:none"
+                 data-action="${FORM_ACTION}"
+                 data-error="${fn:escapeXml(FORM_ERROR_MSG)}"
+                 data-mavattu="${fn:escapeXml(FORM_MAVATTU)}"
+                 data-tenvattu="${fn:escapeXml(FORM_TENVATTU)}"
+                 data-loaivattu="${fn:escapeXml(FORM_LOAIVATTU)}"
+                 data-donvitinh="${fn:escapeXml(FORM_DONVITINH)}"
+                 data-soluongton="${fn:escapeXml(FORM_SOLUONGTON)}"
+                 data-soluongtoithieu="${fn:escapeXml(FORM_SOLUONGTOITHIEU)}"
+                 data-dongia="${fn:escapeXml(FORM_DONGIA)}"
+                 data-mota="${fn:escapeXml(FORM_MOTA)}"
+                 data-ngaynhap="${fn:escapeXml(FORM_NGAYNHAP)}"
+                 data-trangthai="${fn:escapeXml(FORM_TRANGTHAI)}"></div>
+        </c:if>
     </body>
 </html>

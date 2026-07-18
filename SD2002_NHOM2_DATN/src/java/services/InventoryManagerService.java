@@ -1,23 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package services;
 
 import dao.SupplieDAO;
+import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 import models.Supplie;
 
-/**
- *
- * @author longd
- */
 public class InventoryManagerService {
 
     private SupplieDAO supplieDAO = new SupplieDAO();
 
+    /**
+     * Lấy danh sách vật tư, đưa các vật tư đang ở/dưới ngưỡng tồn kho tối thiểu lên đầu danh sách
+     * để người quản lý dễ nhận biết cần nhập thêm hàng.
+     */
     public List<Supplie> getAllSupplies() {
-        return supplieDAO.SelectSupplie();
+        List<Supplie> list = supplieDAO.SelectSupplie();
+        list.sort(Comparator
+                .comparing((Supplie s) -> !isLowStock(s)) // hàng tồn thấp (false) đứng trước
+                .thenComparing(Supplie::getTenVatTu, String.CASE_INSENSITIVE_ORDER));
+        return list;
     }
 
     public Supplie getSupplieById(int maVatTu) {
@@ -25,59 +27,73 @@ public class InventoryManagerService {
     }
 
     /**
-     * Thêm vật tư mới. Kiểm tra đầy đủ dữ liệu, trong đó có kiểm tra số lượng tồn kho
-     * ban đầu (soLuongTon) được thiết lập khi thêm vật tư phải hợp lệ (số nguyên >= 0).
-     *
-     * @return null nếu thêm thành công, ngược lại trả về thông báo lỗi cụ thể.
+     * Thêm vật tư mới.
+     * @return null nếu thành công, ngược lại là thông báo lỗi cụ thể để hiển thị lên form.
      */
     public String addSupplie(Supplie s) {
-        String error = validate(s);
+        String error = validate(s, false);
         if (error != null) {
             return error;
         }
-        supplieDAO.addSupplie(s);
-        return null;
+        try {
+            if (supplieDAO.checkTenVatTuTrung(s.getTenVatTu(), 0)) {
+                return "Tên vật tư \"" + s.getTenVatTu() + "\" đã bị trùng, vui lòng chọn tên khác.";
+            }
+            boolean ok = supplieDAO.addSupplie(s);
+            return ok ? null : "Thêm vật tư thất bại, vui lòng thử lại.";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Có lỗi xảy ra khi ghi dữ liệu vào cơ sở dữ liệu, vui lòng thử lại.";
+        }
     }
 
     /**
-     * Sửa thông tin vật tư.
-     * @return null nếu sửa thành công, ngược lại trả về thông báo lỗi cụ thể.
+     * Sửa vật tư. Cho phép đặt ngưỡng tối thiểu LỚN HƠN số lượng tồn kho hiện tại
+     * (khác với khi thêm mới) vì tồn kho biến động theo thời gian, người dùng có thể
+     * chủ động đặt trước ngưỡng cảnh báo để chuẩn bị nhập thêm hàng.
      */
     public String updateSupplie(Supplie s) {
         if (s.getMaVatTu() <= 0) {
             return "Mã vật tư không hợp lệ.";
         }
-        String error = validate(s);
+        String error = validate(s, true);
         if (error != null) {
             return error;
         }
-        supplieDAO.updateSupplie(s);
-        return null;
+        try {
+            if (supplieDAO.checkTenVatTuTrung(s.getTenVatTu(), s.getMaVatTu())) {
+                return "Tên vật tư \"" + s.getTenVatTu() + "\" đã bị trùng, vui lòng chọn tên khác.";
+            }
+            boolean ok = supplieDAO.updateSupplie(s);
+            return ok ? null : "Cập nhật thất bại: không tìm thấy vật tư mã " + s.getMaVatTu() + ".";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Có lỗi xảy ra khi cập nhật dữ liệu, vui lòng thử lại.";
+        }
     }
 
     public boolean deleteSupplie(int maVatTu) {
         if (maVatTu <= 0) {
             return false;
         }
-        supplieDAO.deleteSupplie(maVatTu);
-        return true;
+        try {
+            return supplieDAO.deleteSupplie(maVatTu);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    /**
-     * Kiểm tra tồn kho hiện tại của 1 vật tư có đủ để xuất kho 1 số lượng cho trước hay không.
-     * Dùng cho màn hình lập phiếu xuất kho (kiểm tra "mềm" phía trên trước khi submit).
-     */
     public boolean isEnoughStock(int maVatTu, int soLuongCan) {
         Supplie s = supplieDAO.getSupplieById(maVatTu);
         return s != null && s.getSoLuongTon() >= soLuongCan;
     }
 
-    /** Vật tư có tồn kho thấp hơn ngưỡng tối thiểu do người dùng tự thiết lập hay không. */
     public boolean isLowStock(Supplie s) {
-        return (s.getSoLuongTon() <= s.getSoLuongToiThieu());
+        return s.getSoLuongTon() <= s.getSoLuongToiThieu();
     }
 
-    private String validate(Supplie s) {
+    private String validate(Supplie s, boolean isEdit) {
         if (s.getTenVatTu() == null || s.getTenVatTu().trim().isEmpty()) {
             return "Tên vật tư không được để trống.";
         }
@@ -87,13 +103,14 @@ public class InventoryManagerService {
         if (s.getDonViTinh() == null || s.getDonViTinh().trim().isEmpty()) {
             return "Đơn vị tính không được để trống.";
         }
-        // Kiểm tra số lượng tồn kho được thiết lập khi thêm/sửa vật tư: phải là số nguyên không âm.
         if (s.getSoLuongTon() < 0) {
             return "Số lượng tồn kho không được âm.";
         }
-        // Giới hạn tồn kho tối thiểu do người dùng tự thiết lập để nhận cảnh báo "Tồn thấp".
         if (s.getSoLuongToiThieu() < 0) {
             return "Giới hạn tồn kho tối thiểu không được âm.";
+        }
+        if (!isEdit && s.getSoLuongToiThieu() > s.getSoLuongTon()) {
+            return "Số lượng tồn kho không đủ để đặt giới hạn ngưỡng tối thiểu (khi thêm mới, ngưỡng tối thiểu phải nhỏ hơn hoặc bằng số lượng tồn kho).";
         }
         if (s.getDonGia() < 0) {
             return "Đơn giá không được âm.";

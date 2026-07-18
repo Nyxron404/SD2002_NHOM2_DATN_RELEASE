@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import java.util.ArrayList;
@@ -9,12 +5,7 @@ import java.util.List;
 import models.Supplie;
 import uril.DBConnect;
 import java.sql.*;
-import java.time.LocalDateTime;
 
-/**
- *
- * @author longd
- */
 public class SupplieDAO {
     private List<Supplie> listSupplie;
 
@@ -30,7 +21,7 @@ public class SupplieDAO {
             while (rs.next()) {
                 listSupplie.add(new Supplie(
                     rs.getInt("MaVatTu"), rs.getString("TenVatTu"), rs.getString("LoaiVatTu"),
-                    rs.getString("DonViTinh"), rs.getInt("SoLuongTon"), rs.getInt("NguongToiThieu"), rs.getDouble("DonGia"),
+                    rs.getString("DonViTinh"), rs.getInt("SoLuongTon"), rs.getInt("SoLuongToiThieu"), rs.getDouble("DonGia"),
                     rs.getString("MoTa"), rs.getTimestamp("NgayNhapGanNhat").toLocalDateTime(), rs.getBoolean("TrangThai")
                 ));
             }
@@ -40,9 +31,6 @@ public class SupplieDAO {
         return listSupplie;
     }
 
-    /**
-     * Lấy 1 vật tư theo mã. Dùng khi lập phiếu Nhập/Xuất để biết tồn kho hiện tại, đơn giá, tên...
-     */
     public Supplie getSupplieById(int maVatTu) {
         String select = "SELECT * FROM Supplie WHERE MaVatTu=?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(select)) {
@@ -62,7 +50,26 @@ public class SupplieDAO {
         return null;
     }
 
-    public void addSupplie(Supplie s) {
+    /**
+     * Kiểm tra tên vật tư đã tồn tại chưa (không phân biệt hoa/thường, khoảng trắng đầu-cuối).
+     * excludeMaVatTu: khi sửa, truyền mã đang sửa để loại trừ chính nó; khi thêm mới, truyền 0.
+     */
+    public boolean checkTenVatTuTrung(String tenVatTu, int excludeMaVatTu) throws SQLException {
+        String sql = "SELECT 1 FROM Supplie WHERE LOWER(LTRIM(RTRIM(TenVatTu))) = LOWER(LTRIM(RTRIM(?))) AND MaVatTu <> ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, tenVatTu);
+            pstmt.setInt(2, excludeMaVatTu);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    /**
+     * QUAN TRỌNG: không còn nuốt SQLException như trước — ném ra để tầng Service
+     * biết chính xác thêm/sửa có thành công hay không, tránh báo "thành công" giả.
+     */
+    public boolean addSupplie(Supplie s) throws SQLException {
         String insert = "INSERT INTO Supplie (TenVatTu, LoaiVatTu, DonViTinh, SoLuongTon, SoLuongToiThieu, DonGia, MoTa, NgayNhapGanNhat, TrangThai) VALUES (?,?,?,?,?,?,?,?,?)";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(insert)) {
             pstmt.setString(1, s.getTenVatTu());
@@ -74,13 +81,11 @@ public class SupplieDAO {
             pstmt.setString(7, s.getMoTa());
             pstmt.setTimestamp(8, Timestamp.valueOf(s.getNgayNhapGanNhat()));
             pstmt.setBoolean(9, s.isTrangThai());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return pstmt.executeUpdate() > 0;
         }
     }
 
-    public void updateSupplie(Supplie s) {
+    public boolean updateSupplie(Supplie s) throws SQLException {
         String update = "UPDATE Supplie SET TenVatTu=?, LoaiVatTu=?, DonViTinh=?, SoLuongTon=?, SoLuongToiThieu=?, DonGia=?, MoTa=?, NgayNhapGanNhat=?, TrangThai=? WHERE MaVatTu=?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(update)) {
             pstmt.setString(1, s.getTenVatTu());
@@ -93,33 +98,20 @@ public class SupplieDAO {
             pstmt.setTimestamp(8, Timestamp.valueOf(s.getNgayNhapGanNhat()));
             pstmt.setBoolean(9, s.isTrangThai());
             pstmt.setInt(10, s.getMaVatTu());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return pstmt.executeUpdate() > 0;
         }
     }
 
-    public void deleteSupplie(int maVatTu) {
+    public boolean deleteSupplie(int maVatTu) throws SQLException {
         String delete = "DELETE FROM Supplie WHERE MaVatTu=?";
         try (Connection con = DBConnect.getConnection(); PreparedStatement pstmt = con.prepareStatement(delete)) {
             pstmt.setInt(1, maVatTu);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return pstmt.executeUpdate() > 0;
         }
     }
 
     /**
-     * Cộng/trừ số lượng tồn kho, chạy TRONG 1 transaction có sẵn (dùng chung Connection với
-     * WarehouseSlipDAO/DetailedWarehouseSlipDAO khi lập phiếu Nhập/Xuất kho).
-     *
-     * delta > 0  : Nhập kho (cộng tồn)
-     * delta < 0  : Xuất kho (trừ tồn)
-     *
-     * Điều kiện "SoLuongTon + ? >= 0" ngay trong câu SQL đảm bảo tồn kho KHÔNG BAO GIỜ bị âm,
-     * kể cả khi có nhiều người cùng thao tác một lúc (tránh race-condition).
-     * Nếu không có dòng nào được cập nhật (rows == 0) nghĩa là vật tư không tồn tại
-     * hoặc không đủ tồn kho để xuất -> ném SQLException để tầng Service rollback toàn bộ phiếu.
+     * Cộng/trừ tồn kho trong transaction có sẵn (dùng khi lập phiếu Nhập/Xuất).
      */
     public void updateStock(Connection con, int maVatTu, int delta) throws SQLException {
         String update = "UPDATE Supplie SET SoLuongTon = SoLuongTon + ? WHERE MaVatTu = ? AND SoLuongTon + ? >= 0";

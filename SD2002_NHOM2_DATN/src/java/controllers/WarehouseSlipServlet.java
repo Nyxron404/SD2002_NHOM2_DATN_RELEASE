@@ -13,13 +13,13 @@ import models.DetailedWarehouseSlip;
 import services.WarehouseSlipService;
 
 /**
- * Servlet xử lý lập phiếu Nhập kho / Xuất kho.
- * Form gửi lên nhiều dòng vật tư cùng lúc dưới dạng mảng tham số:
- *   maVatTu[], soLuong[], donGia[]  (cùng độ dài, cùng chỉ số ứng với 1 dòng)
+ * Servlet xử lý lập phiếu Nhập kho / Xuất kho. Form gửi lên nhiều dòng vật tư
+ * cùng lúc dưới dạng mảng tham số: maVatTu[], soLuong[], donGia[] (cùng độ dài,
+ * cùng chỉ số ứng với 1 dòng)
  *
- * LƯU Ý: servlet lấy mã nhân viên đang đăng nhập từ session attribute "MaNhanVien".
- * Nếu hệ thống đăng nhập của bạn dùng tên attribute khác (vd "staff", "currentUser"...),
- * hãy đổi lại dòng lấy session bên dưới cho khớp.
+ * LƯU Ý: servlet lấy mã nhân viên đang đăng nhập từ session attribute
+ * "MaNhanVien". Nếu hệ thống đăng nhập của bạn dùng tên attribute khác (vd
+ * "staff", "currentUser"...), hãy đổi lại dòng lấy session bên dưới cho khớp.
  *
  * @author Hoang Anh
  */
@@ -37,7 +37,8 @@ public class WarehouseSlipServlet extends HttpServlet {
         String action = request.getParameter("action"); // "import" (Nhập kho) hoặc "export" (Xuất kho)
         String ghiChu = request.getParameter("ghiChu");
 
-        // TODO: đổi "MaNhanVien" cho khớp với tên session attribute mà chức năng đăng nhập của bạn đang dùng.
+        // AuthServlet lưu session dưới key "MaNhanVie" (không có chữ "n" cuối) khi đăng nhập,
+// nên phải đọc đúng key này để lấy được người lập phiếu.
         Integer nguoiLap = (Integer) session.getAttribute("MaNhanVien");
         if (nguoiLap == null) {
             session.setAttribute("ERROR_MSG", "Không xác định được nhân viên lập phiếu, vui lòng đăng nhập lại.");
@@ -80,8 +81,9 @@ public class WarehouseSlipServlet extends HttpServlet {
     }
 
     /**
-     * Gom các mảng tham số maVatTu[] / soLuong[] / donGia[] thành danh sách DetailedWarehouseSlip.
-     * Bỏ qua dòng trống (chưa chọn vật tư) để người dùng không bắt buộc phải xóa dòng thừa trên form.
+     * Gom các mảng tham số maVatTu[] / soLuong[] / donGia[] thành danh sách
+     * DetailedWarehouseSlip. Bỏ qua dòng trống (chưa chọn vật tư) để người dùng
+     * không bắt buộc phải xóa dòng thừa trên form.
      */
     private List<DetailedWarehouseSlip> parseChiTietList(HttpServletRequest request) {
         String[] maVatTuArr = request.getParameterValues("maVatTu[]");
