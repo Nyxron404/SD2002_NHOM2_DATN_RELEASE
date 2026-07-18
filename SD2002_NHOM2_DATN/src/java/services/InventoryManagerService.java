@@ -74,7 +74,7 @@ public class InventoryManagerService {
 
     /** Vật tư có tồn kho thấp hơn ngưỡng tối thiểu do người dùng tự thiết lập hay không. */
     public boolean isLowStock(Supplie s) {
-        return s.isTonKhoThap();
+        return (s.getSoLuongTon() <= s.getSoLuongToiThieu());
     }
 
     private String validate(Supplie s) {

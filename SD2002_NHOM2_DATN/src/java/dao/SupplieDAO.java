@@ -30,7 +30,7 @@ public class SupplieDAO {
             while (rs.next()) {
                 listSupplie.add(new Supplie(
                     rs.getInt("MaVatTu"), rs.getString("TenVatTu"), rs.getString("LoaiVatTu"),
-                    rs.getString("DonViTinh"), rs.getInt("SoLuongTon"), rs.getInt("SoLuongToiThieu"), rs.getDouble("DonGia"),
+                    rs.getString("DonViTinh"), rs.getInt("SoLuongTon"), rs.getInt("NguongToiThieu"), rs.getDouble("DonGia"),
                     rs.getString("MoTa"), rs.getTimestamp("NgayNhapGanNhat").toLocalDateTime(), rs.getBoolean("TrangThai")
                 ));
             }

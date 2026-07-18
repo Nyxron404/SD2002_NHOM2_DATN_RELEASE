@@ -36,6 +36,14 @@ public class Supplie {
         this.TrangThai = TrangThai;
     }
 
+    public int getSoLuongToiThieu() {
+        return soLuongToiThieu;
+    }
+
+    public void setSoLuongToiThieu(int soLuongToiThieu) {
+        this.soLuongToiThieu = soLuongToiThieu;
+    }
+
     
 
     public int getMaVatTu() {

@@ -564,18 +564,18 @@
                         <tbody id="mainTableBody">
                             <c:forEach var="item" items="${LIST_SUPPLIE}">
                                 <tr>
-                                    <td>${item.maVatTu}</td>
-                                    <td><strong>${item.tenVatTu}</strong></td>
-                                    <td><span class="category-badge">${item.loaiVatTu}</span></td>
-                                    <td>${item.donViTinh}</td>
+                                    <td>${item.getMaVatTu()}</td>
+                                    <td><strong>${item.getTenVatTu()}</strong></td>
+                                    <td><span class="category-badge">${item.getLoaiVatTu()}</span></td>
+                                    <td>${item.getDonViTinh()}</td>
                                     <td>
-                                        ${item.soLuongTon}
-                                        <c:if test="${item.tonKhoThap}">
-                                            <span class="low-stock-badge" title="Giới hạn tồn kho tối thiểu bạn đã đặt: ${item.soLuongToiThieu}">⚠ Tồn thấp</span>
+                                        ${item.getSoLuongTon()}
+                                        <c:if test="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}">
+                                            <span class="low-stock-badge" title="Giới hạn tồn kho tối thiểu bạn đã đặt: ${item.getSoLuongToiThieu()}">⚠ Tồn thấp</span>
                                         </c:if>
                                     </td>
-                                    <td>${item.donGia}</td>
-                                    <td>${fn:substring(item.ngayNhapGanNhat, 0, 10)}</td>
+                                    <td>${item.getDonGia()}</td>
+                                    <td>${fn:substring(item.getNgayNhapGanNhat(), 0, 10)}</td>
                                     <td>
                                         <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
                                             ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
@@ -584,18 +584,18 @@
                                     <td>
                                         <div class="action-btns">
                                             <button class="btn-action btn-edit" title="Sửa"
-                                                    data-id="${item.maVatTu}"
-                                                    data-ten="${fn:escapeXml(item.tenVatTu)}"
-                                                    data-loai="${fn:escapeXml(item.loaiVatTu)}"
-                                                    data-donvi="${fn:escapeXml(item.donViTinh)}"
-                                                    data-soluong="${item.soLuongTon}"
-                                                    data-gioihan="${item.soLuongToiThieu}"
-                                                    data-dongia="${item.donGia}"
-                                                    data-mota="${fn:escapeXml(item.moTa)}"
-                                                    data-ngay="${item.ngayNhapGanNhat}"
-                                                    data-trangthai="${item.trangThai}"
+                                                    data-id="${item.getMaVatTu()}"
+                                                    data-ten="${fn:escapeXml(item.getTenVatTu())}"
+                                                    data-loai="${fn:escapeXml(item.getLoaiVatTu())}"
+                                                    data-donvi="${fn:escapeXml(item.getDonViTinh())}"
+                                                    data-soluong="${item.getSoLuongTon()}"
+                                                    data-gioihan="${item.getSoLuongToiThieu()}"
+                                                    data-dongia="${item.getDonGia()}"
+                                                    data-mota="${fn:escapeXml(item.getMoTa())}"
+                                                    data-ngay="${item.getNgayNhapGanNhat()}"
+                                                    data-trangthai="${item.isTrangThai()}"
                                                     onclick="openSupplieForm('edit', this)">Sửa</button>
-                                            <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.maVatTu}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
+                                            <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.getMaVatTu()}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
                                         </div>
                                     </td>
                                 </tr>

@@ -107,6 +107,7 @@ public class AuthServlet extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("QuyenHan", quyenHan);
                     session.setAttribute("TenDangNhap", tenDangNhap);
+                    session.setAttribute("MaNhanVie", authSV.GetMaNhanVien(tenDangNhap));
                     String truyCap = quyenHan.get(0);
                     switch (truyCap) {
                         case "Admin":
