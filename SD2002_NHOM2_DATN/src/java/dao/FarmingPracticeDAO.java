@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import java.sql.Connection;
@@ -12,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import models.FarmingPractice; 
-import uril.DBConnect;       
+import uril.DBConnect;        
 
 public class FarmingPracticeDAO {
 
@@ -46,6 +42,41 @@ public class FarmingPracticeDAO {
         return list;
     }
 
+  // === HÀM TÌM KIẾM ĐÃ NÂNG CẤP ===
+    public List<FarmingPractice> searchFarmingPractices(String keyword) {
+        List<FarmingPractice> list = new ArrayList<>();
+        // Bổ sung thêm CAST(MaQuyTrinh AS VARCHAR) để tìm được cả ID
+        String sql = "SELECT * FROM FarmingPractice WHERE TenQuyTrinh LIKE ? OR LoaiApDung LIKE ? OR CAST(MaQuyTrinh AS VARCHAR) LIKE ?";
+        
+        try (Connection conn = DBConnect.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ps.setString(3, "%" + keyword + "%"); // Dành cho ID
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    FarmingPractice fp = new FarmingPractice();
+                    fp.setMaQuyTrinh(rs.getInt("MaQuyTrinh"));
+                    fp.setTenQuyTrinh(rs.getString("TenQuyTrinh"));
+                    fp.setMoTa(rs.getString("MoTa"));
+                    fp.setLoaiApDung(rs.getString("LoaiApDung"));
+                    Date sqlDate = rs.getDate("NgayTao");
+                    if (sqlDate != null) {
+                        fp.setNgayTao(sqlDate.toLocalDate());
+                    }
+                    fp.setNguoiTao(rs.getInt("NguoiTao"));
+                    fp.setTrangThai(rs.getBoolean("TrangThai"));
+                    list.add(fp);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public boolean insertFarmingPractice(FarmingPractice fp) {
         String sql = "INSERT INTO FarmingPractice (TenQuyTrinh, MoTa, LoaiApDung, NgayTao, NguoiTao, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
         
@@ -60,7 +91,7 @@ public class FarmingPracticeDAO {
             ps.setDate(4, Date.valueOf(ngayTao));
             
             ps.setInt(5, fp.getNguoiTao());
-            ps.setBoolean(6, false);
+            ps.setBoolean(6, false); // Mặc định là bản nháp
             
             int rowAffected = ps.executeUpdate();
             return rowAffected > 0;
@@ -89,7 +120,8 @@ public class FarmingPracticeDAO {
             ps.setString(1, tenQuyTrinh);
             ps.setString(2, moTa);
             ps.setString(3, loaiApDung);
-            ps.setString(4, trangThai);
+            // Đã fix lỗi kiểu dữ liệu String -> Boolean ở đây
+            ps.setBoolean(4, Boolean.parseBoolean(trangThai)); 
             ps.setInt(5, id);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
