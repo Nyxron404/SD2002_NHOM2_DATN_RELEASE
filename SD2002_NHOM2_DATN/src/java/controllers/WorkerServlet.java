@@ -36,14 +36,18 @@ public class WorkerServlet extends HttpServlet {
             userId = (Integer) request.getSession().getAttribute("userId");
         }
 
+        if (userId == null) {
+            userId = 17;
+        }
+        attendanceDAO.autoCalculateAttendance();
+
         request.setAttribute("taskList", workerService.getAllTasks());
         request.setAttribute("workerList", taskDAO.getWorkers());
         request.setAttribute("farmAreaList", farmAreaDAO.getAllFarmAreas());
         request.setAttribute("farmingPracticeList", farmingPracticeDAO.getAllFarmingPractices());
-        if (userId != null) {
-            request.setAttribute("attendanceList", attendanceDAO.getAttendanceByUser(userId));
-            request.setAttribute("currentUserId", userId); // Báo cho UI biết đang xem của ai
-        }
+        
+        request.setAttribute("attendanceList", workerService.getAllAttendance());
+        request.setAttribute("currentUserId", userId); 
 
         request.getRequestDispatcher("/views/worker/worker.jsp").forward(request, response);
     }
@@ -54,19 +58,15 @@ public class WorkerServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
-        // Trong WorkerServlet.java
         if ("report".equals(action)) {
             int maCongViec = Integer.parseInt(request.getParameter("maCongViec"));
             String ghiChu = request.getParameter("ghiChuVatTu");
             String anh = request.getParameter("chuoiAnhHienTruong");
 
-            HttpSession session = request.getSession();
-            Integer maNguoiDung = (Integer) session.getAttribute("userId");
+            int nguoiPhuTrach = Integer.parseInt(request.getParameter("nguoiPhuTrach"));
 
-            // Chỉ thực hiện khi có User hợp lệ
-            if (maNguoiDung != null) {
-                workerService.completeTaskReport(maCongViec, ghiChu, anh, maNguoiDung);
-            }
+            workerService.completeTaskReport(maCongViec, ghiChu, anh, nguoiPhuTrach);
+
         } else {
             String tenCongViec = request.getParameter("tenCongViec");
             String moTa = request.getParameter("moTa");

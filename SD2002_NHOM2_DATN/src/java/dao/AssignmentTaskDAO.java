@@ -47,4 +47,17 @@ public class AssignmentTaskDAO {
         }
         return false;
     }
+    
+    // Thêm hàm cập nhật trạng thái phân công
+    public boolean updateAssignmentStatus(int maCongViec, String trangThai) {
+        String sql = "UPDATE AssignmentTask SET TrangThai = ? WHERE MaCongViec = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, trangThai);
+            ps.setInt(2, maCongViec);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

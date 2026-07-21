@@ -10,27 +10,30 @@ import models.AssignmentTask;
 import models.Task;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import models.AttendanceLog;
 
 public class WorkerService {
 
     private TaskDAO taskDAO = new TaskDAO();
     private AssignmentTaskDAO assignmentDAO = new AssignmentTaskDAO();
-    private AttendanceLogDAO attendanceLogDAO = new AttendanceLogDAO(); // Khởi tạo
+    private AttendanceLogDAO attendanceLogDAO = new AttendanceLogDAO(); 
 
     public List<Task> getAllTasks() {
         return taskDAO.getAllTasks();
+    }
+    
+    public List<AttendanceLog> getAllAttendance() {
+        return attendanceLogDAO.getAttendance();
     }
 
     private String getClientIpAddress() {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            // Nếu không lấy được IP, trả về giá trị mặc định hoặc "127.0.0.1"
             return "Lỗi lấy IP";
         }
     }
 
-    // Hàm tổng hợp 2 trong 1 (Tạo Task và Assignment)
     public boolean addTaskAndAssign(Task task) {
         int newMaCongViec = taskDAO.insertTaskAndGetId(task);
         if (newMaCongViec > 0) {
@@ -47,15 +50,11 @@ public class WorkerService {
     }
 
     public boolean completeTaskReport(int maCongViec, String ghiChuVatTu, String anhHienTruong, int maNguoiDung) {
-        // 1. Cập nhật DB
         boolean success = taskDAO.submitTaskReport(maCongViec, ghiChuVatTu, anhHienTruong);
 
         if (success) {
-            // 2. Ghi nhật ký hệ thống
+            assignmentDAO.updateAssignmentStatus(maCongViec, "Hoàn thành");
             dao.SystemLogDAO.insertLog(maNguoiDung, "BÁO CÁO HOÀN THÀNH", "Task", getClientIpAddress());
-
-            // 3. TỰ ĐỘNG CHẤM CÔNG (ĐÂY LÀ CHỖ QUAN TRỌNG)
-            // Đảm bảo AttendanceLogDAO hoạt động đúng
             attendanceLogDAO.autoCalculateAttendance();
         }
         return success;

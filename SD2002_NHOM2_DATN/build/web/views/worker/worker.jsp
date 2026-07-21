@@ -369,7 +369,7 @@
                                             </c:when>
 
                                             <c:otherwise>
-                                                <button onclick="openReportModal(${task.getMaCongViec()})" class="action-link" style="border:none; background:none; cursor:pointer; color:#579c3f; font-weight: 700;">Báo cáo</button>
+                                                <button onclick="openReportModal(${task.getMaCongViec()}, ${task.getNguoiPhuTrach()})" class="action-link" style="border:none; background:none; cursor:pointer; color:#579c3f; font-weight: 700;">Báo cáo</button>
                                                 <a href="#" class="action-link" style="color: #e74c3c;">Hủy việc</a>
                                             </c:otherwise>
                                         </c:choose>
@@ -379,7 +379,8 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- ================= BẢNG LỊCH SỬ NGÀY CÔNG (UC-9.3) ================= -->
+                    
+                    
                 <div class="section-header" style="margin-top: 40px;">
                     <h2 class="section-title">Tra cứu lịch sử ngày công (Tháng này)</h2>
                 </div>
@@ -390,6 +391,7 @@
                         <thead>
                             <tr>
                                 <th>Mã Chấm Công</th>
+                                <th>Mã Công Nhân</th>
                                 <th>Mã Việc Hoàn Thành</th>
                                 <th>Ngày Tích Lũy</th>
                                 <th>Số Công (Hệ Số)</th>
@@ -403,6 +405,7 @@
                                     <!-- Hiển thị đúng các thuộc tính từ model AttendanceLog -->
                                     <td>#${log.getMaChamCong()}</td>
                                     <td>Mã số: ${log.getMaCongViec()}</td>
+                                    <td>${log.getMaNguoiDung()}</td>
                                     <td>${log.getNgayTichLuy()}</td>
                                     <td style="color: #27ae60; font-weight: 800; font-size: 16px;">
                                         + ${log.getSoCongTichLuy()}
@@ -418,13 +421,11 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <!-- Chức năng báo lỗi theo Luồng chạy B4 của UC-9.3 -->
                                         <a href="#" class="action-link" style="color: #e74c3c;">Báo cáo sai sót</a>
                                     </td>
                                 </tr>
                             </c:forEach>
 
-                            <!-- Bắt lỗi giao diện nếu chưa có dữ liệu -->
                             <c:if test="${empty attendanceList}">
                                 <tr>
                                     <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
@@ -515,7 +516,8 @@
                 <button class="modal-close" onclick="closeReportModal()">&times;</button>
                 <h3 class="modal-title">Báo cáo hoàn thành công việc</h3>
                 <form action="worker?action=report" method="POST">
-                    <input type="hidden" name="maCongViec" id="reportMaCongViec"> <!-- ID PHẢI KHỚP VỚI JS -->
+                    <input type="hidden" name="maCongViec" id="reportMaCongViec"> 
+                    <input type="hidden" name="nguoiPhuTrach" id="reportNguoiPhuTrach">
                     <div class="form-group">
                         <label>Ghi chú vật tư sử dụng:</label>
                         <textarea name="ghiChuVatTu" required></textarea>
@@ -541,10 +543,9 @@
                     modalOverlay.classList.remove('active');
             });
 
-            function openReportModal(id) {
-                // Gán ID công việc vào input ẩn
+            function openReportModal(id, nguoiPhuTrach) { 
                 document.getElementById('reportMaCongViec').value = id;
-                // Thêm class 'active' vào overlay
+                document.getElementById('reportNguoiPhuTrach').value = nguoiPhuTrach;
                 document.getElementById('reportModal').classList.add('active');
             }
 
