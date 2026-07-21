@@ -33,7 +33,7 @@ public class AttendanceLogDAO {
 
     public List<AttendanceLog> getAttendanceByUser(int maNguoiDung) {
         List<AttendanceLog> list = new ArrayList<>();
-        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY NgayTichLuy DESC"; // bỏ dấu
+        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY NgayTichLuy DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, maNguoiDung);
             ResultSet rs = ps.executeQuery();
@@ -42,7 +42,7 @@ public class AttendanceLogDAO {
                         rs.getInt("MaChamCong"),
                         rs.getInt("MaNguoiDung"),
                         rs.getInt("MaCongViec"),
-                        rs.getObject("NgayTichLuy", LocalDate.class),
+                        rs.getObject("NgayTíchLuy", LocalDate.class),
                         rs.getDouble("SoCongTichLuy"),
                         rs.getBoolean("TrangThaiDuyet")
                 ));
@@ -55,7 +55,7 @@ public class AttendanceLogDAO {
     
     public List<AttendanceLog> getAttendance() {
         List<AttendanceLog> list = new ArrayList<>();
-        String sql = "SELECT * FROM AttendanceLog ORDER BY NgayTichLuy DESC"; 
+        String sql = "SELECT * FROM AttendanceLog"; 
         try (Connection con = DBConnect.getConnection(); 
             PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -64,7 +64,7 @@ public class AttendanceLogDAO {
                         rs.getInt("MaChamCong"),
                         rs.getInt("MaNguoiDung"),
                         rs.getInt("MaCongViec"),
-                        rs.getObject("NgayTichLuy", LocalDate.class),
+                        rs.getObject("NgayTíchLuy", LocalDate.class),
                         rs.getDouble("SoCongTichLuy"),
                         rs.getBoolean("TrangThaiDuyet")
                 ));
@@ -73,5 +73,10 @@ public class AttendanceLogDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    public static void main(String[] args) {
+        AttendanceLogDAO attendanceLogDAO = new AttendanceLogDAO(); 
+        attendanceLogDAO.getAttendance();
     }
 }

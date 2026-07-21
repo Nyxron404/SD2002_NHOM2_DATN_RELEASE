@@ -391,8 +391,8 @@
                         <thead>
                             <tr>
                                 <th>Mã Chấm Công</th>
-                                <th>Mã Công Nhân</th>
                                 <th>Mã Việc Hoàn Thành</th>
+                                <th>Mã Công Nhân</th>
                                 <th>Ngày Tích Lũy</th>
                                 <th>Số Công (Hệ Số)</th>
                                 <th>Trạng Thái Duyệt</th>
