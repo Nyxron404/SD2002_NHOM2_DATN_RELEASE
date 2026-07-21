@@ -1,3 +1,9 @@
+<%-- 
+    Document   : technician
+    Created on : Jun 23, 2026, 0:00:00 PM
+    Author     : pminh
+--%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -53,40 +59,20 @@
             display: flex; gap: 15px; align-items: center;
         }
 
-        /* ================= THANH TÌM KIẾM MỚI ================= */
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: white;
-            border-radius: 8px;
-            padding: 4px 6px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 0;
+        /* Thanh tìm kiếm */
+        .search-form {
+            display: flex; gap: 8px; margin: 0;
         }
-        .search-box input[type="text"] {
-            border: none;
-            outline: none;
-            padding: 8px 10px;
-            width: 250px;
-            font-size: 14px;
-            background: transparent;
+        .search-input {
+            padding: 10px 15px; border: 1px solid #ccc; border-radius: 8px; outline: none; 
+            font-family: inherit; font-size: 14px; width: 250px;
         }
-        .search-box .btn-search {
-            background: #f39c12;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .search-input:focus { border-color: #579c3f; }
+        .btn-search {
+            background-color: #2c3e50; color: white; border: none; padding: 10px 15px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s;
         }
-        .search-box .btn-search:hover {
-            background: #e67e22;
-        }
+        .btn-search:hover { background-color: #1a252f; }
 
         .btn-add {
             background-color: #579c3f; color: white; border: none; padding: 12px 20px;
@@ -158,7 +144,7 @@
             position: absolute; top: 20px; right: 20px; background: none; border: none;
             font-size: 24px; color: #aaa; cursor: pointer; display: inline-block; line-height: 1;
         }
-        .modal-close:hover { color: #e74c3c; }
+        .modal-close:hover { color: #333; }
 
         .modal-title { font-size: 22px; font-weight: 800; color: #1a2419; margin-top: 0; margin-bottom: 20px; }
         
@@ -174,11 +160,6 @@
         .btn-cancel:hover { background-color: #5a6268; }
         .btn-save { background-color: #28a745; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-size: 14px; font-weight: bold; display: inline-block; }
         .btn-save:hover { background-color: #218838; }
-
-        /* ================= THÔNG BÁO ================= */
-        .alert-banner { padding: 14px 20px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
-        .alert-success { background: #e8f5e9; color: #2e7d32; border-left: 5px solid #2e7d32; }
-        .alert-error { background: #ffebee; color: #c62828; border-left: 5px solid #c62828; }
     </style>
 </head>
 <body>
@@ -199,24 +180,15 @@
         </jsp:include>
         
         <main class="content-area">
-            
-            <%-- HIỂN THỊ THÔNG BÁO THÀNH CÔNG HOẶC LỖI --%>
-            <c:if test="${not empty SUCCESS_MSG}">
-                <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
-            </c:if>
-            <c:if test="${not empty ERROR_MSG}">
-                <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
-            </c:if>
-
             <div class="section-header">
                 <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
                 
                 <div class="header-actions">
-                    <%-- THANH TÌM KIẾM MỚI (DÙNG JAVASCRIPT) --%>
-                    <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID quy trình..." onkeydown="if(event.key==='Enter') openSearchModal()">
-                        <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
-                    </div>
+                    <form action="${pageContext.request.contextPath}/technician" method="GET" class="search-form">
+                        <input type="hidden" name="action" value="search">
+                        <input type="text" name="keyword" class="search-input" placeholder="Nhập ID hoặc tên quy trình..." value="${param.keyword}">
+                        <button type="submit" class="btn-search">Tìm kiếm</button>
+                    </form>
                     
                     <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn</label>
                 </div>
@@ -237,11 +209,11 @@
                             <th>Hành Động</th>
                         </tr>
                     </thead>
-                    <tbody id="mainTableBody">
+                    <tbody>
                         <c:forEach var="item" items="${farmingPracticeList}">
                             <tr>
                                 <td>${item.maQuyTrinh}</td>
-                                <td><strong>${item.tenQuyTrinh}</strong></td>
+                                <td>${item.tenQuyTrinh}</td>
                                 <td>${item.loaiApDung}</td>
                                 <td>${item.ngayTao}</td>
                                 <td>${item.nguoiTao}</td>
@@ -279,7 +251,6 @@
         </main>
     </div>
 
-    <%-- MODAL TẠO MỚI --%>
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-container">
             <label for="createModalToggle" class="modal-close">&times;</label>
@@ -321,7 +292,6 @@
         </div>
     </div>
 
-    <%-- MODAL CẬP NHẬT --%>
     <c:forEach var="item" items="${farmingPracticeList}">
         <div class="modal-overlay" id="editModal-${item.maQuyTrinh}">
             <div class="modal-container">
@@ -377,82 +347,6 @@
             </div>
         </div>
     </c:forEach>
-
-    <%-- MODAL KẾT QUẢ TÌM KIẾM (MỚI THÊM) --%>
-    <div class="modal-overlay" id="searchModal" style="opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
-        <div class="modal-container" style="max-width: 900px; transform: translateY(0);">
-            <button class="modal-close" onclick="closeSearchModal()">&times;</button>
-            <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Kết quả Tìm kiếm</h3>
-            <div class="table-container" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto; border-radius: 8px;">
-                <table class="custom-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên Quy Trình</th>
-                            <th>Đối Tượng Áp Dụng</th>
-                            <th>Ngày Tạo</th>
-                            <th>Người Tạo</th>
-                            <th>Trạng Thái</th>
-                            <th>Mô Tả</th>
-                            <th>Hành Động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="searchResultBody">
-                        <%-- Kết quả lọc bằng JS sẽ được nhét vào đây --%>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <%-- SCRIPT XỬ LÝ TÌM KIẾM BẰNG JS --%>
-    <script>
-        function openSearchModal() {
-            let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-            let resultBody = document.getElementById('searchResultBody');
-            let modal = document.getElementById('searchModal');
-            
-            resultBody.innerHTML = ''; // Làm sạch modal cũ
-            
-            if (keyword === '') {
-                alert("Vui lòng nhập từ khóa tìm kiếm!");
-                return;
-            }
-
-            // Lấy tất cả các dòng dữ liệu trong bảng chính
-            let rows = document.querySelectorAll('#mainTableBody tr');
-            let matchCount = 0;
-
-            rows.forEach(row => {
-                // Kiểm tra xem dòng này có phải là dòng chứa dữ liệu không
-                if (row.cells.length > 1) {
-                    let id = row.cells[0].innerText.toLowerCase();
-                    let name = row.cells[1].innerText.toLowerCase();
-                    
-                    if (id.includes(keyword) || name.includes(keyword)) {
-                        // Nếu khớp, clone dòng đó ném vào modal
-                        let clonedRow = row.cloneNode(true);
-                        resultBody.appendChild(clonedRow);
-                        matchCount++;
-                    }
-                }
-            });
-
-            // Nếu không tìm thấy
-            if (matchCount === 0) {
-                resultBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px; color: #c0392b; font-weight: bold;">Không tìm thấy quy trình nào khớp với "' + keyword + '"</td></tr>';
-            }
-
-            // Hiện Modal
-            modal.style.opacity = '1';
-            modal.style.pointerEvents = 'auto';
-        }
-
-        function closeSearchModal() {
-            let modal = document.getElementById('searchModal');
-            modal.style.opacity = '0';
-            modal.style.pointerEvents = 'none';
-        }
-    </script>
+    
 </body>
 </html>

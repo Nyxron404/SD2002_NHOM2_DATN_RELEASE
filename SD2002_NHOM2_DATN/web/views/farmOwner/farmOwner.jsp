@@ -133,6 +133,107 @@
                 color: #1a2419;
                 min-height: 40px; /* Giữ form khi chưa đổ Data */
             }
+            /* ================= TABLE LOGS ================= */
+            .table-container {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(15px);
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
+                margin-bottom: 40px;
+            }
+            .section-title {
+                color: #1a2419;
+                font-size: 22px;
+                font-weight: 700;
+                margin-top: 0;
+                margin-bottom: 25px;
+            }
+            .custom-table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+            }
+            .custom-table th {
+                padding: 16px;
+                border-bottom: 2px solid #eef2f5;
+                color: #7f8c8d;
+                font-size: 13px;
+                font-weight: 700;
+                text-transform: uppercase;
+            }
+            .custom-table td {
+                padding: 16px;
+                border-bottom: 1px solid #eef2f5;
+                color: #2c3e50;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .badge-action {
+                background-color: #e67e22;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 6px;
+                font-size: 12px;
+            }
+            /* ================= CSS-ONLY CHART ================= */
+            .chart-wrapper {
+                margin-bottom: 40px;
+            }
+            .bar-group {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .bar-title {
+                width: 180px;
+                font-weight: 700;
+                color: #4a5c43;
+                font-size: 14px;
+                text-transform: uppercase;
+            }
+            .bar-bg {
+                flex: 1;
+                background-color: #eef2f5;
+                border-radius: 20px;
+                height: 35px;
+                overflow: hidden;
+                box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            }
+            .bar-fill {
+                height: 100%;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                padding-left: 15px;
+                color: white;
+                font-weight: 800;
+                font-size: 15px;
+                text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            }
+            .fill-worker {
+                background: linear-gradient(90deg, #579c3f, #7ed957);
+            }
+            .fill-stock {
+                background: linear-gradient(90deg, #e67e22, #f39c12);
+            }
+            .fill-maint {
+                background: linear-gradient(90deg, #c0392b, #e74c3c);
+            }
+
+            .btn-export {
+                float: right;
+                background: #2c3e50;
+                color: white;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+            .btn-export:hover {
+                background: #1a252f;
+            }
         </style>
     </head>
     <body>
@@ -151,30 +252,106 @@
                 </div>
 
                 <div class="dashboard-cards">
+                    <!-- Thẻ 1: Công nhân ca làm -->
                     <div class="card">
                         <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
                         <div class="card-info">
                             <h3>Công nhân ca làm</h3>
-                            <p>
-                            </p>
+                            <p>${workerCount} <span style="font-size: 14px; font-weight: 600; color: #7f8c8d;">người</span></p>
                         </div>
                     </div>
+
+                    <!-- Thẻ 2: Vật tư chạm đáy -->
                     <div class="card">
                         <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
                         <div class="card-info">
                             <h3>Vật tư chạm đáy</h3>
-                            <p>
-                            </p>
+                            <p>${lowStockCount} <span style="font-size: 14px; font-weight: 600; color: #7f8c8d;">mặt hàng</span></p>
                         </div>
                     </div>
+
+                    <!-- Thẻ 3: Đến hạn bảo trì (Hiển thị số liệu tĩnh tạm thời) -->
                     <div class="card">
                         <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .43-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.49-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
                         <div class="card-info">
                             <h3>Đến hạn bảo trì</h3>
-                            <p>
-                            </p>
+                            <p>${maintenanceCount} <span style="font-size: 14px; font-weight: 600; color: #7f8c8d;">thiết bị</span></p>
                         </div>
                     </div>
+                </div>
+                        
+                <div class="table-container chart-wrapper">
+                    <h2 class="section-title">Biểu Đồ Tỷ Trọng Hoạt Động</h2>
+                    
+                    <div class="bar-group">
+                        <div class="bar-title">Nhân sự đang bận</div>
+                        <div class="bar-bg">
+                            <div class="bar-fill fill-worker" style="width: ${workerCount * 2 > 10 ? workerCount * 2 : 10}%;">
+                                ${workerCount} Người
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar-group">
+                        <div class="bar-title">Vật tư cảnh báo</div>
+                        <div class="bar-bg">
+                            <div class="bar-fill fill-stock" style="width: ${lowStockCount * 5 > 10 ? lowStockCount * 5 : 10}%;">
+                                ${lowStockCount} Mặt hàng
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bar-group">
+                        <div class="bar-title">Thiết bị bảo trì</div>
+                        <div class="bar-bg">
+                            <div class="bar-fill fill-maint" style="width: ${maintenanceCount * 10 > 10 ? maintenanceCount * 10 : 10}%;">
+                                ${maintenanceCount} Máy
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            
+                <!-- Phần hiển thị Nhật Ký Hệ Thống -->
+                <div class="table-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 class="section-title" style="margin-bottom: 0;">Nhật Ký Hoạt Động Hệ Thống</h2>
+                        
+                        <a href="farmowner?action=export" class="btn-export">📥 Xuất Báo Cáo (CSV)</a>
+                    </div>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Log</th>
+                                <th>Thời Gian</th>
+                                <th>Người Dùng</th>
+                                <th>Hành Động</th>
+                                <th>Bảng Dữ Liệu</th>
+                                <th>Địa Chỉ IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Lặp qua danh sách systemLogs được gửi từ Servlet -->
+                            <c:forEach var="log" items="${systemLogs}">
+                                <tr>
+                                    <td>#${log.getMaNhatKy()}</td>
+                                    <td>${log.getThoiGian()}</td>
+                                    <td>Mã số: ${log.getMaNguoiDung()}</td>
+                                    <td><span class="badge-action">${log.getHanhDong()}</span></td>
+                                    <td>${log.getBangTacDong()}</td>
+                                    <td>${log.getDiaChiIP()}</td>
+                                </tr>
+                            </c:forEach>
+
+                            <!-- Hiển thị khi chưa có dữ liệu -->
+                            <c:if test="${empty systemLogs}">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                        Hệ thống chưa ghi nhận hoạt động nào.
+                                    </td>
+                                </tr>
+                            </c:if>
+                        </tbody>
+                    </table>
                 </div>
             </main>
         </div>

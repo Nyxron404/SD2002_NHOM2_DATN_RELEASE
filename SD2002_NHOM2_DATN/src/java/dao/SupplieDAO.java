@@ -125,4 +125,15 @@ public class SupplieDAO {
             }
         }
     }
+    
+    public int getLowStockCount() {
+        String sql = "SELECT COUNT(*) FROM Supplie WHERE SoLuongTon <= 10"; 
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
+        return 0;
+    }
 }
