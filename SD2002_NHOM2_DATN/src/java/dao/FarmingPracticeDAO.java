@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import models.FarmingPractice; 
+import models.FarmingStage;
 import uril.DBConnect;        
 
 public class FarmingPracticeDAO {
@@ -123,6 +124,40 @@ public class FarmingPracticeDAO {
             // Đã fix lỗi kiểu dữ liệu String -> Boolean ở đây
             ps.setBoolean(4, Boolean.parseBoolean(trangThai)); 
             ps.setInt(5, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Hàm lưu giai đoạn chi tiết
+    public boolean insertStage(FarmingStage stage) {
+        String sql = "INSERT INTO farming_stage (farming_practice_id, stage_name, start_day, end_day, supply_id, quantity, unit, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnect.getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, stage.getFarmingPracticeId());
+            ps.setString(2, stage.getStageName());
+            ps.setInt(3, stage.getStartDay());
+            ps.setInt(4, stage.getEndDay());
+            ps.setInt(5, stage.getSupplyId());
+            ps.setDouble(6, stage.getQuantity());
+            ps.setString(7, stage.getUnit());
+            ps.setString(8, stage.getDescription());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Hàm chuyển trạng thái Quy trình sang Ban hành
+    public boolean publishPractice(int practiceId) {
+        String sql = "UPDATE farming_practice SET status = ? WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "Ban hành");
+            ps.setInt(2, practiceId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
