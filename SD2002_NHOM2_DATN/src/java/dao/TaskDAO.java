@@ -122,6 +122,33 @@ public class TaskDAO {
         return list;
     }
     
+    // Lấy danh sách công việc của riêng 1 người phụ trách (dùng cho giao diện Công nhân)
+    public List<Task> getTasksByUser(int nguoiPhuTrach) {
+        List<Task> list = new ArrayList<>();
+        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, nguoiPhuTrach);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Task t = new Task(
+                    rs.getInt("MaCongViec"),
+                    rs.getString("TenCongViec"),
+                    rs.getString("MoTa"),
+                    rs.getInt("MaQuyTrinh"),
+                    rs.getInt("MaKhuVuc"),
+                    rs.getInt("NguoiPhuTrach"),
+                    rs.getObject("NgayBatDau", LocalDate.class),
+                    rs.getObject("NgayKetThuc", LocalDate.class),
+                    rs.getString("TrangThai")
+                );
+                list.add(t);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     // Hàm tìm kiếm công việc theo Tên, Mã công việc, hoặc Người Phụ Trách
     public List<Task> searchTasks(String keyword) {
         List<Task> list = new ArrayList<>();

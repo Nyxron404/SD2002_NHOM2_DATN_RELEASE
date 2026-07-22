@@ -349,15 +349,22 @@
 
             <main class="content-area">
                 <div class="section-header">
-                    <h2 class="section-title">Danh sách phân công nhiệm vụ</h2>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <form action="worker" method="GET" class="search-box" autocomplete="off">
-                            <input type="text" name="keyword" placeholder="Nhập tên việc, Mã việc, hoặc Mã nhân sự..." 
-                                   value="${param.keyword}" autocomplete="off">
-                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
-                        </form>
-                        <button class="btn-add" id="openModalBtn">+ Phân công mới</button>
-                    </div>
+                    <h2 class="section-title">
+                        <c:choose>
+                            <c:when test="${isAdmin}">Danh sách phân công nhiệm vụ</c:when>
+                            <c:otherwise>Nhiệm vụ của tôi</c:otherwise>
+                        </c:choose>
+                    </h2>
+                    <c:if test="${isAdmin}">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <form action="worker" method="GET" class="search-box" autocomplete="off">
+                                <input type="text" name="keyword" placeholder="Nhập tên việc, Mã việc, hoặc Mã nhân sự..." 
+                                       value="${param.keyword}" autocomplete="off">
+                                <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
+                            </form>
+                            <button class="btn-add" id="openModalBtn">+ Phân công mới</button>
+                        </div>
+                    </c:if>
                 </div>
 
                 <div class="table-container">
@@ -415,7 +422,12 @@
                 </div>
                 <!-- ================= BẢNG LỊCH SỬ NGÀY CÔNG (UC-9.3) ================= -->
                 <div class="section-header" style="margin-top: 40px;">
-                    <h2 class="section-title">Tra cứu lịch sử ngày công (Tháng này)</h2>
+                    <h2 class="section-title">
+                        <c:choose>
+                            <c:when test="${isAdmin}">Tra cứu lịch sử ngày công (Tháng này)</c:when>
+                            <c:otherwise>Ngày công của tôi (Tháng này)</c:otherwise>
+                        </c:choose>
+                    </h2>
                 </div>
 
                 <div class="table-container">
@@ -458,10 +470,12 @@
                                                 <span style="color: #7f8c8d; font-size: 13px; font-style: italic;">Đã hoàn tất</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <form action="worker?action=approve_salary" method="POST" style="display:inline;">
-                                                    <input type="hidden" name="maChamCong" value="${log.getMaChamCong()}">
-                                                    <button type="submit" class="action-link" style="border:none; background:none; cursor:pointer; color: #27ae60; font-weight: 700;" onclick="return confirm('Xác nhận chốt lương cho mã công #${log.getMaChamCong()}?');">Chốt lương</button>
-                                                </form>
+                                                <c:if test="${isAdmin}">
+                                                    <form action="worker?action=approve_salary" method="POST" style="display:inline;">
+                                                        <input type="hidden" name="maChamCong" value="${log.getMaChamCong()}">
+                                                        <button type="submit" class="action-link" style="border:none; background:none; cursor:pointer; color: #27ae60; font-weight: 700;" onclick="return confirm('Xác nhận chốt lương cho mã công #${log.getMaChamCong()}?');">Chốt lương</button>
+                                                    </form>
+                                                </c:if>
 
                                                 <c:set var="checkStr" value=",${log.getMaChamCong()}," />
                                                 <c:choose>
@@ -479,10 +493,10 @@
                             </c:forEach>
 
                             <c:if test="${empty attendanceList}">
-                                <tr>áo hoàn thành công việc để hệ thống tính công tự động!
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                        Chưa có dữ liệu ngày công nào được ghi nhận. Hãy báo cáo hoàn thành công việc để hệ thống tính công tự động!
                                     </td>
-                                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
-                                        Chưa có dữ liệu ngày công nào được ghi nhận. Hãy báo c
                                 </tr>
                             </c:if>
                         </tbody>
@@ -491,6 +505,7 @@
             </main>
         </div>
 
+        <c:if test="${isAdmin}">
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal-container">
                 <button class="modal-close" id="closeModalBtn">&times;</button>
@@ -562,6 +577,7 @@
                 </form>
             </div>
         </div>
+        </c:if>
         <!-- Modal Báo cáo hoàn thành -->
         <div class="modal-overlay" id="reportModal">
             <div class="modal-container">
@@ -619,12 +635,14 @@
             const openModalBtn = document.getElementById('openModalBtn');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const modalOverlay = document.getElementById('modalOverlay');
-            openModalBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
-            closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay)
-                    modalOverlay.classList.remove('active');
-            });
+            if (openModalBtn && closeModalBtn && modalOverlay) {
+                openModalBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
+                closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay)
+                        modalOverlay.classList.remove('active');
+                });
+            }
 
             // SỬA ĐOẠN NÀY ĐỂ MỞ MODAL BÁO CÁO
             function openReportModal(id, nguoiPhuTrach) {
@@ -637,10 +655,6 @@
                 document.getElementById('reportModal').classList.remove('active');
             }
 
-            // Đảm bảo nút đóng hoạt động
-            document.getElementById('closeModalBtn').addEventListener('click', () => {
-                document.getElementById('modalOverlay').classList.remove('active');
-            });
             // Hàm mở Modal Chi tiết
             function openDetailModal(maCongViec) {
                 // 1. Lấy nội dung mô tả gộp từ thẻ div ẩn
@@ -733,7 +747,6 @@
                 // Hiển thị popup thông báo
                 alert('${sessionScope.thongBao}');
             </script>
-            <!-- Xóa thông báo đi để lần sau không hiện lại nếu chỉ F5 trang -->
             <c:remove var="thongBao" scope="session"/>
         </c:if>
     </body>

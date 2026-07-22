@@ -27,8 +27,18 @@ public class WorkerService {
         return taskDAO.searchTasks(keyword);
     }
     
+    // Dùng cho giao diện Công nhân: chỉ lấy công việc của chính họ (theo MaNguoiDung)
+    public List<Task> getTasksByUser(int maNguoiDung) {
+        return taskDAO.getTasksByUser(maNguoiDung);
+    }
+    
     public List<AttendanceLog> getAllAttendance() {
         return attendanceLogDAO.getAttendance();
+    }
+    
+    // Dùng cho giao diện Công nhân: chỉ lấy ngày công của chính họ (theo MaNguoiDung)
+    public List<AttendanceLog> getAttendanceByUser(int maNguoiDung) {
+        return attendanceLogDAO.getAttendanceByUser(maNguoiDung);
     }
     
     // Gọi hàm tìm kiếm ngày công từ DAO
