@@ -181,4 +181,59 @@ public class TaskDAO {
         }
         return list;
     }
+    
+    // Dành cho Admin: Lọc công việc theo khoảng thời gian hạn chót
+    public List<Task> getTasksByDateRange(LocalDate fromDate, LocalDate toDate) {
+        List<Task> list = new ArrayList<>();
+        String sql = "SELECT * FROM Task WHERE NgayKetThuc >= ? AND NgayKetThuc <= ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, java.sql.Date.valueOf(fromDate));
+            ps.setDate(2, java.sql.Date.valueOf(toDate));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Task(
+                    rs.getInt("MaCongViec"),
+                    rs.getString("TenCongViec"),
+                    rs.getString("MoTa"),
+                    rs.getInt("MaQuyTrinh"),
+                    rs.getInt("MaKhuVuc"),
+                    rs.getInt("NguoiPhuTrach"),
+                    rs.getObject("NgayBatDau", LocalDate.class),
+                    rs.getObject("NgayKetThuc", LocalDate.class),
+                    rs.getString("TrangThai")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Dành cho Công nhân: Lấy công việc của riêng họ theo khoảng thời gian hạn chót
+    public List<Task> getTasksByUserAndDateRange(int maNguoiDung, LocalDate fromDate, LocalDate toDate) {
+        List<Task> list = new ArrayList<>();
+        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ? AND NgayKetThuc >= ? AND NgayKetThuc <= ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            ps.setDate(2, java.sql.Date.valueOf(fromDate));
+            ps.setDate(3, java.sql.Date.valueOf(toDate));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Task(
+                    rs.getInt("MaCongViec"),
+                    rs.getString("TenCongViec"),
+                    rs.getString("MoTa"),
+                    rs.getInt("MaQuyTrinh"),
+                    rs.getInt("MaKhuVuc"),
+                    rs.getInt("NguoiPhuTrach"),
+                    rs.getObject("NgayBatDau", LocalDate.class),
+                    rs.getObject("NgayKetThuc", LocalDate.class),
+                    rs.getString("TrangThai")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

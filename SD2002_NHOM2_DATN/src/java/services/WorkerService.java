@@ -2,14 +2,15 @@ package services;
 
 import dao.AssignmentTaskDAO;
 import dao.TaskDAO;
-import dao.SystemLogDAO; // Khai báo thêm DAO
-import dao.AttendanceLogDAO; // Khai báo thêm DAO
+import dao.SystemLogDAO;
+import dao.AttendanceLogDAO;
 import java.time.LocalDateTime;
 import java.util.List;
 import models.AssignmentTask;
 import models.Task;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
 import models.AttendanceLog;
 
 public class WorkerService {
@@ -22,28 +23,40 @@ public class WorkerService {
         return taskDAO.getAllTasks();
     }
     
-    // Gọi hàm tìm kiếm từ DAO
     public List<Task> searchTasks(String keyword) {
         return taskDAO.searchTasks(keyword);
     }
     
-    // Dùng cho giao diện Công nhân: chỉ lấy công việc của chính họ (theo MaNguoiDung)
     public List<Task> getTasksByUser(int maNguoiDung) {
         return taskDAO.getTasksByUser(maNguoiDung);
+    }
+    
+    public List<Task> getTasksByDateRange(LocalDate fromDate, LocalDate toDate) {
+        return taskDAO.getTasksByDateRange(fromDate, toDate);
+    }
+
+    public List<Task> getTasksByUserAndDateRange(int maNguoiDung, LocalDate fromDate, LocalDate toDate) {
+        return taskDAO.getTasksByUserAndDateRange(maNguoiDung, fromDate, toDate);
     }
     
     public List<AttendanceLog> getAllAttendance() {
         return attendanceLogDAO.getAttendance();
     }
     
-    // Dùng cho giao diện Công nhân: chỉ lấy ngày công của chính họ (theo MaNguoiDung)
     public List<AttendanceLog> getAttendanceByUser(int maNguoiDung) {
         return attendanceLogDAO.getAttendanceByUser(maNguoiDung);
     }
     
-    // Gọi hàm tìm kiếm ngày công từ DAO
     public List<AttendanceLog> searchAttendanceByTaskIds(List<Integer> taskIds) {
         return attendanceLogDAO.searchAttendanceByTaskIds(taskIds);
+    }
+    
+    public List<AttendanceLog> getAttendanceByDateRange(LocalDate fromDate, LocalDate toDate) {
+        return attendanceLogDAO.getAttendanceByDateRange(fromDate, toDate);
+    }
+
+    public List<AttendanceLog> getAttendanceByUserAndDateRange(int maNguoiDung, LocalDate fromDate, LocalDate toDate) {
+        return attendanceLogDAO.getAttendanceByUserAndDateRange(maNguoiDung, fromDate, toDate);
     }
 
     private String getClientIpAddress() {
@@ -54,7 +67,6 @@ public class WorkerService {
         }
     }
 
-    // nguoiThucHien: người đang thao tác phân công (quản lý/admin đang đăng nhập)
     public boolean addTaskAndAssign(Task task, int nguoiThucHien) {
         int newMaCongViec = taskDAO.insertTaskAndGetId(task);
         if (newMaCongViec > 0) {
@@ -67,7 +79,6 @@ public class WorkerService {
             );
             boolean success = assignmentDAO.insertAssignmentTask(at);
             if (success) {
-                // Tự động ghi log mỗi khi có công nhân được phân công việc mới
                 dao.SystemLogDAO.insertLog(nguoiThucHien, "PHÂN CÔNG CÔNG VIỆC MỚI (Mã việc: " + newMaCongViec + ")", "Task", getClientIpAddress());
             }
             return success;
@@ -75,7 +86,6 @@ public class WorkerService {
         return false;
     }
 
-    // Hủy 1 công việc: đổi trạng thái Task + AssignmentTask, đồng thời ghi log
     public boolean cancelTask(int maCongViec, int nguoiThucHien) {
         boolean success = taskDAO.updateTaskStatus(maCongViec, "Đã hủy");
         if (success) {
@@ -96,7 +106,6 @@ public class WorkerService {
         return success;
     }
     
-    // Chức năng chốt lương và ghi log với IP nội bộ LAN
     public boolean approveSalaryLog(int maChamCong, int nguoiThucHien) {
         boolean success = attendanceLogDAO.approveSalary(maChamCong);
         if (success) {
@@ -105,10 +114,8 @@ public class WorkerService {
         return success;
     }
 
-    // Chức năng báo cáo sai sót ngày công và ghi log với IP nội bộ LAN
     public boolean reportAttendanceErrorLog(int maChamCong, String lyDo, int nguoiThucHien) {
         String thongDiep = "BÁO CÁO LỖI (Mã chấm công: " + maChamCong + ") - Lý do: " + lyDo;
-        // Báo cáo lỗi thì cứ lưu log trực tiếp
         dao.SystemLogDAO.insertLog(nguoiThucHien, thongDiep, "AttendanceLog", getClientIpAddress());
         return true;
     }

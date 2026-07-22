@@ -31,9 +31,12 @@ public class AttendanceLogDAO {
         }
     }
 
+    // 1. Lấy ngày công của cá nhân theo MaNguoiDung
     public List<AttendanceLog> getAttendanceByUser(int maNguoiDung) {
         List<AttendanceLog> list = new ArrayList<>();
-        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY NgayTíchLuy DESC";
+        // Sửa lại truy vấn so sánh trực tiếp MaNguoiDung thay vì qua MaNhanVien của bảng Staff
+        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY MaChamCong DESC";
+                     
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, maNguoiDung);
             ResultSet rs = ps.executeQuery();
@@ -113,6 +116,56 @@ public class AttendanceLogDAO {
                 ps.setInt(i + 1, taskIds.get(i));
             }
             
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new AttendanceLog(
+                        rs.getInt("MaChamCong"),
+                        rs.getInt("MaNguoiDung"),
+                        rs.getInt("MaCongViec"),
+                        rs.getObject("NgayTíchLuy", LocalDate.class),
+                        rs.getDouble("SoCongTichLuy"),
+                        rs.getBoolean("TrangThaiDuyet")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    // 1. Dành cho Admin: Lọc ngày công theo khoảng thời gian từ ngày... đến ngày...
+    public List<AttendanceLog> getAttendanceByDateRange(LocalDate fromDate, LocalDate toDate) {
+        List<AttendanceLog> list = new ArrayList<>();
+        String sql = "SELECT * FROM AttendanceLog WHERE NgayTíchLuy >= ? AND NgayTíchLuy <= ? ORDER BY NgayTíchLuy DESC";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDate(1, java.sql.Date.valueOf(fromDate));
+            ps.setDate(2, java.sql.Date.valueOf(toDate));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new AttendanceLog(
+                        rs.getInt("MaChamCong"),
+                        rs.getInt("MaNguoiDung"),
+                        rs.getInt("MaCongViec"),
+                        rs.getObject("NgayTíchLuy", LocalDate.class),
+                        rs.getDouble("SoCongTichLuy"),
+                        rs.getBoolean("TrangThaiDuyet")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // 2. Lọc ngày công của cá nhân theo khoảng thời gian và MaNguoiDung
+    public List<AttendanceLog> getAttendanceByUserAndDateRange(int maNguoiDung, LocalDate fromDate, LocalDate toDate) {
+        List<AttendanceLog> list = new ArrayList<>();
+        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? AND NgayTíchLuy >= ? AND NgayTíchLuy <= ? ORDER BY MaChamCong DESC";
+                     
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            ps.setDate(2, java.sql.Date.valueOf(fromDate));
+            ps.setDate(3, java.sql.Date.valueOf(toDate));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new AttendanceLog(

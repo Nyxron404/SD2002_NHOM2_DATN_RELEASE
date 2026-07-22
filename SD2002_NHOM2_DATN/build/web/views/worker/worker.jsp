@@ -140,27 +140,6 @@
                 background: #e67e22;
             }
 
-            .btn-add {
-                background-color: #579c3f;
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                font-size: 14px;
-                font-weight: 600;
-                border-radius: 8px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                box-shadow: 0 4px 12px rgba(87, 156, 63, 0.3);
-                transition: all 0.3s;
-                text-decoration: none;
-            }
-            .btn-add:hover {
-                background-color: #467e32;
-                transform: translateY(-1px);
-            }
-
             .table-container {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(15px);
@@ -269,17 +248,6 @@
                 margin-bottom: 20px;
             }
 
-            .uc-info {
-                font-size: 13px;
-                color: #4a5c43;
-                margin-bottom: 20px;
-                background: rgba(87, 156, 63, 0.1);
-                padding: 10px 12px;
-                border-radius: 6px;
-                border-left: 4px solid #579c3f;
-                font-weight: 600;
-            }
-
             .form-row {
                 display: flex;
                 gap: 20px;
@@ -324,16 +292,6 @@
             .btn-submit:hover {
                 background: #467e32;
             }
-            .note-panel {
-                margin-top: 15px;
-                font-size: 12px;
-                color: #c0392b;
-                font-style: italic;
-                background: #fdf2e9;
-                padding: 10px;
-                border-radius: 6px;
-                border-left: 4px solid #e67e22;
-            }
         </style>
     </head>
     <body>
@@ -348,27 +306,40 @@
             </jsp:include>
 
             <main class="content-area">
-                <div class="section-header">
-                    <h2 class="section-title">
+                <div class="section-header" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h2 class="section-title" style="color: #1a2419; margin: 0; font-size: 22px;">
                         <c:choose>
                             <c:when test="${isAdmin}">Danh sách phân công nhiệm vụ</c:when>
                             <c:otherwise>Nhiệm vụ của tôi</c:otherwise>
                         </c:choose>
                     </h2>
-                    <c:if test="${isAdmin}">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <form action="worker" method="GET" class="search-box" autocomplete="off">
-                                <input type="text" name="keyword" placeholder="Nhập tên việc, Mã việc, hoặc Mã nhân sự..." 
-                                       value="${param.keyword}" autocomplete="off">
-                                <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
+
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <!-- FORM LỌC RIÊNG CHO BẢNG CÔNG VIỆC -->
+                        <form action="worker" method="GET" style="display: flex; align-items: center; gap: 8px; background: #ffffff; padding: 6px 12px; border-radius: 8px; border: 1px solid #e1e8ed;">
+                            <input type="hidden" name="attFrom" value="${param.attFrom}">
+                            <input type="hidden" name="attTo" value="${param.attTo}">
+
+                            <label style="font-size: 12px; font-weight: 700; color: #555;">Từ:</label>
+                            <input type="date" name="taskFrom" value="${param.taskFrom}" required style="padding: 5px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; outline: none;">
+
+                            <label style="font-size: 12px; font-weight: 700; color: #555;">Đến:</label>
+                            <input type="date" name="taskTo" value="${param.taskTo}" required style="padding: 5px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; outline: none;">
+
+                            <button type="submit" style="background: #579c3f; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px;">Lọc việc</button>
+                            <a href="worker?attFrom=${param.attFrom}&attTo=${param.attTo}" style="background: #95a5a6; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Tất cả</a>
+                        </form>
+
+                        <c:if test="${isAdmin}">
+                            <form action="worker" method="GET" class="search-box" autocomplete="off" style="margin: 0; display: flex; align-items: center; background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 2px 8px;">
+                                <input type="text" name="keyword" placeholder="Nhập tên việc, mã việc..." value="${param.keyword}" autocomplete="off" style="border: none; outline: none; padding: 6px; font-size: 13px; width: 180px;">
+                                <button type="submit" class="btn-search" style="background: #f39c12; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px;">🔍 Tìm</button>
                             </form>
-                            <button class="btn-add" id="openModalBtn">+ Phân công mới</button>
-                        </div>
-                    </c:if>
+                        </c:if>
+                    </div>
                 </div>
 
                 <div class="table-container">
-                    <div class="data-info">Số lượng công việc đang triển khai: ${taskList != null ? taskList.size() : 0}</div>
                     <table class="custom-table">
                         <thead>
                             <tr>
@@ -405,7 +376,6 @@
                                             </c:otherwise>
                                         </c:choose>
 
-                                        <!-- Đã đưa nút Xem chi tiết ra ngoài khối c:choose -->
                                         <br>
                                         <button onclick="openDetailModal('${task.getMaCongViec()}')" class="action-link" style="color: #3498db; border:none; background:none; cursor:pointer; font-weight: 700;">Xem chi tiết</button>
                                         <div id="mota-${task.getMaCongViec()}" style="display:none;">${task.getMoTa()}</div>
@@ -420,14 +390,30 @@
                         </div>
                     </c:if>
                 </div>
-                <!-- ================= BẢNG LỊCH SỬ NGÀY CÔNG (UC-9.3) ================= -->
-                <div class="section-header" style="margin-top: 40px;">
-                    <h2 class="section-title">
+
+                <div class="section-header" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); padding: 15px 25px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-top: 40px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h2 class="section-title" style="color: #1a2419; margin: 0; font-size: 22px;">
                         <c:choose>
-                            <c:when test="${isAdmin}">Tra cứu lịch sử ngày công (Tháng này)</c:when>
-                            <c:otherwise>Ngày công của tôi (Tháng này)</c:otherwise>
+                            <c:when test="${isAdmin}">Tra cứu lịch sử ngày công</c:when>
+                            <c:otherwise>Ngày công của tôi</c:otherwise>
                         </c:choose>
                     </h2>
+
+                    <!-- FORM LỌC RIÊNG CHO BẢNG NGÀY CÔNG -->
+                    <form action="worker" method="GET" style="display: flex; align-items: center; gap: 8px; background: #ffffff; padding: 6px 12px; border-radius: 8px; border: 1px solid #e1e8ed;">
+                        <input type="hidden" name="taskFrom" value="${param.taskFrom}">
+                        <input type="hidden" name="taskTo" value="${param.taskTo}">
+                        <input type="hidden" name="keyword" value="${param.keyword}">
+
+                        <label style="font-size: 12px; font-weight: 700; color: #555;">Từ:</label>
+                        <input type="date" name="attFrom" value="${param.attFrom}" required style="padding: 5px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; outline: none;">
+
+                        <label style="font-size: 12px; font-weight: 700; color: #555;">Đến:</label>
+                        <input type="date" name="attTo" value="${param.attTo}" required style="padding: 5px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; outline: none;">
+
+                        <button type="submit" style="background: #579c3f; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px;">Lọc công</button>
+                        <a href="worker?taskFrom=${param.taskFrom}&taskTo=${param.taskTo}&keyword=${param.keyword}" style="background: #95a5a6; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Tất cả</a>
+                    </form>
                 </div>
 
                 <div class="table-container">
@@ -505,79 +491,6 @@
             </main>
         </div>
 
-        <c:if test="${isAdmin}">
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal-container">
-                <button class="modal-close" id="closeModalBtn">&times;</button>
-                <h3 class="modal-title">Khởi tạo và Phân công việc</h3>
-
-                <form action="worker" method="POST">
-                    <div class="form-row">
-                        <!-- Cập nhật danh sách Lô đất -->
-                        <div class="form-group">
-                            <label for="maKhuVuc">Chọn Lô Đất / Khu Vực:</label>
-                            <select id="maKhuVuc" name="maKhuVuc" required>
-                                <option value="">-- Chọn khu vực --</option>
-                                <c:forEach var="area" items="${farmAreaList}">
-                                    <option value="${area.getMaKhuVuc()}">${area.getTenKhuVuc()}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-
-                        <!-- Cập nhật danh sách Quy trình -->
-                        <div class="form-group">
-                            <label for="maQuyTrinh">Quy Trình Mẫu Áp Dụng:</label>
-                            <select id="maQuyTrinh" name="maQuyTrinh" required>
-                                <option value="">-- Tự động gợi ý quy trình --</option>
-                                <c:forEach var="practice" items="${farmingPracticeList}">
-                                    <option value="${practice.getMaQuyTrinh()}">${practice.getTenQuyTrinh()}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tenCongViec">Tên Công Việc Nhiệm Vụ:</label>
-                        <input type="text" id="tenCongViec" name="tenCongViec" placeholder="Nhập tên nhiệm vụ cụ thể..." required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="moTa">Mô Tả Chi Tiết Hướng Dẫn:</label>
-                        <textarea id="moTa" name="moTa" placeholder="Ghi chú các bước thực hiện nếu có..."></textarea>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="nguoiPhuTrach">Chọn Công Nhân Phụ Trách:</label>
-                            <select id="nguoiPhuTrach" name="nguoiPhuTrach" required>
-                                <option value="">-- Chọn công nhân --</option>
-                                <c:forEach var="worker" items="${workerList}">
-                                    <option value="${worker.getMaNguoiDung()}">${worker.getHoTen()} (Mã: ${worker.getMaNguoiDung()})</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="ngayBatDau">Ngày Bắt Đầu:</label>
-                            <input type="date" id="ngayBatDau" name="ngayBatDau" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="ngayKetThuc">Hạn Chót (Ngày Kết Thúc):</label>
-                            <input type="date" id="ngayKetThuc" name="ngayKetThuc" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Xác Nhận Giao Việc</button>
-
-                    <div class="note-panel">
-                        * Hệ thống tích hợp cơ chế tự động quét lịch để tránh trùng lặp, quá tải ngày làm việc của công nhân.
-                    </div>
-                </form>
-            </div>
-        </div>
-        </c:if>
         <!-- Modal Báo cáo hoàn thành -->
         <div class="modal-overlay" id="reportModal">
             <div class="modal-container">
@@ -606,14 +519,11 @@
                 <button class="modal-close" onclick="closeErrorModal()">&times;</button>
                 <h3 class="modal-title" style="color: #e74c3c;">Báo cáo sai sót ngày công</h3>
                 <form action="worker?action=report_error" method="POST">
-                    <!-- Gửi kèm mã chấm công -->
                     <input type="hidden" name="maChamCong" id="errorMaChamCong"> 
-
                     <div class="form-group">
                         <label>Mô tả chi tiết sai sót:</label>
                         <textarea name="lyDo" placeholder="Ví dụ: Tính sai hệ số, thiếu giờ làm..." required style="border-color: #e74c3c;"></textarea>
                     </div>
-
                     <button type="submit" class="btn-submit" style="background: #e74c3c;">Gửi báo cáo cho Quản lý</button>
                 </form>
             </div>
@@ -632,19 +542,6 @@
                 }
             }
 
-            const openModalBtn = document.getElementById('openModalBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const modalOverlay = document.getElementById('modalOverlay');
-            if (openModalBtn && closeModalBtn && modalOverlay) {
-                openModalBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
-                closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
-                modalOverlay.addEventListener('click', (e) => {
-                    if (e.target === modalOverlay)
-                        modalOverlay.classList.remove('active');
-                });
-            }
-
-            // SỬA ĐOẠN NÀY ĐỂ MỞ MODAL BÁO CÁO
             function openReportModal(id, nguoiPhuTrach) {
                 document.getElementById('reportMaCongViec').value = id;
                 document.getElementById('reportNguoiPhuTrach').value = nguoiPhuTrach;
@@ -655,12 +552,8 @@
                 document.getElementById('reportModal').classList.remove('active');
             }
 
-            // Hàm mở Modal Chi tiết
             function openDetailModal(maCongViec) {
-                // 1. Lấy nội dung mô tả gộp từ thẻ div ẩn
                 let rawText = document.getElementById('mota-' + maCongViec).innerHTML;
-
-                // 2. Tách chuỗi dựa vào khoảng trắng và dấu gạch đứng " | "
                 let parts = rawText.split(' | ');
 
                 let moTaGoc = parts[0] || "Không có mô tả chi tiết";
@@ -674,77 +567,63 @@
                     linkAnh = parts[2].replace('Ảnh văn bản: ', '').trim();
                 }
 
-                // 3. Regex kiểm tra xem chuỗi có phải là URL hợp lệ không (bắt đầu bằng http hoặc https)
                 const urlRegex = /^(https?:\/\/[^\s]+)/g;
                 let isRealLink = urlRegex.test(linkAnh);
-
                 let anhHtml = "";
 
                 if (linkAnh === "Chưa có" || linkAnh === "") {
-                    // Chưa điền gì cả
                     anhHtml = '<span style="color: #7f8c8d; font-style: italic;">Chưa có ảnh đính kèm</span>';
                 } else if (isRealLink) {
-                    // Là link thật, render thẻ a
                     anhHtml = '<a href="' + linkAnh + '" target="_blank" style="color: #3498db; text-decoration: underline; word-break: break-all;">Bấm để xem ảnh</a>';
                 } else {
-                    // Nhập text bậy bạ, không phải link, cảnh báo và in ra nội dung họ nhập
                     anhHtml = '<span style="color: #e74c3c; font-weight: 600;">Link ảnh không hợp lệ!</span><br><span style="color: #7f8c8d; font-size: 13px;">(Nội dung nhập sai: ' + linkAnh + ')</span>';
                 }
 
-                // 4. Tạo giao diện 3 CỘT DỌC
                 let htmlContent =
                         '<div style="display: flex; gap: 20px; justify-content: space-between;">' +
-                        // Cột 1: Mô tả
                         '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
                         '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #579c3f; padding-bottom: 5px; margin-bottom: 10px;">📝 Mô Tả Việc</strong>' +
                         '<div style="color: #2c3e50; font-size: 14px;">' + moTaGoc + '</div>' +
                         '</div>' +
-                        // Cột 2: Ghi chú vật tư
                         '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
                         '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #e67e22; padding-bottom: 5px; margin-bottom: 10px;">🛠 Vật Tư</strong>' +
                         '<div style="color: #e67e22; font-size: 14px; font-weight: 600;">' + ghiChu + '</div>' +
                         '</div>' +
-                        // Cột 3: Link ảnh
                         '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
                         '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">📸 Ảnh Gửi Kèm</strong>' +
                         '<div style="font-size: 14px;">' + anhHtml + '</div>' +
                         '</div>' +
                         '</div>';
 
-                // 5. Đổ nội dung mới vào Modal và hiển thị
                 document.getElementById('detailContent').innerHTML = htmlContent;
                 document.getElementById('detailModal').classList.add('active');
             }
 
-            // Hàm đóng Modal Chi tiết
             function closeDetailModal() {
                 document.getElementById('detailModal').classList.remove('active');
             }
 
-            // Hàm mở Modal Báo cáo sai sót
             function openErrorModal(maChamCong) {
                 document.getElementById('errorMaChamCong').value = maChamCong;
                 document.getElementById('errorModal').classList.add('active');
             }
 
-            // Hàm đóng Modal Báo cáo sai sót
             function closeErrorModal() {
                 document.getElementById('errorModal').classList.remove('active');
             }
         </script>
+
         <!-- Modal Xem Chi Tiết -->
         <div class="modal-overlay" id="detailModal">
             <div class="modal-container">
                 <button class="modal-close" onclick="closeDetailModal()">&times;</button>
                 <h3 class="modal-title">Chi tiết công việc</h3>
-                <div id="detailContent" style="font-size: 15px; color: #2c3e50; line-height: 1.6; white-space: pre-wrap; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                    <!-- Nội dung mô tả sẽ được Javascript đẩy vào đây -->
-                </div>
+                <div id="detailContent" style="font-size: 15px; color: #2c3e50; line-height: 1.6; white-space: pre-wrap; background: #f8f9fa; padding: 15px; border-radius: 8px;"></div>
             </div>
         </div>
+
         <c:if test="${not empty sessionScope.thongBao}">
             <script>
-                // Hiển thị popup thông báo
                 alert('${sessionScope.thongBao}');
             </script>
             <c:remove var="thongBao" scope="session"/>
