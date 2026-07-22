@@ -75,8 +75,58 @@ public class AttendanceLogDAO {
         return list;
     }
     
-    public static void main(String[] args) {
-        AttendanceLogDAO attendanceLogDAO = new AttendanceLogDAO(); 
-        attendanceLogDAO.getAttendance();
+    public boolean approveSalary(int maChamCong) {
+        String sql = "UPDATE AttendanceLog SET TrangThaiDuyet = 1 WHERE MaChamCong = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maChamCong);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Hàm mới: Tìm kiếm ngày công dựa trên một danh sách Mã Công Việc
+    public List<AttendanceLog> searchAttendanceByTaskIds(List<Integer> taskIds) {
+        List<AttendanceLog> list = new ArrayList<>();
+        
+        // Nếu không có mã công việc nào được truyền vào, trả về rỗng luôn
+        if (taskIds == null || taskIds.isEmpty()) {
+            return list;
+        }
+
+        // Tạo chuỗi các dấu hỏi chấm (?, ?, ?) tùy theo số lượng mã công việc
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < taskIds.size(); i++) {
+            placeholders.append("?");
+            if (i < taskIds.size() - 1) {
+                placeholders.append(",");
+            }
+        }
+
+        // Lọc bảng AttendanceLog xem có MaCongViec nào nằm trong danh sách không
+        String sql = "SELECT * FROM AttendanceLog WHERE MaCongViec IN (" + placeholders.toString() + ")";
+        
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            // Set giá trị cho các dấu hỏi chấm
+            for (int i = 0; i < taskIds.size(); i++) {
+                ps.setInt(i + 1, taskIds.get(i));
+            }
+            
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new AttendanceLog(
+                        rs.getInt("MaChamCong"),
+                        rs.getInt("MaNguoiDung"),
+                        rs.getInt("MaCongViec"),
+                        rs.getObject("NgayTíchLuy", LocalDate.class),
+                        rs.getDouble("SoCongTichLuy"),
+                        rs.getBoolean("TrangThaiDuyet")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

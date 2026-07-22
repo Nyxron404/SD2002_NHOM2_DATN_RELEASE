@@ -77,6 +77,19 @@ public class TaskDAO {
         return false;
     }
     
+    // Cập nhật trạng thái Task (dùng chung, ví dụ: hủy việc -> "Đã hủy")
+    public boolean updateTaskStatus(int maCongViec, String trangThai) {
+        String sql = "UPDATE Task SET TrangThai = ? WHERE MaCongViec = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, trangThai);
+            ps.setInt(2, maCongViec);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // Đếm số công nhân đang có nhiệm vụ chưa hoàn thành (Dành cho Dashboard)
     public int getActiveWorkersCount() {
         String sql = "SELECT COUNT(DISTINCT NguoiPhuTrach) FROM Task WHERE TrangThai != N'Hoàn thành'";
@@ -105,6 +118,39 @@ public class TaskDAO {
             }
         } catch (Exception e) { 
             e.printStackTrace(); 
+        }
+        return list;
+    }
+    
+    // Hàm tìm kiếm công việc theo Tên, Mã công việc, hoặc Người Phụ Trách
+    public List<Task> searchTasks(String keyword) {
+        List<Task> list = new ArrayList<>();
+        // Tìm kiếm theo Tên công việc hoặc ép kiểu Mã công việc, Người Phụ Trách sang chuỗi để tìm
+        String sql = "SELECT * FROM Task WHERE TenCongViec LIKE ? OR CAST(MaCongViec AS VARCHAR) LIKE ? OR CAST(NguoiPhuTrach AS VARCHAR) LIKE ?";
+        
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            String query = "%" + keyword + "%";
+            ps.setString(1, query);
+            ps.setString(2, query);
+            ps.setString(3, query); // Thêm tham số thứ 3
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Task t = new Task(
+                    rs.getInt("MaCongViec"),
+                    rs.getString("TenCongViec"),
+                    rs.getString("MoTa"),
+                    rs.getInt("MaQuyTrinh"),
+                    rs.getInt("MaKhuVuc"),
+                    rs.getInt("NguoiPhuTrach"),
+                    rs.getObject("NgayBatDau", LocalDate.class),
+                    rs.getObject("NgayKetThuc", LocalDate.class),
+                    rs.getString("TrangThai")
+                );
+                list.add(t);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return list;
     }

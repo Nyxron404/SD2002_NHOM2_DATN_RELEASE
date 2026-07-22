@@ -1,11 +1,6 @@
-<%-- 
-    Document   : worker
-    Created on : Jun 23, 2026, 2:14:09 PM
-    Author     : longd
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -113,6 +108,36 @@
                 font-size: 22px;
                 font-weight: 700;
                 margin: 0;
+            }
+
+            /* THANH TÌM KIẾM */
+            .search-box {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 8px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .search-box input {
+                border: none;
+                outline: none;
+                padding: 8px 10px;
+                width: 250px;
+                font-size: 14px;
+            }
+            .btn-search {
+                background: #f39c12;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+            .btn-search:hover {
+                background: #e67e22;
             }
 
             .btn-add {
@@ -325,7 +350,14 @@
             <main class="content-area">
                 <div class="section-header">
                     <h2 class="section-title">Danh sách phân công nhiệm vụ</h2>
-                    <button class="btn-add" id="openModalBtn">+ Phân công mới</button>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <form action="worker" method="GET" class="search-box" autocomplete="off">
+                            <input type="text" name="keyword" placeholder="Nhập tên việc, Mã việc, hoặc Mã nhân sự..." 
+                                   value="${param.keyword}" autocomplete="off">
+                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
+                        </form>
+                        <button class="btn-add" id="openModalBtn">+ Phân công mới</button>
+                    </div>
                 </div>
 
                 <div class="table-container">
@@ -351,36 +383,37 @@
                                     <td>Công nhân ${task.getNguoiPhuTrach()}</td>
                                     <td>${task.getNgayKetThuc()}</td>
                                     <td>
-                                        <!-- Đổi màu sắc badge theo trạng thái thực tế -->
                                         <c:choose>
-                                            <c:when test="${task.getTrangThai() eq 'Hoàn thành'}">
-                                                <span class="status-badge" style="background-color: #27ae60;">Hoàn thành</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="status-badge" style="background-color: #e67e22;">${task.getTrangThai()}</span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>
-                                        <c:choose>
-
                                             <c:when test="${task.getTrangThai() eq 'Hoàn thành'}">
                                                 <span style="color: #7f8c8d; font-size: 13px; font-style: italic;">Nhiệm vụ đã hoàn thành</span>
                                             </c:when>
 
+                                            <c:when test="${task.getTrangThai() eq 'Đã hủy'}">
+                                                <span style="color: #7f8c8d; font-size: 13px; font-style: italic;">Công việc đã bị hủy</span>
+                                            </c:when>
+
                                             <c:otherwise>
                                                 <button onclick="openReportModal(${task.getMaCongViec()}, ${task.getNguoiPhuTrach()})" class="action-link" style="border:none; background:none; cursor:pointer; color:#579c3f; font-weight: 700;">Báo cáo</button>
-                                                <a href="#" class="action-link" style="color: #e74c3c;">Hủy việc</a>
+                                                <button type="button" onclick="cancelTask(${task.getMaCongViec()})" class="action-link" style="border:none; background:none; cursor:pointer; color: #e74c3c; font-weight: 700;">Hủy việc</button>
                                             </c:otherwise>
                                         </c:choose>
+
+                                        <!-- Đã đưa nút Xem chi tiết ra ngoài khối c:choose -->
+                                        <br>
+                                        <button onclick="openDetailModal('${task.getMaCongViec()}')" class="action-link" style="color: #3498db; border:none; background:none; cursor:pointer; font-weight: 700;">Xem chi tiết</button>
+                                        <div id="mota-${task.getMaCongViec()}" style="display:none;">${task.getMoTa()}</div>
                                     </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
+                    <c:if test="${not empty param.keyword && empty taskList}">
+                        <div style="text-align: center; padding: 20px; color: #777;">
+                            <p>Không tìm thấy công việc phù hợp với từ khóa: <strong>${param.keyword}</strong></p>
+                        </div>
+                    </c:if>
                 </div>
-                    
-                    
+                <!-- ================= BẢNG LỊCH SỬ NGÀY CÔNG (UC-9.3) ================= -->
                 <div class="section-header" style="margin-top: 40px;">
                     <h2 class="section-title">Tra cứu lịch sử ngày công (Tháng này)</h2>
                 </div>
@@ -391,8 +424,8 @@
                         <thead>
                             <tr>
                                 <th>Mã Chấm Công</th>
+                                <th>Người Phụ Trách</th>
                                 <th>Mã Việc Hoàn Thành</th>
-                                <th>Mã Công Nhân</th>
                                 <th>Ngày Tích Lũy</th>
                                 <th>Số Công (Hệ Số)</th>
                                 <th>Trạng Thái Duyệt</th>
@@ -402,10 +435,9 @@
                         <tbody>
                             <c:forEach var="log" items="${attendanceList}">
                                 <tr>
-                                    <!-- Hiển thị đúng các thuộc tính từ model AttendanceLog -->
                                     <td>#${log.getMaChamCong()}</td>
+                                    <td>Công nhân ${log.getMaNguoiDung()}</td>
                                     <td>Mã số: ${log.getMaCongViec()}</td>
-                                    <td>${log.getMaNguoiDung()}</td>
                                     <td>${log.getNgayTichLuy()}</td>
                                     <td style="color: #27ae60; font-weight: 800; font-size: 16px;">
                                         + ${log.getSoCongTichLuy()}
@@ -421,16 +453,36 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <a href="#" class="action-link" style="color: #e74c3c;">Báo cáo sai sót</a>
+                                        <c:choose>
+                                            <c:when test="${log.isTrangThaiDuyet()}">
+                                                <span style="color: #7f8c8d; font-size: 13px; font-style: italic;">Đã hoàn tất</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form action="worker?action=approve_salary" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="maChamCong" value="${log.getMaChamCong()}">
+                                                    <button type="submit" class="action-link" style="border:none; background:none; cursor:pointer; color: #27ae60; font-weight: 700;" onclick="return confirm('Xác nhận chốt lương cho mã công #${log.getMaChamCong()}?');">Chốt lương</button>
+                                                </form>
+
+                                                <c:set var="checkStr" value=",${log.getMaChamCong()}," />
+                                                <c:choose>
+                                                    <c:when test="${fn:contains(sessionScope.reportedErrors, checkStr)}">
+                                                        <span style="color: #95a5a6; font-size: 13px; font-style: italic; margin-left: 10px;">Đã báo cáo</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <button type="button" onclick="openErrorModal(${log.getMaChamCong()})" class="action-link" style="border:none; background:none; cursor:pointer; color: #e74c3c; font-weight: 700; margin-left: 10px;">Báo cáo sai sót</button>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                 </tr>
                             </c:forEach>
 
                             <c:if test="${empty attendanceList}">
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
-                                        Chưa có dữ liệu ngày công nào được ghi nhận. Hãy báo cáo hoàn thành công việc để hệ thống tính công tự động!
+                                <tr>áo hoàn thành công việc để hệ thống tính công tự động!
                                     </td>
+                                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                        Chưa có dữ liệu ngày công nào được ghi nhận. Hãy báo c
                                 </tr>
                             </c:if>
                         </tbody>
@@ -532,7 +584,38 @@
             </div>
         </div>
 
+        <!-- Modal Báo cáo sai sót ngày công -->
+        <div class="modal-overlay" id="errorModal">
+            <div class="modal-container">
+                <button class="modal-close" onclick="closeErrorModal()">&times;</button>
+                <h3 class="modal-title" style="color: #e74c3c;">Báo cáo sai sót ngày công</h3>
+                <form action="worker?action=report_error" method="POST">
+                    <!-- Gửi kèm mã chấm công -->
+                    <input type="hidden" name="maChamCong" id="errorMaChamCong"> 
+
+                    <div class="form-group">
+                        <label>Mô tả chi tiết sai sót:</label>
+                        <textarea name="lyDo" placeholder="Ví dụ: Tính sai hệ số, thiếu giờ làm..." required style="border-color: #e74c3c;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" style="background: #e74c3c;">Gửi báo cáo cho Quản lý</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Form ẩn dùng để gửi yêu cầu Hủy việc -->
+        <form id="cancelForm" action="worker?action=cancel" method="POST" style="display:none;">
+            <input type="hidden" name="maCongViec" id="cancelMaCongViec">
+        </form>
+
         <script>
+            function cancelTask(maCongViec) {
+                if (confirm('Bạn có chắc chắn muốn hủy công việc mã số ' + maCongViec + ' này không? Hành động này sẽ được ghi vào nhật ký hệ thống.')) {
+                    document.getElementById('cancelMaCongViec').value = maCongViec;
+                    document.getElementById('cancelForm').submit();
+                }
+            }
+
             const openModalBtn = document.getElementById('openModalBtn');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const modalOverlay = document.getElementById('modalOverlay');
@@ -543,7 +626,8 @@
                     modalOverlay.classList.remove('active');
             });
 
-            function openReportModal(id, nguoiPhuTrach) { 
+            // SỬA ĐOẠN NÀY ĐỂ MỞ MODAL BÁO CÁO
+            function openReportModal(id, nguoiPhuTrach) {
                 document.getElementById('reportMaCongViec').value = id;
                 document.getElementById('reportNguoiPhuTrach').value = nguoiPhuTrach;
                 document.getElementById('reportModal').classList.add('active');
@@ -557,7 +641,100 @@
             document.getElementById('closeModalBtn').addEventListener('click', () => {
                 document.getElementById('modalOverlay').classList.remove('active');
             });
+            // Hàm mở Modal Chi tiết
+            function openDetailModal(maCongViec) {
+                // 1. Lấy nội dung mô tả gộp từ thẻ div ẩn
+                let rawText = document.getElementById('mota-' + maCongViec).innerHTML;
+
+                // 2. Tách chuỗi dựa vào khoảng trắng và dấu gạch đứng " | "
+                let parts = rawText.split(' | ');
+
+                let moTaGoc = parts[0] || "Không có mô tả chi tiết";
+                let ghiChu = "Chưa có báo cáo";
+                let linkAnh = "Chưa có";
+
+                if (parts.length > 1) {
+                    ghiChu = parts[1].replace('Ghi chú vật tư: ', '').trim();
+                }
+                if (parts.length > 2) {
+                    linkAnh = parts[2].replace('Ảnh văn bản: ', '').trim();
+                }
+
+                // 3. Regex kiểm tra xem chuỗi có phải là URL hợp lệ không (bắt đầu bằng http hoặc https)
+                const urlRegex = /^(https?:\/\/[^\s]+)/g;
+                let isRealLink = urlRegex.test(linkAnh);
+
+                let anhHtml = "";
+
+                if (linkAnh === "Chưa có" || linkAnh === "") {
+                    // Chưa điền gì cả
+                    anhHtml = '<span style="color: #7f8c8d; font-style: italic;">Chưa có ảnh đính kèm</span>';
+                } else if (isRealLink) {
+                    // Là link thật, render thẻ a
+                    anhHtml = '<a href="' + linkAnh + '" target="_blank" style="color: #3498db; text-decoration: underline; word-break: break-all;">Bấm để xem ảnh</a>';
+                } else {
+                    // Nhập text bậy bạ, không phải link, cảnh báo và in ra nội dung họ nhập
+                    anhHtml = '<span style="color: #e74c3c; font-weight: 600;">Link ảnh không hợp lệ!</span><br><span style="color: #7f8c8d; font-size: 13px;">(Nội dung nhập sai: ' + linkAnh + ')</span>';
+                }
+
+                // 4. Tạo giao diện 3 CỘT DỌC
+                let htmlContent =
+                        '<div style="display: flex; gap: 20px; justify-content: space-between;">' +
+                        // Cột 1: Mô tả
+                        '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
+                        '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #579c3f; padding-bottom: 5px; margin-bottom: 10px;">📝 Mô Tả Việc</strong>' +
+                        '<div style="color: #2c3e50; font-size: 14px;">' + moTaGoc + '</div>' +
+                        '</div>' +
+                        // Cột 2: Ghi chú vật tư
+                        '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
+                        '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #e67e22; padding-bottom: 5px; margin-bottom: 10px;">🛠 Vật Tư</strong>' +
+                        '<div style="color: #e67e22; font-size: 14px; font-weight: 600;">' + ghiChu + '</div>' +
+                        '</div>' +
+                        // Cột 3: Link ảnh
+                        '<div style="flex: 1; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eef2f5;">' +
+                        '<strong style="color: #2e541f; font-size: 15px; display: block; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">📸 Ảnh Gửi Kèm</strong>' +
+                        '<div style="font-size: 14px;">' + anhHtml + '</div>' +
+                        '</div>' +
+                        '</div>';
+
+                // 5. Đổ nội dung mới vào Modal và hiển thị
+                document.getElementById('detailContent').innerHTML = htmlContent;
+                document.getElementById('detailModal').classList.add('active');
+            }
+
+            // Hàm đóng Modal Chi tiết
+            function closeDetailModal() {
+                document.getElementById('detailModal').classList.remove('active');
+            }
+
+            // Hàm mở Modal Báo cáo sai sót
+            function openErrorModal(maChamCong) {
+                document.getElementById('errorMaChamCong').value = maChamCong;
+                document.getElementById('errorModal').classList.add('active');
+            }
+
+            // Hàm đóng Modal Báo cáo sai sót
+            function closeErrorModal() {
+                document.getElementById('errorModal').classList.remove('active');
+            }
         </script>
-    </script>
-</body>
+        <!-- Modal Xem Chi Tiết -->
+        <div class="modal-overlay" id="detailModal">
+            <div class="modal-container">
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+                <h3 class="modal-title">Chi tiết công việc</h3>
+                <div id="detailContent" style="font-size: 15px; color: #2c3e50; line-height: 1.6; white-space: pre-wrap; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <!-- Nội dung mô tả sẽ được Javascript đẩy vào đây -->
+                </div>
+            </div>
+        </div>
+        <c:if test="${not empty sessionScope.thongBao}">
+            <script>
+                // Hiển thị popup thông báo
+                alert('${sessionScope.thongBao}');
+            </script>
+            <!-- Xóa thông báo đi để lần sau không hiện lại nếu chỉ F5 trang -->
+            <c:remove var="thongBao" scope="session"/>
+        </c:if>
+    </body>
 </html>
