@@ -508,7 +508,8 @@
             </main>
         </div>
 
-        <div class="modal-overlay" id="modalOverlay">
+    <c:forEach var="item" items="${farmingPracticeList}">
+        <div class="modal-overlay" id="editModal-${item.maQuyTrinh}">
             <div class="modal-container">
                 <label for="createModalToggle" class="modal-close">&times;</label>
                 <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>

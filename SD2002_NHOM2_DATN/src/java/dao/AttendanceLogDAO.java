@@ -14,7 +14,7 @@ public class AttendanceLogDAO {
                 + "FROM Task t INNER JOIN WorkEfficiencyConfig c ON t.MaQuyTrinh = c.MaQuyTrinh "
                 + "WHERE t.TrangThai = N'Hoàn thành' AND t.MaCongViec NOT IN (SELECT MaCongViec FROM AttendanceLog)";
 
-        String insertSql = "INSERT INTO AttendanceLog (MaNguoiDung, MaCongViec, NgayTichLuy, SoCongTichLuy, TrangThaiDuyet) VALUES (?, ?, GETDATE(), ?, 0)";
+        String insertSql = "INSERT INTO AttendanceLog (MaNguoiDung, MaCongViec, NgayTíchLuy, SoCongTichLuy, TrangThaiDuyet) VALUES (?, ?, GETDATE(), ?, 0)";
 
         try (Connection con = DBConnect.getConnection(); PreparedStatement psScan = con.prepareStatement(scanSql); PreparedStatement psInsert = con.prepareStatement(insertSql)) {
 
@@ -33,7 +33,7 @@ public class AttendanceLogDAO {
 
     public List<AttendanceLog> getAttendanceByUser(int maNguoiDung) {
         List<AttendanceLog> list = new ArrayList<>();
-        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY NgayTichLuy DESC";
+        String sql = "SELECT * FROM AttendanceLog WHERE MaNguoiDung = ? ORDER BY NgayTíchLuy DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, maNguoiDung);
             ResultSet rs = ps.executeQuery();
