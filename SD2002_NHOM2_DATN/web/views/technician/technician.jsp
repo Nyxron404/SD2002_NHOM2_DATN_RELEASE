@@ -633,11 +633,11 @@
 
                         <div class="grid-7-5-cols">
                             <div class="form-group">
-                                <label>Tên vật tư (Đồng bộ từ CSDL):</label>
+                                <label>Tên vật tư:</label>
                                 <select name="supplyId" required>
                                     <option value="">-- Chọn vật tư --</option>
                                     <c:forEach var="sup" items="${suppliesList}">
-                                        <option value="${sup.id}">${sup.name} (Mã: ${sup.id})</option>
+                                        <option value="${sup.maVatTu}">${sup.tenVatTu} (Mã: ${sup.maVatTu})</option>
                                     </c:forEach>
                                 </select>
                             </div>
