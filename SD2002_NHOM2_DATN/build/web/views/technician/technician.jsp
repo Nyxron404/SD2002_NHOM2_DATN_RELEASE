@@ -508,8 +508,7 @@
             </main>
         </div>
 
-    <c:forEach var="item" items="${farmingPracticeList}">
-        <div class="modal-overlay" id="editModal-${item.maQuyTrinh}">
+        <div class="modal-overlay" id="modalOverlay">
             <div class="modal-container">
                 <label for="createModalToggle" class="modal-close">&times;</label>
                 <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>
@@ -634,7 +633,7 @@
 
                         <div class="grid-7-5-cols">
                             <div class="form-group">
-                                <label>Tên vật tư:</label>
+                                <label>Tên vật tư (Đồng bộ từ CSDL):</label>
                                 <select name="supplyId" required>
                                     <option value="">-- Chọn vật tư --</option>
                                     <c:forEach var="sup" items="${suppliesList}">
