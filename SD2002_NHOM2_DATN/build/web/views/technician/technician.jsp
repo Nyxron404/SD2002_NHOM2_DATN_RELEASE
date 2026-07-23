@@ -1,9 +1,3 @@
-<%-- 
-    Document   : technician
-    Created on : Jun 23, 2026, 0:00:00 PM
-    Author     : pminh
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -16,7 +10,6 @@
             * {
                 box-sizing: border-box;
             }
-
             body {
                 margin: 0;
                 padding: 0;
@@ -29,7 +22,6 @@
                 overflow: hidden;
                 position: relative;
             }
-
             body::before {
                 content: "";
                 position: absolute;
@@ -37,20 +29,17 @@
                 background-color: rgba(20, 35, 20, 0.6);
                 z-index: -1;
             }
-
             .main-wrapper {
                 flex: 1;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
             }
-
             .content-area {
                 flex: 1;
                 padding: 30px 40px;
                 overflow-y: auto;
             }
-
             .section-header {
                 display: flex;
                 justify-content: space-between;
@@ -59,7 +48,6 @@
                 flex-wrap: wrap;
                 gap: 15px;
             }
-
             .section-title {
                 color: #ffffff;
                 font-size: 24px;
@@ -68,58 +56,12 @@
                 flex: 1 1 auto;
                 text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             }
-
             .header-actions {
                 display: flex;
                 gap: 12px;
                 align-items: center;
                 flex-wrap: wrap;
             }
-
-            .search-form {
-                display: flex;
-                gap: 8px;
-                margin: 0;
-                align-items: center;
-            }
-
-            .search-input {
-                padding: 0 15px;
-                height: 42px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                outline: none;
-                font-family: inherit;
-                font-size: 14px;
-                width: 260px;
-                transition: 0.3s;
-            }
-
-            .search-input:focus {
-                border-color: #579c3f;
-                box-shadow: 0 0 5px rgba(87,156,63,0.3);
-            }
-
-            .btn-search {
-                background-color: #2c3e50;
-                color: white;
-                border: none;
-                height: 42px;
-                padding: 0 20px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 14px;
-                transition: 0.3s;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .btn-search:hover {
-                background-color: #1a252f;
-            }
-
             .btn-add {
                 background-color: #579c3f !important;
                 color: white !important;
@@ -138,12 +80,10 @@
                 transition: all 0.3s;
                 text-decoration: none;
             }
-
             .btn-add:hover {
                 background-color: #467e32 !important;
                 transform: translateY(-1px);
             }
-
             .table-container {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(15px);
@@ -152,20 +92,17 @@
                 box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
                 overflow-x: auto;
             }
-
             .data-info {
                 font-size: 14px;
                 color: #555;
                 margin-bottom: 15px;
                 font-weight: 600;
             }
-
             .custom-table {
                 width: 100%;
                 border-collapse: collapse;
                 text-align: left;
             }
-
             .custom-table th {
                 padding: 14px 16px;
                 border-bottom: 2px solid #eef2f5;
@@ -175,7 +112,6 @@
                 text-transform: uppercase;
                 white-space: nowrap;
             }
-
             .custom-table td {
                 padding: 14px 16px;
                 border-bottom: 1px solid #eef2f5;
@@ -184,11 +120,9 @@
                 font-weight: 500;
                 vertical-align: middle;
             }
-
             .custom-table tr:hover td {
                 background-color: #f9fafb;
             }
-
             .status-badge {
                 background-color: #fff3cd;
                 color: #856404;
@@ -201,13 +135,11 @@
                 text-align: center;
                 min-width: 80px;
             }
-
             .status-badge.active-status {
                 background-color: #e6f4ea;
                 color: #1e8e3e;
                 border: 1px solid #cce8d6;
             }
-
             .desc-column {
                 max-width: 200px;
                 white-space: nowrap;
@@ -215,14 +147,12 @@
                 text-overflow: ellipsis;
                 color: #637381;
             }
-
             .action-buttons {
                 display: flex;
                 gap: 8px;
                 align-items: center;
                 flex-wrap: wrap;
             }
-
             .btn-action-edit, .btn-action-stage, .btn-action-delete {
                 padding: 0 12px;
                 border-radius: 6px;
@@ -237,20 +167,27 @@
                 color: white;
                 transition: 0.2s;
                 height: 32px;
+                box-sizing: border-box;
             }
-
-            .btn-action-edit { background-color: #f39c12; }
-            .btn-action-edit:hover { background-color: #e67e22; }
-            .btn-action-stage { background-color: #2980b9; }
-            .btn-action-stage:hover { background-color: #3498db; }
-            .btn-action-delete { background-color: #e74c3c; font-family: inherit; }
-            .btn-action-delete:hover { background-color: #c0392b; }
-
-            /* --- MODAL CSS PURA --- */
-            .modal-toggle {
-                display: none;
+            .btn-action-edit {
+                background-color: #f39c12;
             }
-
+            .btn-action-edit:hover {
+                background-color: #e67e22;
+            }
+            .btn-action-stage {
+                background-color: #2980b9;
+            }
+            .btn-action-stage:hover {
+                background-color: #3498db;
+            }
+            .btn-action-delete {
+                background-color: #e74c3c;
+                font-family: inherit;
+            }
+            .btn-action-delete:hover {
+                background-color: #c0392b;
+            }
             .modal-overlay {
                 position: fixed;
                 inset: 0;
@@ -265,17 +202,14 @@
                 transition: all 0.3s ease;
                 padding: 20px;
             }
-
             .modal-overlay.active {
                 opacity: 1;
                 pointer-events: auto;
             }
-
             .modal-overlay.active .modal-container {
                 transform: translateY(0);
                 opacity: 1;
             }
-
             .modal-container {
                 background: #ffffff;
                 width: 100%;
@@ -290,30 +224,6 @@
                 max-height: 90vh;
                 overflow-y: auto;
             }
-
-            #createModalToggle:checked ~ .modal-overlay#modalOverlay {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            #createModalToggle:checked ~ .modal-overlay#modalOverlay .modal-container {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            <c:forEach var="item" items="${farmingPracticeList}">
-                #editToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#editModal-${item.maQuyTrinh},
-                #stageToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#stageModal-${item.maQuyTrinh} {
-                    opacity: 1;
-                    pointer-events: auto;
-                }
-                #editToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#editModal-${item.maQuyTrinh} .modal-container,
-                #stageToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#stageModal-${item.maQuyTrinh} .modal-container {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            </c:forEach>
-
             .modal-close {
                 position: absolute;
                 top: 15px;
@@ -332,12 +242,10 @@
                 transition: 0.2s;
                 line-height: 1;
             }
-
             .modal-close:hover {
                 background: #e9ecef;
                 color: #212529;
             }
-
             .modal-title {
                 font-size: 20px;
                 font-weight: 700;
@@ -347,11 +255,9 @@
                 padding-bottom: 12px;
                 border-bottom: 2px solid #eef2f5;
             }
-
             .form-group {
                 margin-bottom: 18px;
             }
-
             .form-group label {
                 display: block;
                 font-weight: 600;
@@ -359,12 +265,7 @@
                 color: #34495e;
                 font-size: 14px;
             }
-
-            .form-group input[type="text"],
-            .form-group input[type="number"],
-            .form-group input[type="date"],
-            .form-group textarea,
-            .form-group select {
+            .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="date"], .form-group textarea, .form-group select {
                 width: 100%;
                 padding: 10px 14px;
                 border: 1px solid #dce1e6;
@@ -376,51 +277,40 @@
                 background-color: #fff;
                 outline: none;
             }
-
-            .form-group input:focus, 
-            .form-group select:focus, 
-            .form-group textarea:focus {
+            .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
                 border-color: #579c3f;
                 box-shadow: 0 0 0 3px rgba(87,156,63,0.1);
             }
-
             .form-row {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
                 margin-bottom: 18px;
             }
-
             .form-row .form-group {
                 margin-bottom: 0;
             }
-
             .grid-2-cols {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
             }
-
             .grid-7-5-cols {
                 display: grid;
                 grid-template-columns: 3fr 2fr;
                 gap: 15px;
             }
-
             .input-group-custom {
                 display: flex;
                 gap: 10px;
             }
-
             .input-group-custom input {
                 flex: 1;
             }
-
             .input-group-custom select {
                 width: 100px;
                 flex-shrink: 0;
             }
-
             .btn-submit {
                 width: 100%;
                 background: #579c3f;
@@ -434,12 +324,10 @@
                 margin-top: 15px;
                 transition: 0.3s;
             }
-
             .btn-submit:hover {
                 background: #467e32;
                 box-shadow: 0 4px 10px rgba(70,126,50,0.2);
             }
-
             .note-panel {
                 margin-top: 15px;
                 font-size: 13px;
@@ -451,7 +339,6 @@
                 border-left: 4px solid #e67e22;
                 line-height: 1.4;
             }
-
             .btn-cancel {
                 background-color: #f1f3f5;
                 color: #495057;
@@ -467,12 +354,10 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .btn-cancel:hover {
                 background-color: #e2e6ea;
                 color: #212529;
             }
-
             .btn-save {
                 background-color: #579c3f;
                 color: white;
@@ -487,20 +372,61 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .btn-save:hover {
                 background-color: #467e32;
+            }
+            .alert-banner {
+                padding: 14px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .alert-success {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border-left: 5px solid #2e7d32;
+            }
+            .alert-error {
+                background: #ffebee;
+                color: #c62828;
+                border-left: 5px solid #c62828;
+            }
+            .search-box {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 8px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .search-box input {
+                border: none;
+                outline: none;
+                padding: 8px 10px;
+                width: 220px;
+                font-size: 14px;
+                font-family: inherit;
+            }
+            .btn-search {
+                background: #f39c12 !important;
+                color: white !important;
+                border: none !important;
+                padding: 8px 15px !important;
+                border-radius: 6px !important;
+                font-weight: 600 !important;
+                cursor: pointer;
+                transition: 0.3s;
+                font-family: inherit;
+                font-size: 14px;
+                height: auto !important;
+            }
+            .btn-search:hover {
+                background: #e67e22 !important;
             }
         </style>
     </head>
     <body>
-
-        <input type="checkbox" id="createModalToggle" class="modal-toggle">
-
-        <c:forEach var="item" items="${farmingPracticeList}">
-            <input type="checkbox" id="editToggle-${item.maQuyTrinh}" class="modal-toggle">
-            <input type="checkbox" id="stageToggle-${item.maQuyTrinh}" class="modal-toggle">
-        </c:forEach>
 
         <jsp:include page="/views/common/sidebar.jsp">
             <jsp:param name="activePage" value="technician" />
@@ -512,19 +438,28 @@
             </jsp:include>
 
             <main class="content-area">
+
+                <c:if test="${not empty SUCCESS_MSG}">
+                    <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
+                </c:if>
+                <c:if test="${not empty ERROR_MSG}">
+                    <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
+                </c:if>
+
                 <div class="section-header">
                     <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
 
                     <div class="header-actions">
-                        <form action="${pageContext.request.contextPath}/technician" method="GET" class="search-form">
-                            <input type="hidden" name="action" value="search">
-                            <input type="text" name="keyword" class="search-input" placeholder="Nhập ID hoặc tên quy trình..." value="${param.keyword}">
-                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
-                        </form>
 
-                        <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn</label>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID quy trình..." onkeydown="if (event.key === 'Enter')
+                                        openSearchModal()">
+                            <button type="button" class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                        </div>
 
-                        <button class="btn-add" id="openModalBtn" style="background-color: #579c3f; color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer;">
+                        <button type="button" class="btn-add" onclick="openCreateModal()">+ Tạo bộ quy chuẩn</button>
+
+                        <button type="button" class="btn-add" id="openModalBtn" style="background-color: #579c3f; color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer;">
                             + Phân công công việc mới
                         </button>
                     </div>
@@ -545,7 +480,7 @@
                                 <th>Hành Động</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="mainTableBody">
                             <c:forEach var="item" items="${farmingPracticeList}">
                                 <tr>
                                     <td>${item.maQuyTrinh}</td>
@@ -566,17 +501,13 @@
                                     <td class="desc-column" title="${item.moTa}">${item.moTa != null ? item.moTa : '---'}</td>
                                     <td>
                                         <div class="action-buttons">
-                                            <label for="editToggle-${item.maQuyTrinh}" class="btn-action-edit">Sửa</label>
+                                            <button type="button" class="btn-action-edit" onclick="openEditModal('${item.maQuyTrinh}')">Sửa</button>
 
                                             <c:if test="${!item.trangThai}">
-                                                <label for="stageToggle-${item.maQuyTrinh}" class="btn-action-stage">Thêm quy trình</label>
+                                                <button type="button" class="btn-action-stage" onclick="openStageModal('${item.maQuyTrinh}')">Thêm giai đoạn</button>
                                             </c:if>
 
-                                            <form action="${pageContext.request.contextPath}/technician" method="POST" style="margin: 0;">
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="id" value="${item.maQuyTrinh}">
-                                                <button type="submit" class="btn-action-delete">Xóa</button>
-                                            </form>
+                                            <a href="${pageContext.request.contextPath}/technician?action=delete&id=${item.maQuyTrinh}" class="btn-action-delete" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa quy trình này không?')">Xóa</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -592,9 +523,37 @@
             </main>
         </div>
 
-        <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-overlay" id="searchModal">
+            <div class="modal-container" style="width: 1100px; max-width: 95%;">
+                <button type="button" class="modal-close" onclick="closeSearchModal()">&times;</button>
+                <div class="modal-header">
+                    <h3 class="modal-title">Kết quả Tìm kiếm</h3>
+                </div>
+
+                <div class="table-container" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto;">
+                    <table class="custom-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Quy Trình</th>
+                                <th>Đối Tượng Áp Dụng</th>
+                                <th>Ngày Tạo</th>
+                                <th>Người Tạo</th>
+                                <th>Trạng Thái</th>
+                                <th>Mô Tả</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="searchResultBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="createPracticeModal">
             <div class="modal-container">
-                <label for="createModalToggle" class="modal-close">&times;</label>
+                <button type="button" class="modal-close" onclick="closeCreateModal()">&times;</button>
                 <h3 class="modal-title">Tạo bộ quy chuẩn canh tác, sản xuất</h3>
 
                 <form action="${pageContext.request.contextPath}/technician" method="POST">
@@ -624,7 +583,10 @@
                         <textarea id="description" name="description" rows="5" placeholder="Nhập mô tả tóm tắt cho quy trình canh tác này..." required></textarea>
                     </div>
 
-                    <button type="submit" class="btn-submit">Lưu Khởi Tạo (Bản nháp)</button>
+                    <div style="text-align: right; margin-top: 25px; gap: 10px; display: flex; justify-content: flex-end;">
+                        <button type="button" class="btn-cancel" onclick="closeCreateModal()">Hủy</button>
+                        <button type="submit" class="btn-save">Lưu Khởi Tạo</button>
+                    </div>
 
                     <div class="note-panel">
                         * Lưu ý: Quy trình sau khi tạo sẽ nằm ở trạng thái "Bản nháp". Bạn cần phê duyệt để chính thức áp dụng.
@@ -635,7 +597,7 @@
 
         <div class="modal-overlay" id="assignTaskModalOverlay">
             <div class="modal-container">
-                <button class="modal-close" id="closeModalBtn">&times;</button>
+                <button type="button" class="modal-close" id="closeModalBtn">&times;</button>
                 <h3 class="modal-title">Khởi tạo và Phân công việc</h3>
 
                 <form action="worker" method="POST">
@@ -707,7 +669,7 @@
 
             <div class="modal-overlay" id="editModal-${item.maQuyTrinh}">
                 <div class="modal-container">
-                    <label for="editToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
+                    <button type="button" class="modal-close" onclick="closeEditModal('${item.maQuyTrinh}')">&times;</button>
                     <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">Cập Nhật Quy Trình Canh Tác</h3>
 
                     <form action="${pageContext.request.contextPath}/technician" method="POST" style="margin-top: 20px;">
@@ -752,7 +714,7 @@
                         </div>
 
                         <div style="text-align: right; margin-top: 25px; gap: 10px; display: flex; justify-content: flex-end;">
-                            <label for="editToggle-${item.maQuyTrinh}" class="btn-cancel">Hủy</label>
+                            <button type="button" class="btn-cancel" onclick="closeEditModal('${item.maQuyTrinh}')">Hủy</button>
                             <button type="submit" class="btn-save">Lưu Cập Nhật</button>
                         </div>
                     </form>
@@ -761,7 +723,7 @@
 
             <div class="modal-overlay" id="stageModal-${item.maQuyTrinh}">
                 <div class="modal-container">
-                    <label for="stageToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
+                    <button type="button" class="modal-close" onclick="closeStageModal('${item.maQuyTrinh}')">&times;</button>
                     <h3 class="modal-title" style="color: #2e541f; border-bottom: 2px solid #579c3f; padding-bottom: 10px;">
                         Thiết lập lộ trình: <span>${item.tenQuyTrinh}</span>
                     </h3>
@@ -788,7 +750,7 @@
                         <div class="grid-7-5-cols">
                             <div class="form-group">
                                 <label>Tên vật tư:</label>
-                                <select name="supplyId" required>
+                                <select name="maVatTu" required>
                                     <option value="">-- Chọn vật tư --</option>
                                     <c:forEach var="sup" items="${suppliesList}">
                                         <option value="${sup.maVatTu}">${sup.tenVatTu} (Mã: ${sup.maVatTu})</option>
@@ -816,7 +778,7 @@
                         </div>
 
                         <div style="text-align: right; margin-top: 25px; gap: 10px; display: flex; justify-content: flex-end;">
-                            <label for="stageToggle-${item.maQuyTrinh}" class="btn-cancel">Đóng</label>
+                            <button type="button" class="btn-cancel" onclick="closeStageModal('${item.maQuyTrinh}')">Đóng</button>
                             <button type="submit" name="action" value="saveStage" class="btn-save">Lưu giai đoạn</button>
                             <button type="submit" name="action" value="publishProcess" class="btn-action-delete" style="border: none; padding: 10px 20px; font-size: 14px; display: inline-flex; align-items: center; justify-content: center;">Ban hành</button>
                         </div>
@@ -827,6 +789,69 @@
         </c:forEach>
 
         <script>
+            function openSearchModal() {
+                let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+                let resultBody = document.getElementById('searchResultBody');
+                let searchModal = document.getElementById('searchModal');
+
+                resultBody.innerHTML = '';
+
+                if (keyword === '') {
+                    alert("Vui lòng nhập tên hoặc ID quy trình để tìm kiếm!");
+                    return;
+                }
+
+                let mainTableRows = document.querySelectorAll('#mainTableBody tr');
+                let matchCount = 0;
+
+                mainTableRows.forEach(row => {
+                    if (row.cells.length > 1) {
+                        let idText = row.cells[0].innerText.toLowerCase();
+                        let nameText = row.cells[1].innerText.toLowerCase();
+
+                        if (idText.includes(keyword) || nameText.includes(keyword)) {
+                            let clonedRow = row.cloneNode(true);
+                            resultBody.appendChild(clonedRow);
+                            matchCount++;
+                        }
+                    }
+                });
+
+                if (matchCount === 0) {
+                    resultBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy quy trình nào khớp với "' + keyword + '"</td></tr>';
+                }
+
+                searchModal.classList.add('active');
+            }
+
+            function closeSearchModal() {
+                document.getElementById('searchModal').classList.remove('active');
+            }
+
+            function openCreateModal() {
+                document.getElementById('createPracticeModal').classList.add('active');
+            }
+
+            function closeCreateModal() {
+                document.getElementById('createPracticeModal').classList.remove('active');
+            }
+
+            function openEditModal(id) {
+                document.getElementById('editModal-' + id).classList.add('active');
+            }
+
+            function closeEditModal(id) {
+                document.getElementById('editModal-' + id).classList.remove('active');
+            }
+
+            function openStageModal(id) {
+                document.getElementById('stageModal-' + id).classList.add('active');
+            }
+
+            function closeStageModal(id) {
+                document.getElementById('stageModal-' + id).classList.remove('active');
+            }
+
             document.addEventListener("DOMContentLoaded", function () {
                 const openModalBtn = document.getElementById('openModalBtn');
                 const closeModalBtn = document.getElementById('closeModalBtn');
@@ -839,12 +864,13 @@
                     closeModalBtn.addEventListener('click', () => {
                         assignModalOverlay.classList.remove('active');
                     });
-                    assignModalOverlay.addEventListener('click', (e) => {
-                        if (e.target === assignModalOverlay) {
-                            assignModalOverlay.classList.remove('active');
-                        }
-                    });
                 }
+
+                window.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('modal-overlay')) {
+                        e.target.classList.remove('active');
+                    }
+                });
             });
         </script>
     </body>
