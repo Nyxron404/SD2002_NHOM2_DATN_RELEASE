@@ -14,6 +14,7 @@ public class Supplie {
     private String LoaiVatTu;
     private String DonViTinh;
     private int SoLuongTon;
+    private int soLuongToiThieu;
     private double DonGia;
     private String MoTa;
     private LocalDateTime NgayNhapGanNhat;
@@ -22,17 +23,28 @@ public class Supplie {
     public Supplie() {
     }
 
-    public Supplie(int MaVatTu, String TenVatTu, String LoaiVatTu, String DonViTinh, int SoLuongTon, double DonGia, String MoTa, LocalDateTime NgayNhapGanNhat, boolean TrangThai) {
+    public Supplie(int MaVatTu, String TenVatTu, String LoaiVatTu, String DonViTinh, int SoLuongTon, int soLuongToiThieu, double DonGia, String MoTa, LocalDateTime NgayNhapGanNhat, boolean TrangThai) {
         this.MaVatTu = MaVatTu;
         this.TenVatTu = TenVatTu;
         this.LoaiVatTu = LoaiVatTu;
         this.DonViTinh = DonViTinh;
         this.SoLuongTon = SoLuongTon;
+        this.soLuongToiThieu = soLuongToiThieu;
         this.DonGia = DonGia;
         this.MoTa = MoTa;
         this.NgayNhapGanNhat = NgayNhapGanNhat;
         this.TrangThai = TrangThai;
     }
+
+    public int getSoLuongToiThieu() {
+        return soLuongToiThieu;
+    }
+
+    public void setSoLuongToiThieu(int soLuongToiThieu) {
+        this.soLuongToiThieu = soLuongToiThieu;
+    }
+
+    
 
     public int getMaVatTu() {
         return MaVatTu;

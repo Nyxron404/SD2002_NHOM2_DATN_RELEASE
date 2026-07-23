@@ -127,6 +127,8 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 25px;
+                flex-wrap: wrap;
+                gap: 15px;
             }
             .page-toolbar h2 {
                 margin: 0;
@@ -134,6 +136,25 @@
                 font-size: 24px;
                 font-weight: 700;
                 text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+
+            /* ================= THÔNG BÁO ================= */
+            .alert-banner {
+                padding: 14px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .alert-success {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border-left: 5px solid #2e7d32;
+            }
+            .alert-error {
+                background: #ffebee;
+                color: #c62828;
+                border-left: 5px solid #c62828;
             }
 
             /* ================= THANH TÌM KIẾM ================= */
@@ -149,7 +170,7 @@
                 border: none;
                 outline: none;
                 padding: 8px 10px;
-                width: 250px;
+                width: 220px;
                 font-size: 14px;
             }
             .btn-search {
@@ -170,7 +191,7 @@
                 background: linear-gradient(135deg, #579c3f, #396728);
                 color: white;
                 border: none;
-                padding: 12px 24px;
+                padding: 12px 20px;
                 border-radius: 8px;
                 font-size: 15px;
                 font-weight: bold;
@@ -184,6 +205,20 @@
             .btn-add:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 6px 20px rgba(87, 156, 63, 0.6);
+            }
+            .btn-import {
+                background: linear-gradient(135deg, #2980b9, #1f5f8b);
+                box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+            }
+            .btn-import:hover {
+                box-shadow: 0 6px 20px rgba(41, 128, 185, 0.6);
+            }
+            .btn-export {
+                background: linear-gradient(135deg, #d35400, #a94400);
+                box-shadow: 0 4px 15px rgba(211, 84, 0, 0.4);
+            }
+            .btn-export:hover {
+                box-shadow: 0 6px 20px rgba(211, 84, 0, 0.6);
             }
 
             .table-card {
@@ -239,6 +274,19 @@
                 font-size: 13px;
                 font-weight: 600;
                 border: 1px solid #dfe4ea;
+                white-space: nowrap;
+                display: inline-block;
+            }
+            .low-stock-badge {
+                display: inline-block;
+                margin-left: 8px;
+                font-size: 11px;
+                font-weight: 700;
+                color: #c0392b;
+                background: #ffebee;
+                padding: 2px 8px;
+                border-radius: 10px;
+                white-space: nowrap;
             }
 
             .action-btns {
@@ -396,6 +444,129 @@
             .btn-save:hover {
                 background: #467e32;
             }
+
+            /* ================= PHIẾU NHẬP / XUẤT KHO ================= */
+            .slip-row {
+                display: flex;
+                gap: 10px;
+                align-items: flex-start;
+                margin-bottom: 4px;
+            }
+            .slip-row .form-group {
+                margin-bottom: 0;
+            }
+            .slip-row-stock-hint {
+                font-size: 12px;
+                color: #888;
+                margin: 2px 0 14px 2px;
+                min-height: 14px;
+            }
+            .btn-remove-row {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
+                cursor: pointer;
+                flex-shrink: 0;
+                margin-top: 26px;
+            }
+            .btn-remove-row:hover {
+                background: #c0392b;
+            }
+            .btn-add-row {
+                background: #f1f2f6;
+                color: #2e541f;
+                border: 1px dashed #579c3f;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                width: 100%;
+                margin: 6px 0 16px 0;
+            }
+            .btn-add-row:hover {
+                background: #e8f5e9;
+            }
+            .slip-total {
+                text-align: right;
+                font-weight: 700;
+                color: #2e541f;
+                font-size: 15px;
+            }
+            .low-stock-row {
+                background: rgba(231, 76, 60, 0.07);
+            }
+            .low-stock-id {
+                color: #c0392b;
+                font-weight: 800;
+            }
+            /* ================= TAB CHUYỂN VIEW (VẬT TƯ / PHIẾU KHO) ================= */
+            .view-tabs {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            .tab-btn {
+                padding: 12px 24px;
+                background: rgba(255, 255, 255, 0.85);
+                color: #2e541f;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 14px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                transition: 0.3s;
+            }
+            .tab-btn:hover {
+                background: #ffffff;
+            }
+            .tab-btn.tab-active {
+                background: linear-gradient(135deg, #579c3f, #396728);
+                color: #ffffff;
+                box-shadow: 0 4px 15px rgba(87, 156, 63, 0.4);
+            }
+
+            /* ================= BỘ LỌC PHIẾU KHO ================= */
+            .filter-row {
+                flex-wrap: wrap;
+                align-items: flex-end;
+            }
+            .filter-row .form-group {
+                min-width: 160px;
+                margin-bottom: 0;
+            }
+            .btn-clear-filter {
+                display: inline-block;
+                text-align: center;
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                background: #f1f2f6;
+                color: #333;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+            .btn-clear-filter:hover {
+                background: #dfe4ea;
+            }
+
+            /* ================= MODAL CHI TIẾT PHIẾU KHO (CSS-only, dùng :target) ================= */
+            .modal-overlay:target {
+                display: flex;
+            }
+            .slip-detail-info {
+                margin: -10px 0 15px 0;
+                color: #666;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            .slip-detail-table th, .slip-detail-table td {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
         </style>
     </head>
     <body>
@@ -408,75 +579,259 @@
             <jsp:include page="/views/common/header.jsp">
                 <jsp:param name="pageTitle" value="Quản Lý Kho Vật Tư" />
             </jsp:include>
-          
+
 
             <main class="content-area">
-                <div class="page-toolbar">
-                    <h2>Danh sách vật tư</h2>
 
-                    <%-- THANH TÌM KIẾM THEO GIAO DIỆN MỚI --%>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
+                <div class="view-tabs">
+                    <a href="${pageContext.request.contextPath}/inventory?view=supplie"
+                       class="tab-btn ${ACTIVE_VIEW == 'supplie' ? 'tab-active' : ''}">📦 Danh sách vật tư</a>
+                    <a href="${pageContext.request.contextPath}/inventory?view=warehouse"
+                       class="tab-btn ${ACTIVE_VIEW == 'warehouse' ? 'tab-active' : ''}">📋 Danh sách phiếu kho</a>
+                </div>
+
+                <c:if test="${not empty SUCCESS_MSG}">
+                    <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
+                </c:if>
+                <c:if test="${not empty ERROR_MSG}">
+                    <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
+                </c:if>
+                <c:if test="${ACTIVE_VIEW == 'supplie'}">
+                    <div class="page-toolbar">
+                        <h2>Danh sách vật tư</h2>
+
+                        <%-- THANH TÌM KIẾM + CÁC NÚT THAO TÁC --%>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <div class="search-box">
+                                <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID vật tư..." onkeydown="if (event.key === 'Enter')
                                         openSearchModal()">
-                            <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                                <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                            </div>
+
+                            <button class="btn-add btn-import" onclick="openWarehouseSlipForm('import')">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19 12l-7 7-7-7h4V4h6v8z"/></svg>
+                                Nhập kho
+                            </button>
+
+                            <button class="btn-add btn-export" onclick="openWarehouseSlipForm('export')">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M5 12l7-7 7 7h-4v8H9v-8z"/></svg>
+                                Xuất kho
+                            </button>
+
+                            <button class="btn-add" onclick="openSupplieForm('add')">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                Thêm vật tư
+                            </button>
                         </div>
-
-                        <button class="btn-add" onclick="openSupplieForm('add')">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                            Thêm vật tư
-                        </button>
                     </div>
-                </div>
 
-                <div class="table-card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên vật tư</th>
-                                <th>Loại vật tư</th>
-                                <th>Đơn vị tính</th>
-                                <th>Tồn kho</th>
-                                <th>Đơn giá</th>
-                                <th>Ngày nhập</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
-                        <tbody id="mainTableBody">
-                            <c:forEach var="item" items="${LIST_SUPPLIE}">
+                    <div class="table-card">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td>${item.maVatTu}</td>
-                                    <td><strong>${item.tenVatTu}</strong></td>
-                                    <td><span class="category-badge">${item.loaiVatTu}</span></td>
-                                    <td>${item.donViTinh}</td>
-                                    <td>${item.soLuongTon}</td>
-                                    <td>${item.donGia}</td>
-                                    <td>${fn:substring(item.ngayNhapGanNhat, 0, 10)}</td>
-                                    <td>
-                                        <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
-                                            ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-btns">
-                                            <button class="btn-action btn-edit" title="Sửa" onclick="openSupplieForm('edit')">Sửa</button>
-                                            <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.maVatTu}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
-                                        </div>
-                                    </td>
+                                    <th>ID</th>
+                                    <th>Tên vật tư</th>
+                                    <th>Loại vật tư</th>
+                                    <th>Đơn vị tính</th>
+                                    <th>Tồn kho</th>
+                                    <th>Ngưỡng tối thiểu</th>
+                                    <th>Đơn giá</th>
+                                    <th>Ngày nhập</th>
+                                    <th>Trạng thái</th>
+                                    <th>Mô tả</th>
+                                    <th>Hành động</th>
                                 </tr>
-                            </c:forEach>
+                            </thead>
+                            <%-- CẤP ID CHO TBODY ĐỂ JS LẤY DỮ LIỆU ĐỔ VÀO MODAL TÌM KIẾM --%>
+                            <tbody id="mainTableBody">
+                                <c:forEach var="item" items="${LIST_SUPPLIE}">
+                                    <c:set var="isLow" value="${item.getSoLuongTon() <= item.getSoLuongToiThieu()}" />
+                                    <tr class="${isLow ? 'low-stock-row' : ''}">
+                                        <td class="${isLow ? 'low-stock-id' : ''}">${item.getMaVatTu()}</td>
+                                        <td><strong>${item.getTenVatTu()}</strong></td>
+                                        <td><span class="category-badge">${item.getLoaiVatTu()}</span></td>
+                                        <td>${item.getDonViTinh()}</td>
+                                        <td>
+                                            ${item.getSoLuongTon()}
+                                        </td>
+                                        <td>${item.getSoLuongToiThieu()}</td>
+                                        <td>${item.getDonGia()}</td>
+                                        <td>${fn:substring(item.getNgayNhapGanNhat(), 0, 10)}</td>
+                                        <td>
+                                            <span class="status-badge ${item.trangThai ? 'status-active' : 'status-locked'}">
+                                                ${item.trangThai ? 'Hoạt động' : 'Ngừng'}
+                                            </span>
+                                        </td>
+                                        <td>${fn:escapeXml(item.getMoTa())}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="btn-action btn-edit" title="Sửa"
+                                                        data-id="${item.getMaVatTu()}"
+                                                        data-ten="${fn:escapeXml(item.getTenVatTu())}"
+                                                        data-loai="${fn:escapeXml(item.getLoaiVatTu())}"
+                                                        data-donvi="${fn:escapeXml(item.getDonViTinh())}"
+                                                        data-soluong="${item.getSoLuongTon()}"
+                                                        data-gioihan="${item.getSoLuongToiThieu()}"
+                                                        data-dongia="${item.getDonGia()}"
+                                                        data-mota="${fn:escapeXml(item.getMoTa())}"
+                                                        data-ngay="${item.getNgayNhapGanNhat()}"
+                                                        data-trangthai="${item.isTrangThai()}"
+                                                        onclick="openSupplieForm('edit', this)">Sửa</button>
+                                                <a href="${pageContext.request.contextPath}/inventory?action=delete&id=${item.getMaVatTu()}" class="btn-action btn-delete" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa vật tư này?')">Xóa</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
 
-                            <c:if test="${empty LIST_SUPPLIE}">
-                                <tr>
-                                    <td colspan="9" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
-                                </tr>
-                            </c:if>
-                        </tbody>
-                    </table>
+                                <c:if test="${empty LIST_SUPPLIE}">
+                                    <tr>
+                                        <td colspan="11" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                    </tr>
+                                </c:if>
+
+                                <c:if test="${empty LIST_SUPPLIE}">
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; color: #7f8c8d; padding: 20px;">Kho vật tư hiện đang trống. Vui lòng thêm vật tư mới!</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
                 </div>
+                </c:if>
+
+                <c:if test="${ACTIVE_VIEW == 'warehouse'}">
+
+                    <%-- ===== BỘ LỌC PHIẾU KHO ===== --%>
+                    <div class="table-card" style="margin-bottom: 20px;">
+                        <form action="${pageContext.request.contextPath}/inventory" method="GET">
+                            <input type="hidden" name="view" value="warehouse">
+                            <div class="form-row filter-row">
+                                <div class="form-group">
+                                    <label>Loại phiếu</label>
+                                    <select name="loaiPhieu" class="form-control">
+                                        <option value="" ${empty FILTER_LOAIPHIEU ? 'selected' : ''}>-- Tất cả --</option>
+                                        <option value="Nhập" ${FILTER_LOAIPHIEU == 'Nhập' ? 'selected' : ''}>Nhập kho</option>
+                                        <option value="Xuất" ${FILTER_LOAIPHIEU == 'Xuất' ? 'selected' : ''}>Xuất kho</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá trị phiếu</label>
+                                    <select name="giaKhoang" class="form-control">
+                                        <option value="" ${empty FILTER_GIAKHOANG ? 'selected' : ''}>-- Tất cả --</option>
+                                        <option value="duoi5" ${FILTER_GIAKHOANG == 'duoi5' ? 'selected' : ''}>Dưới 5 triệu</option>
+                                        <option value="5-10" ${FILTER_GIAKHOANG == '5-10' ? 'selected' : ''}>5 - 10 triệu</option>
+                                        <option value="10-20" ${FILTER_GIAKHOANG == '10-20' ? 'selected' : ''}>10 - 20 triệu</option>
+                                        <option value="tren20" ${FILTER_GIAKHOANG == 'tren20' ? 'selected' : ''}>Trên 20 triệu</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Từ ngày</label>
+                                    <input type="date" name="tuNgay" class="form-control" value="${FILTER_TUNGAY}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Đến ngày</label>
+                                    <input type="date" name="denNgay" class="form-control" value="${FILTER_DENNGAY}">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn-add">🔍 Lọc</button>
+                                </div>
+                                <div class="form-group">
+                                    <a href="${pageContext.request.contextPath}/inventory?view=warehouse" class="btn-clear-filter">Xóa lọc</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <%-- ===== BẢNG DANH SÁCH PHIẾU KHO ===== --%>
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã phiếu kho</th>
+                                    <th>Loại phiếu kho</th>
+                                    <th>Ngày lập</th>
+                                    <th>Người lập</th>
+                                    <th>Ghi chú</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="slip" items="${LIST_WAREHOUSE_SLIP}">
+                                    <tr>
+                                        <td><strong>${slip.getMaPhieuKho()}</strong></td>
+                                        <td>
+                                            <span class="status-badge ${slip.getLoaiPhieu() == 'Nhập' ? 'status-active' : 'status-locked'}">
+                                                ${slip.getLoaiPhieu()}
+                                            </span>
+                                        </td>
+                                        <td>${fn:substring(fn:replace(slip.getNgayLap(), 'T', ' '), 0, 16)}</td>
+                                        <td>${fn:escapeXml(slip.getTenNguoiLap())}</td>
+                                        <td>${fn:escapeXml(slip.getGhiChu())}</td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <a href="#slipDetail${slip.getMaPhieuKho()}" class="btn-action btn-edit">Xem chi tiết</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty LIST_WAREHOUSE_SLIP}">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Không có phiếu kho nào khớp với điều kiện lọc.</td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <%-- ===== MODAL CHI TIẾT TỪNG PHIẾU KHO (CSS-only :target, không dùng JS) ===== --%>
+                    <c:forEach var="slip" items="${LIST_WAREHOUSE_SLIP}">
+                        <div class="modal-overlay" id="slipDetail${slip.getMaPhieuKho()}">
+                            <div class="modal-content" style="width: 720px;">
+                                <div class="modal-header">
+                                    <h3>Chi tiết phiếu ${slip.getLoaiPhieu()} kho #${slip.getMaPhieuKho()}</h3>
+                                    <a href="#" class="close-btn" style="text-decoration: none;">&times;</a>
+                                </div>
+
+                                <div class="slip-detail-info">
+                                    Người lập: <strong>${fn:escapeXml(slip.getTenNguoiLap())}</strong> &nbsp;|&nbsp;
+                                    Ngày lập: <strong>${fn:substring(fn:replace(slip.getNgayLap(), 'T', ' '), 0, 16)}</strong>
+                                    <c:if test="${not empty slip.getGhiChu()}">
+                                        <br>Ghi chú: ${fn:escapeXml(slip.getGhiChu())}
+                                    </c:if>
+                                </div>
+
+                                <table class="slip-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Vật tư</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn giá</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="detail" items="${MAP_SLIP_DETAILS[slip.getMaPhieuKho()]}">
+                                            <tr>
+                                                <td>${fn:escapeXml(detail.getTenVatTu())}</td>
+                                                <td>${detail.getSoLuong()} ${fn:escapeXml(detail.getDonViTinh())}</td>
+                                                <td>${detail.getDonGia()}</td>
+                                                <td>${detail.getThanhTien()}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+
+                                <hr style="margin: 20px 0; border: none; border-top: 2px solid #ddd;">
+                                <div class="slip-total">Tổng cộng: ${slip.getTongTien()} VNĐ</div>
+
+                                <div class="modal-footer">
+                                    <a href="#" class="btn-cancel" style="text-decoration: none;">Đóng</a>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+
+                </c:if>
             </main>
         </div>
 
@@ -497,9 +852,11 @@
                                 <th>Loại vật tư</th>
                                 <th>Đơn vị tính</th>
                                 <th>Tồn kho</th>
+                                <th>Ngưỡng tối thiểu</th>
                                 <th>Đơn giá</th>
                                 <th>Ngày nhập</th>
                                 <th>Trạng thái</th>
+                                <th>Mô tả</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -519,6 +876,7 @@
                     <h3 id="supplieModalTitle">Thêm vật tư mới</h3>
                     <button class="close-btn" onclick="closeModal('supplieModal')">&times;</button>
                 </div>
+                <div id="supplieFormError" class="alert-banner alert-error" style="display:none; margin-bottom:15px;"></div>
                 <form action="${pageContext.request.contextPath}/inventory" method="POST">
                     <input type="hidden" name="action" id="formAction" value="add">
                     <input type="hidden" name="maVatTu" id="maVatTu">
@@ -552,12 +910,16 @@
                             <input type="number" name="soLuongTon" id="soLuongTon" class="form-control" placeholder="0" min="0" required>
                         </div>
                         <div class="form-group">
-                            <label>Đơn giá (VNĐ)</label>
-                            <input type="number" step="0.01" name="donGia" id="donGia" class="form-control" placeholder="0.0" min="0" required>
+                            <label>Giới hạn tồn kho tối thiểu</label>
+                            <input type="number" name="soLuongToiThieu" id="soLuongToiThieu" class="form-control" placeholder="Vd: 10" min="0" required>
                         </div>
                     </div>
 
                     <div class="form-row">
+                        <div class="form-group">
+                            <label>Đơn giá (VNĐ)</label>
+                            <input type="number" step="0.01" name="donGia" id="donGia" class="form-control" placeholder="0.0" min="0" required>
+                        </div>
                         <div class="form-group">
                             <label>Ngày nhập gần nhất</label>
                             <input type="datetime-local" name="ngayNhapGanNhat" id="ngayNhapGanNhat" class="form-control" required>
@@ -584,14 +946,72 @@
             </div>
         </div>
 
+        <!-- Modal Lập phiếu Nhập / Xuất kho -->
+        <div class="modal-overlay" id="warehouseSlipModal">
+            <div class="modal-content" style="width: 780px;">
+                <div class="modal-header">
+                    <h3 id="warehouseSlipModalTitle">Lập phiếu Nhập kho</h3>
+                    <button class="close-btn" onclick="closeModal('warehouseSlipModal')">&times;</button>
+                </div>
+
+                <form action="${pageContext.request.contextPath}/warehouseSlip" method="POST" id="warehouseSlipForm">
+                    <input type="hidden" name="action" id="slipAction" value="import">
+
+                    <div class="form-group">
+                        <label>Ghi chú phiếu</label>
+                        <textarea name="ghiChu" class="form-control" placeholder="Ví dụ: Nhập từ nhà cung cấp A / Xuất cho khu vực trồng B..."></textarea>
+                    </div>
+
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:#444; font-size:14px;">Danh sách vật tư</label>
+                    <div id="slipRowsContainer"></div>
+
+                    <button type="button" class="btn-add-row" onclick="addSlipRow()">+ Thêm dòng vật tư</button>
+
+                    <div class="slip-total">Tổng cộng: <span id="slipTotal">0</span> VNĐ</div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="closeModal('warehouseSlipModal')">Hủy bỏ</button>
+                        <button type="submit" class="btn-save" id="slipSubmitBtn">Lập phiếu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <%-- TEMPLATE 1 DÒNG VẬT TƯ TRONG PHIẾU NHẬP/XUẤT KHO (JS sẽ nhân bản khi bấm "+ Thêm dòng") --%>
+        <template id="slipRowTemplate">
+            <div class="slip-row">
+                <div class="form-group" style="flex: 2;">
+                    <label>Vật tư</label>
+                    <select class="form-control slip-select" name="maVatTu[]" onchange="onSlipRowSelectChange(this)" required>
+                        <option value="" disabled selected>-- Chọn vật tư --</option>
+                        <c:forEach var="item" items="${LIST_SUPPLIE}">
+                            <option value="${item.maVatTu}"
+                                    data-dongia="${item.donGia}"
+                                    data-soluongton="${item.soLuongTon}"
+                                    data-donvi="${fn:escapeXml(item.donViTinh)}">
+                                ${fn:escapeXml(item.tenVatTu)} (Tồn: ${item.soLuongTon} ${fn:escapeXml(item.donViTinh)})
+                            </option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Số lượng</label>
+                    <input type="number" name="soLuong[]" class="form-control slip-soluong" min="1" step="1" onchange="onSlipRowChange(this)" oninput="onSlipRowChange(this)" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Đơn giá</label>
+                    <input type="number" name="donGia[]" class="form-control slip-dongia" min="0" step="0.01" onchange="onSlipRowChange(this)" oninput="onSlipRowChange(this)" required>
+                </div>
+                <button type="button" class="btn-remove-row" onclick="removeSlipRow(this)" title="Xóa dòng">&times;</button>
+            </div>
+            <div class="slip-row-stock-hint"></div>
+        </template>
+
         <script>
-            // HÀM MỚI: TÌM KIẾM JS 
+            // ============== TÌM KIẾM ==============
             function openSearchModal() {
-                // Lấy từ khóa, chuyển thành chữ thường để tìm kiếm
                 let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
                 let resultBody = document.getElementById('searchResultBody');
-
-                // Xóa dữ liệu kết quả cũ
                 resultBody.innerHTML = '';
 
                 if (keyword === '') {
@@ -599,20 +1019,15 @@
                     return;
                 }
 
-                // Lấy tất cả các dòng <tr> nằm trong <tbody> của bảng gốc
                 let mainTableRows = document.querySelectorAll('#mainTableBody tr');
                 let matchCount = 0;
 
                 mainTableRows.forEach(row => {
-                    // Bỏ qua dòng báo "Kho vật tư trống" nếu có
                     if (row.cells.length > 1) {
-                        // Cột 0 là ID, Cột 1 là Tên vật tư
                         let idText = row.cells[0].innerText.toLowerCase();
                         let nameText = row.cells[1].innerText.toLowerCase();
 
-                        // Nếu ID hoặc Tên có chứa từ khóa
                         if (idText.includes(keyword) || nameText.includes(keyword)) {
-                            // Copy nguyên dòng đó ném vào Modal
                             let clonedRow = row.cloneNode(true);
                             resultBody.appendChild(clonedRow);
                             matchCount++;
@@ -620,34 +1035,158 @@
                     }
                 });
 
-                // Nếu không có kết quả
                 if (matchCount === 0) {
-                    resultBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
+                    resultBody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy vật tư nào khớp với "' + keyword + '"</td></tr>';
                 }
 
-                // Bật Modal tìm kiếm
                 document.getElementById('searchModal').style.display = 'flex';
             }
 
-            function openSupplieForm(mode) {
-                // Đóng luôn cái modal tìm kiếm nếu đang mở
+            // ============== THÊM / SỬA VẬT TƯ ==============
+            function openSupplieForm(mode, btn) {
                 closeModal('searchModal');
-
+                showSupplieFormError(null);
                 const modal = document.getElementById('supplieModal');
                 const title = document.getElementById('supplieModalTitle');
                 const actionInput = document.getElementById('formAction');
+                const form = modal.querySelector('form');
 
                 if (mode === 'add') {
                     title.innerText = 'Thêm vật tư mới';
                     actionInput.value = 'add';
-                    modal.querySelector('form').reset();
-                } else if (mode === 'edit') {
+                    form.reset();
+                    document.getElementById('maVatTu').value = '';
+                } else if (mode === 'edit' && btn) {
                     title.innerText = 'Sửa thông tin vật tư';
                     actionInput.value = 'edit';
+
+                    document.getElementById('maVatTu').value = btn.dataset.id;
+                    document.getElementById('tenVatTu').value = btn.dataset.ten;
+                    document.getElementById('loaiVatTu').value = btn.dataset.loai;
+                    document.getElementById('donViTinh').value = btn.dataset.donvi;
+                    document.getElementById('soLuongTon').value = btn.dataset.soluong;
+                    document.getElementById('donGia').value = btn.dataset.dongia;
+                    document.getElementById('moTa').value = btn.dataset.mota;
+                    // LocalDateTime -> "yyyy-MM-ddTHH:mm" mà input datetime-local cần
+                    document.getElementById('ngayNhapGanNhat').value = btn.dataset.ngay ? btn.dataset.ngay.substring(0, 16) : '';
+                    document.getElementById('trangThai').value = btn.dataset.trangthai;
                 }
                 modal.style.display = 'flex';
             }
 
+            // ============== LẬP PHIẾU NHẬP / XUẤT KHO ==============
+            function openWarehouseSlipForm(type) {
+                closeModal('searchModal');
+
+                const modal = document.getElementById('warehouseSlipModal');
+                const title = document.getElementById('warehouseSlipModalTitle');
+                const actionInput = document.getElementById('slipAction');
+                const submitBtn = document.getElementById('slipSubmitBtn');
+
+                actionInput.value = type; // 'import' hoặc 'export'
+                title.innerText = type === 'import' ? 'Lập phiếu Nhập kho' : 'Lập phiếu Xuất kho';
+                submitBtn.innerText = type === 'import' ? 'Lập phiếu Nhập' : 'Lập phiếu Xuất';
+
+                document.getElementById('warehouseSlipForm').reset();
+                document.getElementById('slipRowsContainer').innerHTML = '';
+                addSlipRow();
+                updateSlipTotal();
+
+                modal.style.display = 'flex';
+            }
+
+            function addSlipRow() {
+                const template = document.getElementById('slipRowTemplate');
+                const clone = template.content.cloneNode(true);
+                document.getElementById('slipRowsContainer').appendChild(clone);
+            }
+
+            function removeSlipRow(btn) {
+                const row = btn.closest('.slip-row');
+                const hint = row.nextElementSibling;
+                row.remove();
+                if (hint && hint.classList.contains('slip-row-stock-hint')) {
+                    hint.remove();
+                }
+                updateSlipTotal();
+            }
+
+            function onSlipRowSelectChange(selectEl) {
+                const row = selectEl.closest('.slip-row');
+                const opt = selectEl.options[selectEl.selectedIndex];
+                const donGiaInput = row.querySelector('.slip-dongia');
+                donGiaInput.value = opt.dataset.dongia || 0;
+
+                checkSlipRowStock(row);
+                updateSlipTotal();
+            }
+
+            function onSlipRowChange(inputEl) {
+                const row = inputEl.closest('.slip-row');
+                checkSlipRowStock(row);
+                updateSlipTotal();
+            }
+
+            // Kiểm tra tồn kho ngay trên form (kiểm tra phía client cho người dùng thấy ngay;
+            // server vẫn kiểm tra lại lần cuối trước khi ghi vào CSDL).
+            function checkSlipRowStock(row) {
+                const hint = row.nextElementSibling;
+                if (!hint || !hint.classList.contains('slip-row-stock-hint')) {
+                    return;
+                }
+
+                const selectEl = row.querySelector('.slip-select');
+                const opt = selectEl.options[selectEl.selectedIndex];
+                if (!opt || !opt.value) {
+                    hint.textContent = '';
+                    return;
+                }
+
+                const stock = parseInt(opt.dataset.soluongton || '0', 10);
+                const donVi = opt.dataset.donvi || '';
+                const soLuongInput = row.querySelector('.slip-soluong');
+                const need = parseInt(soLuongInput.value || '0', 10);
+                const action = document.getElementById('slipAction').value;
+
+                if (action === 'export' && need > stock) {
+                    hint.style.color = '#c0392b';
+                    hint.textContent = 'Không đủ tồn kho! Hiện còn ' + stock + ' ' + donVi + ', đang yêu cầu xuất ' + need + '.';
+                    soLuongInput.setCustomValidity('Không đủ tồn kho');
+                } else {
+                    hint.style.color = '#888';
+                    hint.textContent = 'Tồn kho hiện tại: ' + stock + ' ' + donVi;
+                    soLuongInput.setCustomValidity('');
+                }
+            }
+
+            function updateSlipTotal() {
+                let total = 0;
+                document.querySelectorAll('#slipRowsContainer .slip-row').forEach(row => {
+                    const sl = parseFloat(row.querySelector('.slip-soluong').value) || 0;
+                    const dg = parseFloat(row.querySelector('.slip-dongia').value) || 0;
+                    total += sl * dg;
+                });
+                document.getElementById('slipTotal').textContent = total.toLocaleString('vi-VN');
+            }
+
+            document.getElementById('warehouseSlipForm').addEventListener('submit', function (e) {
+                const rows = document.querySelectorAll('#slipRowsContainer .slip-row');
+                if (rows.length === 0) {
+                    e.preventDefault();
+                    alert('Vui lòng thêm ít nhất 1 dòng vật tư.');
+                    return;
+                }
+                for (const row of rows) {
+                    const soLuongInput = row.querySelector('.slip-soluong');
+                    if (soLuongInput.validationMessage) {
+                        e.preventDefault();
+                        alert('Vui lòng kiểm tra lại: có dòng vật tư vượt quá số lượng tồn kho hiện có.');
+                        return;
+                    }
+                }
+            });
+
+            // ============== MODAL DÙNG CHUNG ==============
             function closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
             }
@@ -655,12 +1194,61 @@
             window.onclick = function (event) {
                 let supplieModal = document.getElementById('supplieModal');
                 let searchModal = document.getElementById('searchModal');
+                let warehouseSlipModal = document.getElementById('warehouseSlipModal');
 
                 if (event.target == supplieModal)
                     supplieModal.style.display = "none";
                 if (event.target == searchModal)
                     searchModal.style.display = "none";
+                if (event.target == warehouseSlipModal)
+                    warehouseSlipModal.style.display = "none";
             }
+            function showSupplieFormError(msg) {
+                const box = document.getElementById('supplieFormError');
+                if (msg) {
+                    box.textContent = '✖ ' + msg;
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const errData = document.getElementById('formErrorData');
+                if (!errData)
+                    return;
+
+                const action = errData.dataset.action === 'edit' ? 'edit' : 'add';
+                openSupplieForm(action);
+                document.getElementById('formAction').value = action;
+                document.getElementById('maVatTu').value = errData.dataset.mavattu || '';
+                document.getElementById('tenVatTu').value = errData.dataset.tenvattu || '';
+                document.getElementById('loaiVatTu').value = errData.dataset.loaivattu || '';
+                document.getElementById('donViTinh').value = errData.dataset.donvitinh || '';
+                document.getElementById('soLuongTon').value = errData.dataset.soluongton || '';
+                document.getElementById('soLuongToiThieu').value = errData.dataset.soluongtoithieu || '';
+                document.getElementById('donGia').value = errData.dataset.dongia || '';
+                document.getElementById('moTa').value = errData.dataset.mota || '';
+                document.getElementById('ngayNhapGanNhat').value = errData.dataset.ngaynhap ? errData.dataset.ngaynhap.substring(0, 16) : '';
+                document.getElementById('trangThai').value = errData.dataset.trangthai || 'true';
+                document.getElementById('supplieModalTitle').innerText = action === 'edit' ? 'Sửa thông tin vật tư' : 'Thêm vật tư mới';
+                showSupplieFormError(errData.dataset.error);
+            });
         </script>
+        <c:if test="${not empty FORM_ERROR_MSG}">
+            <div id="formErrorData" style="display:none"
+                 data-action="${FORM_ACTION}"
+                 data-error="${fn:escapeXml(FORM_ERROR_MSG)}"
+                 data-mavattu="${fn:escapeXml(FORM_MAVATTU)}"
+                 data-tenvattu="${fn:escapeXml(FORM_TENVATTU)}"
+                 data-loaivattu="${fn:escapeXml(FORM_LOAIVATTU)}"
+                 data-donvitinh="${fn:escapeXml(FORM_DONVITINH)}"
+                 data-soluongton="${fn:escapeXml(FORM_SOLUONGTON)}"
+                 data-soluongtoithieu="${fn:escapeXml(FORM_SOLUONGTOITHIEU)}"
+                 data-dongia="${fn:escapeXml(FORM_DONGIA)}"
+                 data-mota="${fn:escapeXml(FORM_MOTA)}"
+                 data-ngaynhap="${fn:escapeXml(FORM_NGAYNHAP)}"
+                 data-trangthai="${fn:escapeXml(FORM_TRANGTHAI)}"></div>
+        </c:if>
     </body>
 </html>

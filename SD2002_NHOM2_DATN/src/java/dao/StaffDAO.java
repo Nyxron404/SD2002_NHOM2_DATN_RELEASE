@@ -200,8 +200,8 @@ public class StaffDAO {
     }
 
     public void sendEmail(String toEmail, String username, String password) {
-        final String fromEmail = "linhhqsn181029@gmail.com";
-        final String appPassword = "afhfvijeroyqcicr";
+        final String fromEmail = "smartfarmmanage@gmail.com";
+        final String appPassword = "grxhduafxftczxjm";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");

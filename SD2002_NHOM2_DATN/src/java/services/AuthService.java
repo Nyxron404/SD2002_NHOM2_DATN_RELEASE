@@ -7,6 +7,7 @@ package services;
 import dao.StaffDAO;
 import dao.UserDAO;
 import java.util.List;
+import models.Staff;
 import models.User;
 
 /**
@@ -74,5 +75,24 @@ public class AuthService {
     public List<String> Login(String tenDangNhap, String matKhau){
         List<String> quyenHan = userDAO.GetLogin(tenDangNhap, matKhau);
         return quyenHan;
+    }
+    public int GetMaNguoiDung(String tenDangNhap){
+        List<User> listUser =userDAO.SelectUser();
+        for (User user : listUser) {
+            if(user.getTenDangNhap().equals(tenDangNhap)){
+                return user.getMaNguoiDung();
+            }
+        }
+        return 0;
+    }
+    public int GetMaNhanVien(String tenDangNhap){
+        int maNguoiDung = GetMaNguoiDung(tenDangNhap);
+        List<Staff> listStaff = staffDAO.SelectStaff();
+        for (Staff staff : listStaff) {
+            if(staff.getMaNguoiDung() == maNguoiDung){
+                return staff.getMaNhanVien();
+            }
+        }
+        return 0;
     }
 }
