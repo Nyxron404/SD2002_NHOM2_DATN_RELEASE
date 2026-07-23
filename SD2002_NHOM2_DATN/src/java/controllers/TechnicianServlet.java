@@ -1,7 +1,9 @@
 package controllers;
 
+import dao.FarmAreaDAO;
 import dao.FarmingPracticeDAO;
 import dao.SupplieDAO;
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,17 +13,19 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import models.FarmingPractice;
-import models.FarmingStage;
 import services.TechnicianService;
 
 @WebServlet(name = "TechnicianServlet", urlPatterns = {"/technician"})
 public class TechnicianServlet extends HttpServlet {
 
     private final SupplieDAO supplieDAO = new SupplieDAO();
+    private final FarmAreaDAO faDAO = new FarmAreaDAO();
+    private final FarmingPracticeDAO fqDAO = new FarmingPracticeDAO();
 
     private final TechnicianService farmingPracticeService = new TechnicianService();
 
     List<FarmingPractice> list;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -51,7 +55,8 @@ public class TechnicianServlet extends HttpServlet {
         }
 
         request.setAttribute("suppliesList", supplieDAO.SelectSupplie());
-
+        request.setAttribute("farmAreaList", faDAO.getAllFarmAreas());
+        request.setAttribute("workerList", fqDAO.WorkerList());
         request.setAttribute("farmingPracticeList", list);
         request.getRequestDispatcher("/views/technician/technician.jsp").forward(request, response);
 
@@ -62,85 +67,45 @@ public class TechnicianServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
-
-        if ("saveStage".equals(action) || "publishProcess".equals(action)) {
-            FarmingPracticeDAO practiceDAO = new FarmingPracticeDAO();
-
-            // 1. Lấy dữ liệu (nhớ bọc try-catch hoặc check null như mình đã hướng dẫn để tránh lỗi 500)
-            String practiceIdStr = request.getParameter("farmingPracticeId");
-            if (practiceIdStr != null && !practiceIdStr.isEmpty()) {
-                int practiceId = Integer.parseInt(practiceIdStr);
-                String stageName = request.getParameter("stageName");
-                int startDay = Integer.parseInt(request.getParameter("startDay"));
-                int endDay = Integer.parseInt(request.getParameter("endDay"));
-                int supplyId = Integer.parseInt(request.getParameter("supplyId"));
-                double quantity = Double.parseDouble(request.getParameter("quantity"));
-                String unit = request.getParameter("unit");
-                String description = request.getParameter("description");
-
-                // 2. Set vào Model FarmingStage
-                FarmingStage stage = new FarmingStage();
-                stage.setFarmingPracticeId(practiceId);
-                stage.setStageName(stageName);
-                stage.setStartDay(startDay);
-                stage.setEndDay(endDay);
-                stage.setSupplyId(supplyId);
-                stage.setQuantity(quantity);
-                stage.setUnit(unit);
-                stage.setDescription(description);
-
-                // 3. Gọi DAO lưu
-                practiceDAO.insertStage(stage);
-
-                if ("publishProcess".equals(action)) {
-                    practiceDAO.publishPractice(practiceId);
-                }
-            }
-            // Redirect về lại trang doGet
-            response.sendRedirect("technician");
-            return; // Kết thúc xử lý luồng này
-        }
-
         HttpSession session = request.getSession();
 
+        // ===== Lưu giai đoạn / Ban hành quy trình =====
         if ("saveStage".equals(action) || "publishProcess".equals(action)) {
             FarmingPracticeDAO practiceDAO = new FarmingPracticeDAO();
-
-            // 1. Lấy dữ liệu (nhớ bọc try-catch hoặc check null như mình đã hướng dẫn để tránh lỗi 500)
             String practiceIdStr = request.getParameter("farmingPracticeId");
+
             if (practiceIdStr != null && !practiceIdStr.isEmpty()) {
-                int practiceId = Integer.parseInt(practiceIdStr);
-                String stageName = request.getParameter("stageName");
-                int startDay = Integer.parseInt(request.getParameter("startDay"));
-                int endDay = Integer.parseInt(request.getParameter("endDay"));
-                int supplyId = Integer.parseInt(request.getParameter("supplyId"));
-                double quantity = Double.parseDouble(request.getParameter("quantity"));
-                String unit = request.getParameter("unit");
-                String description = request.getParameter("description");
+                try {
+                    int practiceId = Integer.parseInt(practiceIdStr);
+                    String stageName = request.getParameter("stageName");
+                    java.sql.Date startDay = java.sql.Date.valueOf(request.getParameter("startDay"));
+                    java.sql.Date endDay = java.sql.Date.valueOf(request.getParameter("endDay"));
+                    int maVatTu = Integer.parseInt(request.getParameter("maVatTu"));
+                    double dinhLuong = Double.parseDouble(request.getParameter("quantity"));
+                    String donVi = request.getParameter("unit");
+                    String moTa = request.getParameter("description");
 
-                // 2. Set vào Model FarmingStage
-                FarmingStage stage = new FarmingStage();
-                stage.setFarmingPracticeId(practiceId);
-                stage.setStageName(stageName);
-                stage.setStartDay(startDay);
-                stage.setEndDay(endDay);
-                stage.setSupplyId(supplyId);
-                stage.setQuantity(quantity);
-                stage.setUnit(unit);
-                stage.setDescription(description);
+                    boolean ok = practiceDAO.saveFarmingStage(practiceId, stageName, startDay, endDay, maVatTu, dinhLuong, donVi, moTa);
 
-                // 3. Gọi DAO lưu
-                practiceDAO.insertStage(stage);
+                    if ("publishProcess".equals(action)) {
+                        practiceDAO.publishProcess(practiceId);
+                    }
 
-                if ("publishProcess".equals(action)) {
-                    practiceDAO.publishPractice(practiceId);
+                    session.setAttribute(ok ? "SUCCESS_MSG" : "ERROR_MSG",
+                            ok ? "Lưu giai đoạn thành công!" : "Lưu giai đoạn thất bại.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    session.setAttribute("ERROR_MSG", "Lỗi lưu giai đoạn: " + e.getMessage());
                 }
+            } else {
+                session.setAttribute("ERROR_MSG", "Thiếu farmingPracticeId.");
             }
-            // Redirect về lại trang doGet
+
             response.sendRedirect("technician");
-            return; // Kết thúc xử lý luồng này
+            return;
         }
 
+        // ===== Xóa quy trình =====
         if ("delete".equals(action)) {
             String idRaw = request.getParameter("id");
             if (idRaw != null) {
@@ -153,6 +118,8 @@ public class TechnicianServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             }
+
+        // ===== Cập nhật quy trình =====
         } else if ("update".equals(action)) {
             String idRaw = request.getParameter("id");
             String tenQuyTrinh = request.getParameter("processName");
@@ -170,7 +137,9 @@ public class TechnicianServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             }
-        } else if ("create".equals(action)) { // Bắt chính xác chữ create từ Form
+
+        // ===== Tạo quy trình mới =====
+        } else if ("create".equals(action)) {
             String tenQuyTrinh = request.getParameter("processName");
             String moTa = request.getParameter("description");
             String loaiApDung = request.getParameter("loaiApDung");
@@ -188,10 +157,8 @@ public class TechnicianServlet extends HttpServlet {
             session.setAttribute(ok ? "SUCCESS_MSG" : "ERROR_MSG",
                     ok ? "Tạo bộ quy chuẩn mới thành công!" : "Vui lòng nhập đầy đủ thông tin.");
         }
-        
-        request.setAttribute("farmingPracticeList", list);
-        request.getRequestDispatcher("/views/technician/technician.jsp").forward(request, response);
 
+        // Chỉ redirect, không forward -> tránh lỗi "response đã commit"
         response.sendRedirect(request.getContextPath() + "/technician");
     }
 }

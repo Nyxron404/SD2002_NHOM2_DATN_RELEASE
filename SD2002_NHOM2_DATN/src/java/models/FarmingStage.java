@@ -1,53 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package models;
 
-/**
- *
- * @author pminh
- */
-public class FarmingStage {
-    private int id;
-    private int farmingPracticeId;
+import java.util.Date;
+
+public class FarmingStage{
+    private int ID;
+    private int MaQuyTrinh;
     private String stageName;
-    private int startDay;
-    private int endDay;
-    private int supplyId;
-    private double quantity;
-    private String unit;
-    private String description;
+    private Date startDay;
+    private Date endDay;
+    private String TenVatTu;
+    private double dinhLuong;
+    private String donVi;
+    private String moTa;
 
     public FarmingStage() {
     }
 
-    public FarmingStage(int id, int farmingPracticeId, String stageName, int startDay, int endDay, int supplyId, double quantity, String unit, String description) {
-        this.id = id;
-        this.farmingPracticeId = farmingPracticeId;
+    public FarmingStage(int ID, int MaQuyTrinh, String stageName, Date startDay, Date endDay, String TenVatTu, double dinhLuong, String donVi, String moTa) {
+        this.ID = ID;
+        this.MaQuyTrinh = MaQuyTrinh;
         this.stageName = stageName;
         this.startDay = startDay;
         this.endDay = endDay;
-        this.supplyId = supplyId;
-        this.quantity = quantity;
-        this.unit = unit;
-        this.description = description;
+        this.TenVatTu = TenVatTu;
+        this.dinhLuong = dinhLuong;
+        this.donVi = donVi;
+        this.moTa = moTa;
     }
 
-    public int getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public int getFarmingPracticeId() {
-        return farmingPracticeId;
+    public int getMaQuyTrinh() {
+        return MaQuyTrinh;
     }
 
-    public void setFarmingPracticeId(int farmingPracticeId) {
-        this.farmingPracticeId = farmingPracticeId;
+    public void setMaQuyTrinh(int MaQuyTrinh) {
+        this.MaQuyTrinh = MaQuyTrinh;
     }
 
     public String getStageName() {
@@ -58,53 +52,52 @@ public class FarmingStage {
         this.stageName = stageName;
     }
 
-    public int getStartDay() {
+    public Date getStartDay() {
         return startDay;
     }
 
-    public void setStartDay(int startDay) {
+    public void setStartDay(Date startDay) {
         this.startDay = startDay;
     }
 
-    public int getEndDay() {
+    public Date getEndDay() {
         return endDay;
     }
 
-    public void setEndDay(int endDay) {
+    public void setEndDay(Date endDay) {
         this.endDay = endDay;
     }
 
-    public int getSupplyId() {
-        return supplyId;
+    public String getTenVatTu() {
+        return TenVatTu;
     }
 
-    public void setSupplyId(int supplyId) {
-        this.supplyId = supplyId;
+    public void setTenVatTu(String TenVatTu) {
+        this.TenVatTu = TenVatTu;
     }
 
-    public double getQuantity() {
-        return quantity;
+    public double getDinhLuong() {
+        return dinhLuong;
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public void setDinhLuong(double dinhLuong) {
+        this.dinhLuong = dinhLuong;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getDonVi() {
+        return donVi;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setDonVi(String donVi) {
+        this.donVi = donVi;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMoTa() {
+        return moTa;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
     }
-    
     
 }
