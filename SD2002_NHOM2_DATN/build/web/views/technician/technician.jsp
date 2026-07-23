@@ -1,9 +1,3 @@
-<%-- 
-    Document   : technician
-    Created on : Jun 23, 2026, 0:00:00 PM
-    Author     : pminh
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -16,7 +10,6 @@
             * {
                 box-sizing: border-box;
             }
-
             body {
                 margin: 0;
                 padding: 0;
@@ -29,7 +22,6 @@
                 overflow: hidden;
                 position: relative;
             }
-
             body::before {
                 content: "";
                 position: absolute;
@@ -37,20 +29,17 @@
                 background-color: rgba(20, 35, 20, 0.6);
                 z-index: -1;
             }
-
             .main-wrapper {
                 flex: 1;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
             }
-
             .content-area {
                 flex: 1;
                 padding: 30px 40px;
                 overflow-y: auto;
             }
-
             .section-header {
                 display: flex;
                 justify-content: space-between;
@@ -59,7 +48,6 @@
                 flex-wrap: wrap;
                 gap: 15px;
             }
-
             .section-title {
                 color: #ffffff;
                 font-size: 24px;
@@ -68,7 +56,6 @@
                 flex: 1 1 auto;
                 text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             }
-
             .header-actions {
                 display: flex;
                 gap: 12px;
@@ -76,47 +63,42 @@
                 flex-wrap: wrap;
             }
 
-            .search-form {
+            /* -- Search Box Mới -- */
+            .search-box {
                 display: flex;
-                gap: 8px;
-                margin: 0;
                 align-items: center;
-            }
-
-            .search-input {
-                padding: 0 15px;
-                height: 42px;
-                border: 1px solid #ccc;
+                background: white;
                 border-radius: 8px;
+                padding: 4px 6px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin: 0;
+            }
+            .search-box .search-input {
+                border: none;
                 outline: none;
-                font-family: inherit;
-                font-size: 14px;
+                padding: 8px 10px;
                 width: 260px;
+                font-size: 14px;
+                background: transparent;
+                font-family: inherit;
                 transition: 0.3s;
             }
-
-            .search-input:focus {
-                border-color: #579c3f;
-                box-shadow: 0 0 5px rgba(87,156,63,0.3);
-            }
-
-            .btn-search {
+            .search-box .btn-search {
                 background-color: #2c3e50;
                 color: white;
                 border: none;
-                height: 42px;
-                padding: 0 20px;
-                border-radius: 8px;
+                height: 34px;
+                padding: 0 15px;
+                border-radius: 6px;
                 cursor: pointer;
                 font-weight: 600;
-                font-size: 14px;
+                font-size: 13px;
                 transition: 0.3s;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
             }
-
-            .btn-search:hover {
+            .search-box .btn-search:hover {
                 background-color: #1a252f;
             }
 
@@ -138,12 +120,10 @@
                 transition: all 0.3s;
                 text-decoration: none;
             }
-
             .btn-add:hover {
                 background-color: #467e32 !important;
                 transform: translateY(-1px);
             }
-
             .table-container {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(15px);
@@ -152,20 +132,17 @@
                 box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
                 overflow-x: auto;
             }
-
             .data-info {
                 font-size: 14px;
                 color: #555;
                 margin-bottom: 15px;
                 font-weight: 600;
             }
-
             .custom-table {
                 width: 100%;
                 border-collapse: collapse;
                 text-align: left;
             }
-
             .custom-table th {
                 padding: 14px 16px;
                 border-bottom: 2px solid #eef2f5;
@@ -175,7 +152,6 @@
                 text-transform: uppercase;
                 white-space: nowrap;
             }
-
             .custom-table td {
                 padding: 14px 16px;
                 border-bottom: 1px solid #eef2f5;
@@ -184,11 +160,9 @@
                 font-weight: 500;
                 vertical-align: middle;
             }
-
             .custom-table tr:hover td {
                 background-color: #f9fafb;
             }
-
             .status-badge {
                 background-color: #fff3cd;
                 color: #856404;
@@ -201,13 +175,11 @@
                 text-align: center;
                 min-width: 80px;
             }
-
             .status-badge.active-status {
                 background-color: #e6f4ea;
                 color: #1e8e3e;
                 border: 1px solid #cce8d6;
             }
-
             .desc-column {
                 max-width: 200px;
                 white-space: nowrap;
@@ -216,13 +188,13 @@
                 color: #637381;
             }
 
+            /* -- Buttons -- */
             .action-buttons {
                 display: flex;
                 gap: 8px;
                 align-items: center;
                 flex-wrap: wrap;
             }
-
             .btn-action-edit, .btn-action-stage, .btn-action-delete {
                 padding: 0 12px;
                 border-radius: 6px;
@@ -237,20 +209,32 @@
                 color: white;
                 transition: 0.2s;
                 height: 32px;
+                box-sizing: border-box;
+            }
+            .btn-action-edit {
+                background-color: #f39c12;
+            }
+            .btn-action-edit:hover {
+                background-color: #e67e22;
+            }
+            .btn-action-stage {
+                background-color: #2980b9;
+            }
+            .btn-action-stage:hover {
+                background-color: #3498db;
+            }
+            .btn-action-delete {
+                background-color: #e74c3c;
+                font-family: inherit;
+            }
+            .btn-action-delete:hover {
+                background-color: #c0392b;
             }
 
-            .btn-action-edit { background-color: #f39c12; }
-            .btn-action-edit:hover { background-color: #e67e22; }
-            .btn-action-stage { background-color: #2980b9; }
-            .btn-action-stage:hover { background-color: #3498db; }
-            .btn-action-delete { background-color: #e74c3c; font-family: inherit; }
-            .btn-action-delete:hover { background-color: #c0392b; }
-
-            /* --- MODAL CSS PURA --- */
+            /* --- MODAL CSS --- */
             .modal-toggle {
                 display: none;
             }
-
             .modal-overlay {
                 position: fixed;
                 inset: 0;
@@ -265,17 +249,14 @@
                 transition: all 0.3s ease;
                 padding: 20px;
             }
-
             .modal-overlay.active {
                 opacity: 1;
                 pointer-events: auto;
             }
-
             .modal-overlay.active .modal-container {
                 transform: translateY(0);
                 opacity: 1;
             }
-
             .modal-container {
                 background: #ffffff;
                 width: 100%;
@@ -295,7 +276,6 @@
                 opacity: 1;
                 pointer-events: auto;
             }
-
             #createModalToggle:checked ~ .modal-overlay#modalOverlay .modal-container {
                 transform: translateY(0);
                 opacity: 1;
@@ -332,12 +312,10 @@
                 transition: 0.2s;
                 line-height: 1;
             }
-
             .modal-close:hover {
                 background: #e9ecef;
                 color: #212529;
             }
-
             .modal-title {
                 font-size: 20px;
                 font-weight: 700;
@@ -351,7 +329,6 @@
             .form-group {
                 margin-bottom: 18px;
             }
-
             .form-group label {
                 display: block;
                 font-weight: 600;
@@ -359,12 +336,7 @@
                 color: #34495e;
                 font-size: 14px;
             }
-
-            .form-group input[type="text"],
-            .form-group input[type="number"],
-            .form-group input[type="date"],
-            .form-group textarea,
-            .form-group select {
+            .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="date"], .form-group textarea, .form-group select {
                 width: 100%;
                 padding: 10px 14px;
                 border: 1px solid #dce1e6;
@@ -376,10 +348,7 @@
                 background-color: #fff;
                 outline: none;
             }
-
-            .form-group input:focus, 
-            .form-group select:focus, 
-            .form-group textarea:focus {
+            .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
                 border-color: #579c3f;
                 box-shadow: 0 0 0 3px rgba(87,156,63,0.1);
             }
@@ -390,32 +359,26 @@
                 gap: 15px;
                 margin-bottom: 18px;
             }
-
             .form-row .form-group {
                 margin-bottom: 0;
             }
-
             .grid-2-cols {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
             }
-
             .grid-7-5-cols {
                 display: grid;
                 grid-template-columns: 3fr 2fr;
                 gap: 15px;
             }
-
             .input-group-custom {
                 display: flex;
                 gap: 10px;
             }
-
             .input-group-custom input {
                 flex: 1;
             }
-
             .input-group-custom select {
                 width: 100px;
                 flex-shrink: 0;
@@ -434,7 +397,6 @@
                 margin-top: 15px;
                 transition: 0.3s;
             }
-
             .btn-submit:hover {
                 background: #467e32;
                 box-shadow: 0 4px 10px rgba(70,126,50,0.2);
@@ -467,12 +429,10 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .btn-cancel:hover {
                 background-color: #e2e6ea;
                 color: #212529;
             }
-
             .btn-save {
                 background-color: #579c3f;
                 color: white;
@@ -487,9 +447,59 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .btn-save:hover {
                 background-color: #467e32;
+            }
+
+            .alert-banner {
+                padding: 14px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .alert-success {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border-left: 5px solid #2e7d32;
+            }
+            .alert-error {
+                background: #ffebee;
+                color: #c62828;
+                border-left: 5px solid #c62828;
+            }
+
+            /* NÚT TIM KIEM */
+            .search-box {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 8px;
+                padding: 4px 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+            .search-box input {
+                border: none;
+                outline: none;
+                padding: 8px 10px;
+                width: 220px;
+                font-size: 14px;
+                font-family: inherit;
+            }
+            .btn-search {
+                background: #f39c12 !important;
+                color: white !important;
+                border: none !important;
+                padding: 8px 15px !important;
+                border-radius: 6px !important;
+                font-weight: 600 !important;
+                cursor: pointer;
+                transition: 0.3s;
+                font-family: inherit;
+                font-size: 14px;
+            }
+            .btn-search:hover {
+                background: #e67e22 !important;
             }
         </style>
     </head>
@@ -512,15 +522,24 @@
             </jsp:include>
 
             <main class="content-area">
+
+                <c:if test="${not empty SUCCESS_MSG}">
+                    <div class="alert-banner alert-success">✔ ${SUCCESS_MSG}</div>
+                </c:if>
+                <c:if test="${not empty ERROR_MSG}">
+                    <div class="alert-banner alert-error">✖ ${ERROR_MSG}</div>
+                </c:if>
+
                 <div class="section-header">
                     <h2 class="section-title">Danh sách bộ quy chuẩn canh tác</h2>
 
                     <div class="header-actions">
-                        <form action="${pageContext.request.contextPath}/technician" method="GET" class="search-form">
-                            <input type="hidden" name="action" value="search">
-                            <input type="text" name="keyword" class="search-input" placeholder="Nhập ID hoặc tên quy trình..." value="${param.keyword}">
-                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
-                        </form>
+
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Nhập tên hoặc ID quy trình..." onkeydown="if (event.key === 'Enter')
+                                        openSearchModal()">
+                            <button class="btn-search" onclick="openSearchModal()">🔍 Tìm kiếm</button>
+                        </div>
 
                         <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn</label>
 
@@ -545,7 +564,7 @@
                                 <th>Hành Động</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="mainTableBody">
                             <c:forEach var="item" items="${farmingPracticeList}">
                                 <tr>
                                     <td>${item.maQuyTrinh}</td>
@@ -569,14 +588,11 @@
                                             <label for="editToggle-${item.maQuyTrinh}" class="btn-action-edit">Sửa</label>
 
                                             <c:if test="${!item.trangThai}">
-                                                <label for="stageToggle-${item.maQuyTrinh}" class="btn-action-stage">Thêm quy trình</label>
+                                                <label for="stageToggle-${item.maQuyTrinh}" class="btn-action-stage">Thêm giai đoạn</label>
                                             </c:if>
 
-                                            <form action="${pageContext.request.contextPath}/technician" method="POST" style="margin: 0;">
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="id" value="${item.maQuyTrinh}">
-                                                <button type="submit" class="btn-action-delete">Xóa</button>
-                                            </form>
+                                            <%-- NÚT XÓA DÙNG THẺ A PHƯƠNG THỨC GET (GIỐNG KHO VẬT TƯ) --%>
+                                            <a href="${pageContext.request.contextPath}/technician?action=delete&id=${item.maQuyTrinh}" class="btn-action-delete" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa quy trình này không?')">Xóa</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -590,6 +606,36 @@
                     </table>
                 </div>
             </main>
+        </div>
+
+        <%-- MODAL KẾT QUẢ TÌM KIẾM --%>
+        <div class="modal-overlay" id="searchModal">
+            <div class="modal-container" style="max-width: 900px;"> 
+                <button class="modal-close" onclick="closeSearchModal()">&times;</button>
+                <div class="modal-header">
+                    <h3 class="modal-title">Kết quả Tìm kiếm</h3>
+                </div>
+
+                <div class="table-container" style="box-shadow: none; border: 1px solid #ddd; padding: 10px; max-height: 400px; overflow-y: auto;">
+                    <table class="custom-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Quy Trình</th>
+                                <th>Đối Tượng Áp Dụng</th>
+                                <th>Ngày Tạo</th>
+                                <th>Người Tạo</th>
+                                <th>Trạng Thái</th>
+                                <th>Mô Tả</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="searchResultBody">
+                            <%-- JS sẽ nhét kết quả vào đây --%>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="modal-overlay" id="modalOverlay">
@@ -788,7 +834,7 @@
                         <div class="grid-7-5-cols">
                             <div class="form-group">
                                 <label>Tên vật tư:</label>
-                                <select name="supplyId" required>
+                                <select name="maVatTu" required>
                                     <option value="">-- Chọn vật tư --</option>
                                     <c:forEach var="sup" items="${suppliesList}">
                                         <option value="${sup.maVatTu}">${sup.tenVatTu} (Mã: ${sup.maVatTu})</option>
@@ -827,6 +873,47 @@
         </c:forEach>
 
         <script>
+            // ============== TÌM KIẾM QUY TRÌNH BẰNG JAVASCRIPT ==============
+            function openSearchModal() {
+                let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+                let resultBody = document.getElementById('searchResultBody');
+                let searchModal = document.getElementById('searchModal');
+
+                resultBody.innerHTML = ''; // Clear old results
+
+                if (keyword === '') {
+                    alert("Vui lòng nhập tên hoặc ID quy trình để tìm kiếm!");
+                    return;
+                }
+
+                let mainTableRows = document.querySelectorAll('#mainTableBody tr');
+                let matchCount = 0;
+
+                mainTableRows.forEach(row => {
+                    if (row.cells.length > 1) {
+                        let idText = row.cells[0].innerText.toLowerCase();
+                        let nameText = row.cells[1].innerText.toLowerCase();
+
+                        if (idText.includes(keyword) || nameText.includes(keyword)) {
+                            let clonedRow = row.cloneNode(true);
+                            resultBody.appendChild(clonedRow);
+                            matchCount++;
+                        }
+                    }
+                });
+
+                if (matchCount === 0) {
+                    resultBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 25px; color: #c0392b; font-weight: bold;">Không tìm thấy quy trình nào khớp với "' + keyword + '"</td></tr>';
+                }
+
+                // Show modal (Using class active instead of inline display flex to match CSS structure)
+                searchModal.classList.add('active');
+            }
+
+            function closeSearchModal() {
+                document.getElementById('searchModal').classList.remove('active');
+            }
+
             document.addEventListener("DOMContentLoaded", function () {
                 const openModalBtn = document.getElementById('openModalBtn');
                 const closeModalBtn = document.getElementById('closeModalBtn');
