@@ -13,6 +13,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Smart Farmer - Thiết Lập Quy Trình</title>
         <style>
+            * {
+                box-sizing: border-box;
+            }
+
             body {
                 margin: 0;
                 padding: 0;
@@ -43,7 +47,7 @@
 
             .content-area {
                 flex: 1;
-                padding: 40px;
+                padding: 30px 40px;
                 overflow-y: auto;
             }
 
@@ -52,85 +56,108 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 25px;
+                flex-wrap: wrap;
+                gap: 15px;
             }
+
             .section-title {
                 color: #ffffff;
-                font-size: 22px;
+                font-size: 24px;
                 font-weight: 700;
                 margin: 0;
+                flex: 1 1 auto;
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             }
 
             .header-actions {
                 display: flex;
-                gap: 15px;
+                gap: 12px;
                 align-items: center;
+                flex-wrap: wrap;
             }
 
             .search-form {
                 display: flex;
                 gap: 8px;
                 margin: 0;
+                align-items: center;
             }
+
             .search-input {
-                padding: 10px 15px;
+                padding: 0 15px;
+                height: 42px;
                 border: 1px solid #ccc;
                 border-radius: 8px;
                 outline: none;
                 font-family: inherit;
                 font-size: 14px;
-                width: 250px;
+                width: 260px;
+                transition: 0.3s;
             }
+
             .search-input:focus {
                 border-color: #579c3f;
+                box-shadow: 0 0 5px rgba(87,156,63,0.3);
             }
+
             .btn-search {
                 background-color: #2c3e50;
                 color: white;
                 border: none;
-                padding: 10px 15px;
+                height: 42px;
+                padding: 0 20px;
                 border-radius: 8px;
                 cursor: pointer;
-                font-weight: bold;
+                font-weight: 600;
                 font-size: 14px;
                 transition: 0.3s;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
+
             .btn-search:hover {
                 background-color: #1a252f;
             }
 
             .btn-add {
-                background-color: #579c3f;
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                font-size: 14px;
-                font-weight: 600;
-                border-radius: 8px;
+                background-color: #579c3f !important;
+                color: white !important;
+                border: none !important;
+                height: 42px;
+                padding: 0 20px !important;
+                font-size: 14px !important;
+                font-weight: 600 !important;
+                border-radius: 8px !important;
                 cursor: pointer;
-                display: flex;
+                display: inline-flex;
                 align-items: center;
+                justify-content: center;
                 gap: 8px;
                 box-shadow: 0 4px 12px rgba(87, 156, 63, 0.3);
                 transition: all 0.3s;
                 text-decoration: none;
             }
+
             .btn-add:hover {
-                background-color: #467e32;
+                background-color: #467e32 !important;
                 transform: translateY(-1px);
             }
 
             .table-container {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(15px);
-                border-radius: 16px;
-                padding: 30px;
+                border-radius: 12px;
+                padding: 25px;
                 box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.15);
+                overflow-x: auto;
             }
+
             .data-info {
                 font-size: 14px;
                 color: #555;
-                margin-bottom: 20px;
-                font-weight: 500;
+                margin-bottom: 15px;
+                font-weight: 600;
             }
 
             .custom-table {
@@ -138,33 +165,43 @@
                 border-collapse: collapse;
                 text-align: left;
             }
+
             .custom-table th {
-                padding: 16px;
+                padding: 14px 16px;
                 border-bottom: 2px solid #eef2f5;
-                color: #7f8c8d;
+                color: #637381;
                 font-size: 13px;
                 font-weight: 700;
                 text-transform: uppercase;
+                white-space: nowrap;
             }
+
             .custom-table td {
-                padding: 16px;
+                padding: 14px 16px;
                 border-bottom: 1px solid #eef2f5;
-                color: #2c3e50;
+                color: #212b36;
                 font-size: 14px;
-                font-weight: 600;
+                font-weight: 500;
                 vertical-align: middle;
+            }
+
+            .custom-table tr:hover td {
+                background-color: #f9fafb;
             }
 
             .status-badge {
                 background-color: #fff3cd;
                 color: #856404;
                 border: 1px solid #ffeeba;
-                padding: 6px 12px;
+                padding: 5px 12px;
                 border-radius: 20px;
                 font-size: 12px;
-                font-weight: 700;
+                font-weight: 600;
                 display: inline-block;
+                text-align: center;
+                min-width: 80px;
             }
+
             .status-badge.active-status {
                 background-color: #e6f4ea;
                 color: #1e8e3e;
@@ -172,65 +209,42 @@
             }
 
             .desc-column {
-                max-width: 180px;
+                max-width: 200px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                font-weight: 500;
-                color: #555;
+                color: #637381;
             }
 
             .action-buttons {
                 display: flex;
                 gap: 8px;
                 align-items: center;
+                flex-wrap: wrap;
             }
-            .btn-action-edit {
-                background-color: #f39c12;
-                color: white;
-                padding: 6px 14px;
+
+            .btn-action-edit, .btn-action-stage, .btn-action-delete {
+                padding: 0 12px;
                 border-radius: 6px;
                 font-size: 13px;
-                font-weight: bold;
+                font-weight: 600;
                 cursor: pointer;
                 border: none;
                 text-decoration: none;
-                display: inline-block;
-            }
-            .btn-action-edit:hover {
-                background-color: #e67e22;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                transition: 0.2s;
+                height: 32px;
             }
 
-            .btn-action-stage {
-                background-color: #2980b9;
-                color: white;
-                padding: 6px 14px;
-                border-radius: 6px;
-                font-size: 13px;
-                font-weight: bold;
-                cursor: pointer;
-                border: none;
-                display: inline-block;
-            }
-            .btn-action-stage:hover {
-                background-color: #3498db;
-            }
-
-            .btn-action-delete {
-                background-color: #e74c3c;
-                color: white;
-                padding: 6px 14px;
-                border-radius: 6px;
-                font-size: 13px;
-                font-weight: bold;
-                cursor: pointer;
-                border: none;
-                display: inline-block;
-                font-family: inherit;
-            }
-            .btn-action-delete:hover {
-                background-color: #c0392b;
-            }
+            .btn-action-edit { background-color: #f39c12; }
+            .btn-action-edit:hover { background-color: #e67e22; }
+            .btn-action-stage { background-color: #2980b9; }
+            .btn-action-stage:hover { background-color: #3498db; }
+            .btn-action-delete { background-color: #e74c3c; font-family: inherit; }
+            .btn-action-delete:hover { background-color: #c0392b; }
 
             /* --- MODAL CSS PURA --- */
             .modal-toggle {
@@ -240,40 +254,53 @@
             .modal-overlay {
                 position: fixed;
                 inset: 0;
-                background: rgba(0, 0, 0, 0.6);
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 z-index: 999;
                 opacity: 0;
                 pointer-events: none;
-                transition: opacity 0.3s ease;
+                transition: all 0.3s ease;
+                padding: 20px;
+            }
+
+            .modal-overlay.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .modal-overlay.active .modal-container {
+                transform: translateY(0);
+                opacity: 1;
             }
 
             .modal-container {
                 background: #ffffff;
                 width: 100%;
                 max-width: 600px;
-                border-radius: 16px;
-                padding: 35px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                border-radius: 12px;
+                padding: 30px;
+                box-shadow: 0 15px 50px rgba(0,0,0,0.2);
                 position: relative;
-                transform: translateY(-30px);
-                transition: transform 0.3s ease;
+                transform: translateY(-20px);
+                opacity: 0;
+                transition: all 0.3s ease;
                 max-height: 90vh;
                 overflow-y: auto;
             }
 
-            /* Bật mở Modal Tạo Mới */
             #createModalToggle:checked ~ .modal-overlay#modalOverlay {
                 opacity: 1;
                 pointer-events: auto;
             }
+
             #createModalToggle:checked ~ .modal-overlay#modalOverlay .modal-container {
                 transform: translateY(0);
+                opacity: 1;
             }
 
-            /* Bật mở các Modal Chỉnh Sửa & Thiết lập giai đoạn */
             <c:forEach var="item" items="${farmingPracticeList}">
                 #editToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#editModal-${item.maQuyTrinh},
                 #stageToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#stageModal-${item.maQuyTrinh} {
@@ -283,76 +310,115 @@
                 #editToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#editModal-${item.maQuyTrinh} .modal-container,
                 #stageToggle-${item.maQuyTrinh}:checked ~ .modal-overlay#stageModal-${item.maQuyTrinh} .modal-container {
                     transform: translateY(0);
+                    opacity: 1;
                 }
             </c:forEach>
 
             .modal-close {
                 position: absolute;
-                top: 20px;
-                right: 20px;
-                background: none;
+                top: 15px;
+                right: 15px;
+                background: #f1f3f5;
                 border: none;
-                font-size: 24px;
-                color: #aaa;
+                font-size: 20px;
+                color: #495057;
                 cursor: pointer;
-                display: inline-block;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: 0.2s;
                 line-height: 1;
             }
+
             .modal-close:hover {
-                color: #333;
+                background: #e9ecef;
+                color: #212529;
             }
 
             .modal-title {
-                font-size: 22px;
-                font-weight: 800;
-                color: #1a2419;
+                font-size: 20px;
+                font-weight: 700;
+                color: #2c3e50;
                 margin-top: 0;
-                margin-bottom: 20px;
+                margin-bottom: 25px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #eef2f5;
             }
 
             .form-group {
-                margin-bottom: 20px;
-            }
-            .form-group label {
-                display: block;
-                font-weight: 700;
-                margin-bottom: 8px;
-                color: #1a2419;
-                font-size: 14px;
-            }
-            .form-group input[type="text"], 
-            .form-group input[type="number"], 
-            .form-group textarea, 
-            .form-group select {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                font-size: 14px;
-                box-sizing: border-box;
-                font-family: inherit;
+                margin-bottom: 18px;
             }
 
-            /* Grid Layout cho Modal Giai đoạn */
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: #34495e;
+                font-size: 14px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group input[type="date"],
+            .form-group textarea,
+            .form-group select {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1px solid #dce1e6;
+                border-radius: 8px;
+                font-size: 14px;
+                color: #2c3e50;
+                font-family: inherit;
+                transition: 0.2s;
+                background-color: #fff;
+                outline: none;
+            }
+
+            .form-group input:focus, 
+            .form-group select:focus, 
+            .form-group textarea:focus {
+                border-color: #579c3f;
+                box-shadow: 0 0 0 3px rgba(87,156,63,0.1);
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin-bottom: 18px;
+            }
+
+            .form-row .form-group {
+                margin-bottom: 0;
+            }
+
             .grid-2-cols {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
             }
+
             .grid-7-5-cols {
                 display: grid;
                 grid-template-columns: 3fr 2fr;
                 gap: 15px;
             }
+
             .input-group-custom {
                 display: flex;
-                gap: 8px;
+                gap: 10px;
             }
+
             .input-group-custom input {
                 flex: 1;
             }
+
             .input-group-custom select {
-                width: 90px;
+                width: 100px;
+                flex-shrink: 0;
             }
 
             .btn-submit {
@@ -362,54 +428,68 @@
                 border: none;
                 padding: 14px;
                 font-size: 15px;
-                font-weight: bold;
+                font-weight: 600;
                 border-radius: 8px;
                 cursor: pointer;
-                margin-top: 10px;
-                transition: background 0.3s;
+                margin-top: 15px;
+                transition: 0.3s;
             }
+
             .btn-submit:hover {
                 background: #467e32;
+                box-shadow: 0 4px 10px rgba(70,126,50,0.2);
             }
+
             .note-panel {
-                margin-top: 20px;
-                font-size: 12px;
+                margin-top: 15px;
+                font-size: 13px;
                 color: #c0392b;
                 font-style: italic;
                 background: #fdf2e9;
-                padding: 10px;
-                border-radius: 6px;
+                padding: 12px 15px;
+                border-radius: 8px;
                 border-left: 4px solid #e67e22;
+                line-height: 1.4;
             }
 
             .btn-cancel {
-                background-color: #6c757d;
-                color: white;
+                background-color: #f1f3f5;
+                color: #495057;
                 padding: 10px 20px;
-                border-radius: 6px;
+                border-radius: 8px;
                 cursor: pointer;
                 border: none;
                 font-size: 14px;
+                font-weight: 600;
                 text-decoration: none;
-                font-weight: bold;
-                display: inline-block;
+                transition: 0.2s;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
+
             .btn-cancel:hover {
-                background-color: #5a6268;
+                background-color: #e2e6ea;
+                color: #212529;
             }
+
             .btn-save {
-                background-color: #28a745;
+                background-color: #579c3f;
                 color: white;
                 padding: 10px 20px;
-                border-radius: 6px;
+                border-radius: 8px;
                 cursor: pointer;
                 border: none;
                 font-size: 14px;
-                font-weight: bold;
-                display: inline-block;
+                font-weight: 600;
+                transition: 0.2s;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
+
             .btn-save:hover {
-                background-color: #218838;
+                background-color: #467e32;
             }
         </style>
     </head>
@@ -439,10 +519,14 @@
                         <form action="${pageContext.request.contextPath}/technician" method="GET" class="search-form">
                             <input type="hidden" name="action" value="search">
                             <input type="text" name="keyword" class="search-input" placeholder="Nhập ID hoặc tên quy trình..." value="${param.keyword}">
-                            <button type="submit" class="btn-search">Tìm kiếm</button>
+                            <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
                         </form>
 
                         <label for="createModalToggle" class="btn-add">+ Tạo bộ quy chuẩn</label>
+
+                        <button class="btn-add" id="openModalBtn" style="background-color: #579c3f; color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer;">
+                            + Phân công công việc mới
+                        </button>
                     </div>
                 </div>
 
@@ -549,8 +633,78 @@
             </div>
         </div>
 
+        <div class="modal-overlay" id="assignTaskModalOverlay">
+            <div class="modal-container">
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+                <h3 class="modal-title">Khởi tạo và Phân công việc</h3>
+
+                <form action="worker" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maKhuVuc">Chọn Lô Đất / Khu Vực:</label>
+                            <select id="maKhuVuc" name="maKhuVuc" required>
+                                <option value="">-- Chọn khu vực --</option>
+                                <c:forEach var="area" items="${farmAreaList}">
+                                    <option value="${area.getMaKhuVuc()}">${area.getTenKhuVuc()}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maQuyTrinh">Quy Trình Mẫu Áp Dụng:</label>
+                            <select id="maQuyTrinh" name="maQuyTrinh" required>
+                                <option value="">-- Tự động gợi ý quy trình --</option>
+                                <c:forEach var="practice" items="${farmingPracticeList}">
+                                    <option value="${practice.getMaQuyTrinh()}">${practice.getTenQuyTrinh()}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tenCongViec">Tên Công Việc Nhiệm Vụ:</label>
+                        <input type="text" id="tenCongViec" name="tenCongViec" placeholder="Nhập tên nhiệm vụ cụ thể..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="moTa">Mô Tả Chi Tiết Hướng Dẫn:</label>
+                        <textarea id="moTa" name="moTa" placeholder="Ghi chú các bước thực hiện nếu có..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nguoiPhuTrach">Chọn Công Nhân Phụ Trách:</label>
+                            <select id="nguoiPhuTrach" name="nguoiPhuTrach" required>
+                                <option value="">-- Chọn công nhân --</option>
+                                <c:forEach var="worker" items="${workerList}">
+                                    <option value="${worker.getMaNguoiDung()}">${worker.getHoTen()} (Mã: ${worker.getMaNguoiDung()})</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                            <input type="date" id="ngayBatDau" name="ngayBatDau" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ngayKetThuc">Hạn Chót (Ngày Kết Thúc):</label>
+                            <input type="date" id="ngayKetThuc" name="ngayKetThuc" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Xác Nhận Giao Việc</button>
+
+                    <div class="note-panel">
+                        * Hệ thống tích hợp cơ chế tự động quét lịch để tránh trùng lặp, quá tải ngày làm việc của công nhân.
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <c:forEach var="item" items="${farmingPracticeList}">
-            
+
             <div class="modal-overlay" id="editModal-${item.maQuyTrinh}">
                 <div class="modal-container">
                     <label for="editToggle-${item.maQuyTrinh}" class="modal-close">&times;</label>
@@ -617,17 +771,17 @@
 
                         <div class="form-group">
                             <label>Tên giai đoạn:</label>
-                            <input type="text" name="stageName" placeholder="Ví dụ: Giai đoạn ngâm ủ mầm..." required>
+                            <input type="text" name="stageName" value="${form.tenGD}" placeholder="Ví dụ: Giai đoạn ngâm ủ mầm..." required>
                         </div>
 
                         <div class="grid-2-cols">
                             <div class="form-group">
                                 <label>Ngày bắt đầu:</label>
-                                <input type="number" name="startDay" min="1" required>
+                                <input type="date" name="startDay" value="${form.ngayBD}" required>
                             </div>
                             <div class="form-group">
                                 <label>Ngày kết thúc:</label>
-                                <input type="number" name="endDay" min="1" required>
+                                <input type="date" name="endDay" value="${form.ngayKT}" required>
                             </div>
                         </div>
 
@@ -664,7 +818,7 @@
                         <div style="text-align: right; margin-top: 25px; gap: 10px; display: flex; justify-content: flex-end;">
                             <label for="stageToggle-${item.maQuyTrinh}" class="btn-cancel">Đóng</label>
                             <button type="submit" name="action" value="saveStage" class="btn-save">Lưu giai đoạn</button>
-                            <button type="submit" name="action" value="publishProcess" class="btn-action-delete" style="border: none; padding: 10px 20px; font-size: 14px;">Ban hành</button>
+                            <button type="submit" name="action" value="publishProcess" class="btn-action-delete" style="border: none; padding: 10px 20px; font-size: 14px; display: inline-flex; align-items: center; justify-content: center;">Ban hành</button>
                         </div>
                     </form>
                 </div>
@@ -672,5 +826,26 @@
 
         </c:forEach>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const openModalBtn = document.getElementById('openModalBtn');
+                const closeModalBtn = document.getElementById('closeModalBtn');
+                const assignModalOverlay = document.getElementById('assignTaskModalOverlay');
+
+                if (openModalBtn && closeModalBtn && assignModalOverlay) {
+                    openModalBtn.addEventListener('click', () => {
+                        assignModalOverlay.classList.add('active');
+                    });
+                    closeModalBtn.addEventListener('click', () => {
+                        assignModalOverlay.classList.remove('active');
+                    });
+                    assignModalOverlay.addEventListener('click', (e) => {
+                        if (e.target === assignModalOverlay) {
+                            assignModalOverlay.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

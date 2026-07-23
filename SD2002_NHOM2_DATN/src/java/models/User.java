@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  */
 public class User {
     private int MaNguoiDung;
+    private String HoTen;
     private String TenDangNhap;
     private String MatKhau;
     private int MaNhom;
@@ -17,6 +18,12 @@ public class User {
     private LocalDateTime NgayTao;
 
     public User() {
+    }
+    
+    public User(int MaNguoiDung, int MaNhom, String HoTen) {
+        this.MaNguoiDung = MaNguoiDung;
+        this.MaNhom = MaNhom;
+        this.HoTen = HoTen;
     }
     
     public User(int MaNguoiDung, String TenDangNhap, String MatKhau, int MaNhom, boolean TrangThai, LocalDateTime NgayTao) {
@@ -34,6 +41,14 @@ public class User {
 
     public void setMaNguoiDung(int MaNguoiDung) {
         this.MaNguoiDung = MaNguoiDung;
+    }
+
+    public String getHoTen() {
+        return HoTen;
+    }
+
+    public void setHoTen(String HoTen) {
+        this.HoTen = HoTen;
     }
 
     public String getTenDangNhap() {
