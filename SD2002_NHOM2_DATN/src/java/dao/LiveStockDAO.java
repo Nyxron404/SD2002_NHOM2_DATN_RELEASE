@@ -13,8 +13,7 @@ import uril.DBConnect;
 
 /**
  * DAO cho bảng LiveStock (quản lý vật nuôi).
- * Bỏ qua cột ChuongTrai theo yêu cầu (sẽ bị xóa khỏi DB) - luôn ghi chuỗi rỗng khi INSERT
- * để không vi phạm ràng buộc NOT NULL hiện tại của cột này.
+ * Cột ChuongTrai đã bị xóa khỏi DB, không còn tồn tại nên không được nhắc tới trong các câu SQL.
  */
 public class LiveStockDAO {
 
@@ -131,8 +130,8 @@ public class LiveStockDAO {
 
     public boolean insertLiveStock(LiveStock ls) {
         String sql = "INSERT INTO LiveStock (TenVatNuoi, LoaiVatNuoi, Giong, NgayNhap, SoLuong, "
-                + "TrongLuongTrungBinh, MaKhuVuc, ChuongTrai, TrangThai, GhiChu) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, N'', ?, ?)";
+                + "TrongLuongTrungBinh, MaKhuVuc, TrangThai, GhiChu) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ls.getTenVatNuoi());
             ps.setString(2, ls.getLoaiVatNuoi());
