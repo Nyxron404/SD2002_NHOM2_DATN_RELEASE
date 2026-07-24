@@ -93,20 +93,20 @@ public class TechnicianServlet extends HttpServlet {
 
     // ---- 1) Phân chia công việc & tạo bộ quy trình chuẩn (giữ nguyên logic gốc) ----
     private void loadProcessView(HttpServletRequest request) {
-        String action = request.getParameter("action");
-        String keyword = request.getParameter("keyword");
+    String action = request.getParameter("action");
+    String keyword = request.getParameter("keyword");
 
-        if ("search".equals(action) && keyword != null && !keyword.trim().isEmpty()) {
-            list = farmingPracticeService.searchFarmingPractices(keyword);
-            request.setAttribute("keyword", keyword);
-        } else {
-            list = farmingPracticeService.getAllFarmingPractices();
-        }
-
-        request.setAttribute("suppliesList", supplieDAO.SelectSupplie());
-        request.setAttribute("workerList", fqDAO.WorkerList());
-        request.setAttribute("farmingPracticeList", list);
+    if ("search".equals(action) && keyword != null && !keyword.trim().isEmpty()) {
+        list = farmingPracticeService.searchFarmingPractices(keyword);
+        request.setAttribute("keyword", keyword);
+    } else {
+        list = farmingPracticeService.getAllFarmingPractices();
     }
+
+    request.setAttribute("suppliesList", supplieDAO.SelectSupplie());
+    request.setAttribute("workerList", fqDAO.WorkerList()); // Đã có sẵn để hiển thị danh sách công nhân
+    request.setAttribute("farmingPracticeList", list);
+}
 
     // ---- 2) Quản lý rau trồng ----
     private void loadVegetableView(HttpServletRequest request) {
@@ -443,6 +443,33 @@ public class TechnicianServlet extends HttpServlet {
                 session.setAttribute("ERROR_MSG", "Dữ liệu không hợp lệ: " + e.getMessage());
             }
             response.sendRedirect(request.getContextPath() + "/technician?view=livestock");
+            return;
+        // ================= PHÂN CÔNG CÔNG VIỆC MỚI =================
+        } else if ("assignTask".equals(action)) {
+            try {
+                String tenCongViec = request.getParameter("tenCongViec");
+                String moTa = request.getParameter("moTa");
+                int maQuyTrinh = Integer.parseInt(request.getParameter("maQuyTrinh"));
+                int maKhuVuc = Integer.parseInt(request.getParameter("maKhuVuc"));
+                int nguoiPhuTrach = Integer.parseInt(request.getParameter("nguoiPhuTrach"));
+                LocalDate ngayBatDau = LocalDate.parse(request.getParameter("ngayBatDau"));
+                LocalDate ngayKetThuc = LocalDate.parse(request.getParameter("ngayKetThuc"));
+
+                Integer nguoiThucHien = (Integer) session.getAttribute("userId");
+                if (nguoiThucHien == null) nguoiThucHien = 1; // Giá trị dự phòng nếu session trống
+
+                models.Task newTask = new models.Task(0, tenCongViec, moTa, maQuyTrinh, maKhuVuc, nguoiPhuTrach, ngayBatDau, ngayKetThuc, "Chưa thực hiện");
+
+                // Gọi Service hoặc trực tiếp DAO để thêm Task và phân công
+                boolean ok = farmingPracticeService.addTaskAndAssign(newTask, nguoiThucHien);
+                
+                session.setAttribute(ok ? "SUCCESS_MSG" : "ERROR_MSG",
+                        ok ? "Phân công công việc mới thành công!" : "Phân công công việc thất bại.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("ERROR_MSG", "Lỗi phân công công việc: " + e.getMessage());
+            }
+            response.sendRedirect(request.getContextPath() + "/technician?view=process");
             return;
         }
 

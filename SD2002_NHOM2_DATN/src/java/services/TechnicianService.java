@@ -34,4 +34,34 @@ public class TechnicianService {
     public boolean updateFarmingPractice(int id, String tenQuyTrinh, String moTa, String loaiApDung, String trangThai) {
         return farmingPracticeDAO.updateFarmingPractice(id, tenQuyTrinh, moTa, loaiApDung, trangThai);
     }
+    
+    public boolean addTaskAndAssign(models.Task task, int nguoiThucHien) {
+        dao.TaskDAO taskDAO = new dao.TaskDAO();
+        dao.AssignmentTaskDAO assignmentDAO = new dao.AssignmentTaskDAO();
+        
+        int newMaCongViec = taskDAO.insertTaskAndGetId(task);
+        if (newMaCongViec > 0) {
+            models.AssignmentTask at = new models.AssignmentTask(
+                    0,
+                    newMaCongViec,
+                    task.getNguoiPhuTrach(),
+                    java.time.LocalDateTime.now(),
+                    "Mới phân công"
+            );
+            boolean success = assignmentDAO.insertAssignmentTask(at);
+            if (success) {
+                dao.SystemLogDAO.insertLog(nguoiThucHien, "PHÂN CÔNG CÔNG VIỆC MỚI (Mã việc: " + newMaCongViec + ")", "Task", getClientIpAddress());
+            }
+            return success;
+        }
+        return false;
+    }
+
+    private String getClientIpAddress() {
+        try {
+            return java.net.InetAddress.getLocalHost().getHostAddress();
+        } catch (java.net.UnknownHostException e) {
+            return "Lỗi lấy IP";
+        }
+    }
 }

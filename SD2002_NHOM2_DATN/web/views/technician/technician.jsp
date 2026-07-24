@@ -83,7 +83,7 @@
             .btn-harvest { background: #27ae60; }
             .btn-harvest:hover { background: #1e8449; }
 
-            /* ===== MODAL ===== */
+            /* ===== MODAL CHUẨN ===== */
             .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
             .modal-content { background: white; width: 600px; max-width: 92%; border-radius: 16px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
             .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
@@ -171,6 +171,12 @@
                                     <button type="submit" name="action" value="search" class="btn-search">🔍 Tìm</button>
                                 </div>
                             </form>
+
+                            <!-- NÚT BẤM KÍCH HOẠT PHÂN CÔNG -->
+                            <button class="btn-add" id="openModalBtn">
+                                + Phân công công việc mới
+                            </button>
+
                             <button class="btn-add" onclick="openProcessForm('add')">+ Tạo bộ quy trình</button>
                         </div>
                     </div>
@@ -217,6 +223,84 @@
                                 </c:if>
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- MODAL FORM PHÂN CÔNG CÔNG VIỆC -->
+                    <div class="modal-overlay" id="modalOverlay">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Khởi tạo và Phân công việc</h3>
+                                <button class="close-btn" id="closeModalBtn">&times;</button>
+                            </div>
+
+                            <form action="${pageContext.request.contextPath}/technician" method="POST">
+                                <input type="hidden" name="action" value="assignTask">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="maKhuVuc">Chọn Lô Đất / Khu Vực:</label>
+                                        <select id="maKhuVuc" name="maKhuVuc" class="form-control" required>
+                                            <option value="">-- Chọn khu vực --</option>
+                                            <c:forEach var="area" items="${farmAreaList}">
+                                                <option value="${area.getMaKhuVuc()}">${area.getTenKhuVuc()}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="maQuyTrinh">Quy Trình Mẫu Áp Dụng:</label>
+                                        <select id="maQuyTrinh" name="maQuyTrinh" class="form-control" required>
+                                            <option value="">-- Tự động gợi ý quy trình --</option>
+                                            <c:forEach var="practice" items="${farmingPracticeList}">
+                                                <option value="${practice.getMaQuyTrinh()}">${practice.getTenQuyTrinh()}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tenCongViec">Tên Công Việc Nhiệm Vụ:</label>
+                                    <input type="text" id="tenCongViec" name="tenCongViec" class="form-control" placeholder="Nhập tên nhiệm vụ cụ thể..." required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="moTa">Mô Tả Chi Tiết Hướng Dẫn:</label>
+                                    <textarea id="moTa" name="moTa" class="form-control" placeholder="Ghi chú các bước thực hiện nếu có..."></textarea>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="nguoiPhuTrach">Chọn Công Nhân Phụ Trách:</label>
+                                        <select id="nguoiPhuTrach" name="nguoiPhuTrach" class="form-control" required>
+                                            <option value="">-- Chọn công nhân --</option>
+                                            <c:forEach var="worker" items="${workerList}">
+                                                <option value="${worker.getMaNguoiDung()}">${worker.getHoTen()} (Mã: ${worker.getMaNguoiDung()})</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                                        <input type="date" id="ngayBatDau" name="ngayBatDau" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ngayKetThuc">Hạn Chót (Ngày Kết Thúc):</label>
+                                        <input type="date" id="ngayKetThuc" name="ngayKetThuc" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <div class="field-hint" style="text-align:left; flex:1;">
+                                        * Hệ thống tích hợp cơ chế tự động quét lịch để tránh trùng lặp, quá tải ngày làm việc của công nhân.
+                                    </div>
+                                    <div class="modal-footer-right">
+                                        <button type="button" class="btn-cancel" id="closeModalBtn2">Hủy bỏ</button>
+                                        <button type="submit" class="btn-save">Xác Nhận Giao Việc</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <%-- Modal thêm/sửa quy trình --%>
@@ -1160,6 +1244,35 @@
             function cancelLiveStockEdit() {
                 openLiveStockDetail(document.getElementById('dls_Ma_input').value);
             }
+
+            // ============== SỰ KIỆN MODAL PHÂN CÔNG CÔNG VIỆC ==============
+            document.addEventListener("DOMContentLoaded", function () {
+                const openModalBtn = document.getElementById('openModalBtn');
+                const closeModalBtn = document.getElementById('closeModalBtn');
+                const closeModalBtn2 = document.getElementById('closeModalBtn2');
+                const modalOverlay = document.getElementById('modalOverlay');
+
+                if (openModalBtn && modalOverlay) {
+                    openModalBtn.addEventListener('click', () => {
+                        modalOverlay.style.display = 'flex';
+                    });
+                    if (closeModalBtn) {
+                        closeModalBtn.addEventListener('click', () => {
+                            modalOverlay.style.display = 'none';
+                        });
+                    }
+                    if (closeModalBtn2) {
+                        closeModalBtn2.addEventListener('click', () => {
+                            modalOverlay.style.display = 'none';
+                        });
+                    }
+                    modalOverlay.addEventListener('click', (e) => {
+                        if (e.target === modalOverlay) {
+                            modalOverlay.style.display = 'none';
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 </html>
