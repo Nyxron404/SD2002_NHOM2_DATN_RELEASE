@@ -234,6 +234,55 @@
             .btn-export:hover {
                 background: #1a252f;
             }
+            /* ================= MODAL DANH SÁCH CÔNG NHÂN ================= */
+            .worker-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 1000;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                backdrop-filter: blur(5px);
+            }
+            .worker-modal-content {
+                background: #ffffff;
+                width: 100%;
+                max-width: 650px;
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                position: relative;
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+            .worker-modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+            .worker-modal-header h3 {
+                margin: 0;
+                color: #2e541f;
+                font-size: 20px;
+                font-weight: 700;
+            }
+            .worker-close-btn {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #999;
+            }
+            .worker-close-btn:hover {
+                color: #e74c3c;
+            }
+            .clickable-card {
+                cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -248,12 +297,12 @@
                 <div class="welcome-panel">
                     <h2>
                     </h2>
-                    <p>Khung điều hành trung tâm Smart Farmer. Tình trạng canh tác và thông số vật tư đang được hệ thống thu thập và xử lý thời gian thực.</p>
+                    <p>Khung điều hành trung tâm Smart Farm. Tình trạng canh tác và thông số vật tư đang được hệ thống thu thập và xử lý thời gian thực.</p>
                 </div>
 
                 <div class="dashboard-cards">
                     <!-- Thẻ 1: Công nhân ca làm -->
-                    <div class="card">
+                    <div class="card clickable-card" onclick="openWorkerModal()">
                         <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
                         <div class="card-info">
                             <h3>Công nhân ca làm</h3>
@@ -279,10 +328,10 @@
                         </div>
                     </div>
                 </div>
-                        
+
                 <div class="table-container chart-wrapper">
                     <h2 class="section-title">Biểu Đồ Tỷ Trọng Hoạt Động</h2>
-                    
+
                     <div class="bar-group">
                         <div class="bar-title">Nhân sự đang bận</div>
                         <div class="bar-bg">
@@ -291,7 +340,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="bar-group">
                         <div class="bar-title">Vật tư cảnh báo</div>
                         <div class="bar-bg">
@@ -310,19 +359,20 @@
                         </div>
                     </div>
                 </div>
-                            
+
                 <!-- Phần hiển thị Nhật Ký Hệ Thống -->
                 <div class="table-container">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h2 class="section-title" style="margin-bottom: 0;">Nhật Ký Hoạt Động Hệ Thống</h2>
-                        
+
                         <a href="farmowner?action=export" class="btn-export">📥 Xuất Báo Cáo (CSV)</a>
                     </div>
                     <table class="custom-table">
                         <thead>
                             <tr>
                                 <th>Mã Log</th>
-                                <th>Thời Gian</th>
+                                <th>Ngày Tháng</th>
+                                <th>Giờ</th>
                                 <th>Người Dùng</th>
                                 <th>Hành Động</th>
                                 <th>Bảng Dữ Liệu</th>
@@ -334,7 +384,9 @@
                             <c:forEach var="log" items="${systemLogs}">
                                 <tr>
                                     <td>#${log.getMaNhatKy()}</td>
-                                    <td>${log.getThoiGian()}</td>
+                                    <!-- Cắt chuỗi thời gian để tách Ngày và Giờ (Ví dụ định dạng: 2026-07-25T02:59:05.893) -->
+                                    <td>${fn:substringBefore(log.getThoiGian(), 'T')}</td>
+                                    <td>${fn:substringAfter(log.getThoiGian(), 'T')}</td>
                                     <td>Mã số: ${log.getMaNguoiDung()}</td>
                                     <td><span class="badge-action">${log.getHanhDong()}</span></td>
                                     <td>${log.getBangTacDong()}</td>
@@ -345,7 +397,7 @@
                             <!-- Hiển thị khi chưa có dữ liệu -->
                             <c:if test="${empty systemLogs}">
                                 <tr>
-                                    <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                    <td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">
                                         Hệ thống chưa ghi nhận hoạt động nào.
                                     </td>
                                 </tr>
@@ -355,6 +407,67 @@
                 </div>
             </main>
         </div>
+
+
+        <!-- Modal Hiển Thị Danh Sách Công Nhân Ca Làm -->
+        <div class="worker-modal-overlay" id="workerModalOverlay">
+            <div class="worker-modal-content" style="max-width: 800px;">
+                <div class="worker-modal-header">
+                    <h3>Danh sách công nhân đang làm việc (${workerCount} người)</h3>
+                    <button class="worker-close-btn" onclick="closeWorkerModal()">&times;</button>
+                </div>
+
+                <table class="custom-table" style="font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th>Mã Nhân Viên</th>
+                            <th>Mã Người Dùng</th>
+                            <th>Họ và Tên</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Duyệt qua danh sách activeWorkersList do Servlet truyền sang -->
+                        <c:forEach var="worker" items="${activeWorkersList}">
+                            <tr>
+                                <td>#${worker.getMaNhanVien()}</td>
+                                <td>#${worker.getMaNguoiDung()}</td>
+                                <td><strong>${worker.getHoTen()}</strong></td>
+                                <td>${worker.getSDT()}</td>
+                                <td>${worker.getEmail()}</td>
+                            </tr>
+                        </c:forEach>
+                        <c:if test="${empty activeWorkersList}">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                    Không có dữ liệu công nhân ca làm.
+                                </td>
+                            </tr>
+                        </c:if>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn-cancel" onclick="closeWorkerModal()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openWorkerModal() {
+                document.getElementById('workerModalOverlay').style.display = 'flex';
+            }
+            function closeWorkerModal() {
+                document.getElementById('workerModalOverlay').style.display = 'none';
+            }
+            window.addEventListener('click', function (e) {
+                const overlay = document.getElementById('workerModalOverlay');
+                if (e.target === overlay) {
+                    overlay.style.display = 'none';
+                }
+            });
+        </script>
     </body>
 </html>
 

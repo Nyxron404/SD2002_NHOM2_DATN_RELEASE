@@ -492,4 +492,38 @@ public class StaffDAO {
         }
         return list;
     }
+    
+    // Lấy danh sách nhân viên có MaNhom = 6 (Công nhân)
+    public List<Staff> getWorkersOnly() {
+        List<Staff> list = new ArrayList<>();
+        String sql = "SELECT s.*, u.MaNhom, u.TrangThai " +
+                     "FROM Staff s " +
+                     "INNER JOIN [User] u ON s.MaNguoiDung = u.MaNguoiDung " +
+                     "WHERE u.MaNhom = 6";
+
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int maNhanVien = rs.getInt("MaNhanVien");
+                String hoTen = rs.getString("HoTen");
+                LocalDate ngaySinh = rs.getObject("NgaySinh", LocalDate.class);
+                boolean gioiTinh = rs.getBoolean("GioiTinh");
+                String sdt = rs.getString("SDT");
+                String email = rs.getString("Email");
+                String diaChi = rs.getString("DiaChi");
+                LocalDate ngayVaoLam = rs.getObject("NgayVaoLam", LocalDate.class);
+                double luong = rs.getDouble("Luong");
+                int maNguoiDung = rs.getInt("MaNguoiDung");
+                boolean dangKy = rs.getBoolean("DangKy");
+                int maNhom = rs.getInt("MaNhom");
+
+                Staff st = new Staff(maNhanVien, hoTen, ngaySinh, gioiTinh, sdt, email, diaChi, ngayVaoLam, luong, maNguoiDung, dangKy);
+                st.setMaNhom(maNhom);
+                list.add(st);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

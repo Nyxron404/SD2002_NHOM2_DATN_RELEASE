@@ -12,7 +12,7 @@ public class TaskDAO {
     // Lấy danh sách tất cả công việc
     public List<Task> getAllTasks() {
         List<Task> list = new ArrayList<>();
-        String sql = "SELECT * FROM Task";
+        String sql = "SELECT * FROM Task ORDER BY MaCongViec DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -125,7 +125,7 @@ public class TaskDAO {
     // Lấy danh sách công việc của riêng 1 người phụ trách (dùng cho giao diện Công nhân)
     public List<Task> getTasksByUser(int nguoiPhuTrach) {
         List<Task> list = new ArrayList<>();
-        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ?";
+        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ? ORDER BY MaCongViec DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, nguoiPhuTrach);
             ResultSet rs = ps.executeQuery();
@@ -153,7 +153,7 @@ public class TaskDAO {
     public List<Task> searchTasks(String keyword) {
         List<Task> list = new ArrayList<>();
         // Tìm kiếm theo Tên công việc hoặc ép kiểu Mã công việc, Người Phụ Trách sang chuỗi để tìm
-        String sql = "SELECT * FROM Task WHERE TenCongViec LIKE ? OR CAST(MaCongViec AS VARCHAR) LIKE ? OR CAST(NguoiPhuTrach AS VARCHAR) LIKE ?";
+        String sql = "SELECT * FROM Task WHERE TenCongViec LIKE ? OR CAST(MaCongViec AS VARCHAR) LIKE ? OR CAST(NguoiPhuTrach AS VARCHAR) LIKE ? ORDER BY MaCongViec DESC";
         
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             String query = "%" + keyword + "%";
@@ -185,7 +185,7 @@ public class TaskDAO {
     // Dành cho Admin: Lọc công việc theo khoảng thời gian hạn chót
     public List<Task> getTasksByDateRange(LocalDate fromDate, LocalDate toDate) {
         List<Task> list = new ArrayList<>();
-        String sql = "SELECT * FROM Task WHERE NgayKetThuc >= ? AND NgayKetThuc <= ?";
+        String sql = "SELECT * FROM Task WHERE NgayKetThuc >= ? AND NgayKetThuc <= ? ORDER BY MaCongViec DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setDate(1, java.sql.Date.valueOf(fromDate));
             ps.setDate(2, java.sql.Date.valueOf(toDate));
@@ -212,7 +212,7 @@ public class TaskDAO {
     // Dành cho Công nhân: Lấy công việc của riêng họ theo khoảng thời gian hạn chót
     public List<Task> getTasksByUserAndDateRange(int maNguoiDung, LocalDate fromDate, LocalDate toDate) {
         List<Task> list = new ArrayList<>();
-        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ? AND NgayKetThuc >= ? AND NgayKetThuc <= ?";
+        String sql = "SELECT * FROM Task WHERE NguoiPhuTrach = ? AND NgayKetThuc >= ? AND NgayKetThuc <= ? ORDER BY MaCongViec DESC";
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, maNguoiDung);
             ps.setDate(2, java.sql.Date.valueOf(fromDate));

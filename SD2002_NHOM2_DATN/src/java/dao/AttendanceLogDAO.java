@@ -58,7 +58,7 @@ public class AttendanceLogDAO {
     
     public List<AttendanceLog> getAttendance() {
         List<AttendanceLog> list = new ArrayList<>();
-        String sql = "SELECT * FROM AttendanceLog"; 
+        String sql = "SELECT * FROM AttendanceLog ORDER BY MaChamCong DESC"; 
         try (Connection con = DBConnect.getConnection(); 
             PreparedStatement ps = con.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
@@ -108,7 +108,7 @@ public class AttendanceLogDAO {
         }
 
         // Lọc bảng AttendanceLog xem có MaCongViec nào nằm trong danh sách không
-        String sql = "SELECT * FROM AttendanceLog WHERE MaCongViec IN (" + placeholders.toString() + ")";
+        String sql = "SELECT * FROM AttendanceLog WHERE MaCongViec IN (" + placeholders.toString() + ") ORDER BY MaChamCong DESC";
         
         try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             // Set giá trị cho các dấu hỏi chấm
