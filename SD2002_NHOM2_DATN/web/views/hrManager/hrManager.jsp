@@ -502,7 +502,19 @@
                     <input type="hidden" name="action" id="formAction" value="add"><input type="hidden" name="maNhanVien" id="editEmpId" value="">
                     <div class="form-group"><label>Họ và tên</label><input type="text" name="hoTen" class="form-control" required autocomplete="off"></div>
                     <div class="form-row"><div class="form-group"><label>Ngày sinh</label><input type="date" name="ngaySinh" class="form-control" required autocomplete="off"></div><div class="form-group"><label>Giới tính</label><select name="gioiTinh" class="form-control"><option value="1">Nam</option><option value="0">Nữ</option></select></div></div>
-                    <div class="form-row"><div class="form-group"><label>SĐT</label><input type="number" name="sdt" class="form-control" required autocomplete="off"></div><div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required autocomplete="off"></div></div>
+                    
+                    <!-- Ô nhập SĐT đã được cấu hình tối đa 10 chữ số -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>SĐT</label>
+                            <input type="text" name="sdt" class="form-control" required autocomplete="off" 
+                                   maxlength="10" pattern="^0[0-9]{9}$" 
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" 
+                                   placeholder="10 chữ số, bắt đầu bằng số 0">
+                        </div>
+                        <div class="form-group"><label>Email</label><input type="email" name="email" class="form-control" required autocomplete="off"></div>
+                    </div>
+
                     <div class="form-group"><label>Địa chỉ</label><input type="text" name="diaChi" class="form-control" required autocomplete="off"></div>
                     <div class="form-group"><label>Lương</label><input type="number" name="luong" class="form-control" required autocomplete="off"></div>
                     <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeModal('employeeModal')">Hủy</button><button type="submit" class="btn-save">Lưu</button></div>
@@ -604,7 +616,6 @@
 
             function confirmDelete(id, maNguoiDung, ten) {
                 if (confirm("Bạn có chắc chắn muốn xóa nhân viên [" + ten + "] không?\nHành động này sẽ XÓA LUÔN TÀI KHOẢN ĐĂNG NHẬP và không thể hoàn tác!")) {
-                    // Tạo một form ảo để gửi request xóa lên Servlet
                     var form = document.createElement("form");
                     form.method = "POST";
                     form.action = "hr";
@@ -640,20 +651,19 @@
                 if (e.target.className === 'modal-overlay')
                     e.target.style.display = 'none';
             };
-            // Thêm hàm này vào để xử lý ẩn hiện mật khẩu
+
             function togglePwd(pwd) {
                 var span = document.getElementById('modal-pwd-span');
                 if (span.innerText === '••••••••') {
-                    span.innerText = pwd; // Hiện mật khẩu
+                    span.innerText = pwd; 
                 } else {
-                    span.innerText = '••••••••'; // Ẩn mật khẩu
+                    span.innerText = '••••••••'; 
                 }
             }
-            // Thêm đoạn này vào phần script của bạn
+
             window.addEventListener('DOMContentLoaded', (event) => {
                 const toast = document.querySelector('.toast');
                 if (toast) {
-                    // Sau 5 giây (5000ms) thì ẩn toast
                     setTimeout(() => {
                         toast.style.display = 'none';
                     }, 5000);

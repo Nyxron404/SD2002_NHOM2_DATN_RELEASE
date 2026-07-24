@@ -22,14 +22,24 @@
         align-items: center;
         padding: 0 25px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* Định dạng cho thẻ a bọc logo để không bị vỡ giao diện */
+    .logo-area a {
+        display: flex;
+        align-items: center;
         gap: 15px;
+        text-decoration: none;
+        width: 100%;
     }
 
     .logo-area svg {
         width: 36px;
         height: 36px;
+        flex-shrink: 0;
         filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
     }
+
     .logo-area h2 {
         margin: 0;
         font-size: 22px;
@@ -37,6 +47,7 @@
         background: linear-gradient(135deg, #1e4512, #467e32);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        white-space: nowrap; /* Tránh việc chữ Smart Farmer bị xuống dòng */
     }
 
     .menu {
@@ -58,12 +69,12 @@
         transition: all 0.3s ease;
         border-left: 5px solid transparent;
         width: 100%; /* Chiếm toàn bộ chiều rộng form */
-        background: none; 
-        border: none; 
+        background: none;
+        border: none;
         outline: none; /* KHẮC PHỤC: Xóa bỏ viền đen focus mặc định của trình duyệt */
-        cursor: pointer; 
-        text-align: left; 
-        font-family: inherit; 
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
     }
 
     /* Đảm bảo khi click/focus vào button sẽ không hiện viền đen */
@@ -77,7 +88,7 @@
         border-left-color: #579c3f;
         color: #467e32;
     }
-    
+
     .menu-item svg {
         width: 22px;
         height: 22px;
@@ -101,7 +112,7 @@
 
     /* Màu chữ và icon đỏ mặc định */
     .logout-btn-submit {
-        color: #e74c3c !important; 
+        color: #e74c3c !important;
     }
 
     /* Hiệu ứng hover riêng cho nút Đăng xuất */
@@ -113,11 +124,12 @@
 </style>
 <aside class="sidebar">
     <div class="logo-area">
-        <svg viewBox="0 0 100 100">
-        <path d="M52 90 C55 70 58 55 52 45 C50 42 48 44 50 48 C55 58 52 72 49 90 Z" fill="#396728" />
-        <path d="M50 51 C38 48 26 38 28 30 C30 22 45 32 52 45 C50 47 49 49 50 51 Z" fill="#579c3f" />
-        </svg>
-        <h2>Smart Farmer</h2>
+        <a href="${pageContext.request.contextPath}/admin"><svg viewBox="0 0 100 100">
+            <path d="M52 90 C55 70 58 55 52 45 C50 42 48 44 50 48 C55 58 52 72 49 90 Z" fill="#396728" />
+            <path d="M50 51 C38 48 26 38 28 30 C30 22 45 32 52 45 C50 47 49 49 50 51 Z" fill="#579c3f" />
+            </svg>
+            <h2>Smart Farm</h2>
+        </a>
     </div>
 
 

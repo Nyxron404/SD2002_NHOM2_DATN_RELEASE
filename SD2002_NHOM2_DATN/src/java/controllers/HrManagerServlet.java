@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
 import models.Staff;
@@ -31,24 +32,57 @@ public class HrManagerServlet extends HttpServlet {
     private UserGroupDAO ugDAO = new UserGroupDAO();
     private UserDAO usDAO = new UserDAO();
 
-    @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    
-    String keyword = request.getParameter("keyword");
-    if (keyword != null && !keyword.trim().isEmpty()) {
-        request.setAttribute("LIST_STAFF", stDAO.SearchStaff(keyword));
-    } else {
-        request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        // Chuyển đổi IPv6 localhost sang IPv4 hiển thị gọn gàng hơn nếu cần
+        if ("0:0:0:0:0:0:0:1".equals(ip) || "127.0.0.1".equals(ip)) {
+            try {
+                ip = java.net.InetAddress.getLocalHost().getHostAddress();
+            } catch (Exception e) {
+                ip = "127.0.0.1";
+            }
+        }
+        return ip;
     }
-    request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
-    request.setAttribute("LIST_USER", usDAO.SelectUser());
-    request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
-}
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String keyword = request.getParameter("keyword");
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            request.setAttribute("LIST_STAFF", stDAO.SearchStaff(keyword));
+        } else {
+            request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
+        }
+        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
+        request.setAttribute("LIST_USER", usDAO.SelectUser());
+        request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
+        HttpSession session = request.getSession();
+        Integer nguoiThucHien = (Integer) session.getAttribute("userId");
+        if (nguoiThucHien == null) {
+            nguoiThucHien = 1; // Giá trị dự phòng nếu session chưa lưu
+        }
+
+        // Hàm phụ lấy IP khách hàng để ghi log
+        String clientIp = getClientIpAddress(request);
+
         // LUỒNG 1: THÊM NHÂN VIÊN
         if ("add".equals(action)) {
             try {
@@ -73,9 +107,12 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
                 // HỨNG KẾT QUẢ TỪ SERVICE TRẢ VỀ
                 int result = hrService.AddStaff(st);
                 if (result == 1) {
-                    // Chỉ hiển thị thông báo, vì Service đã lo phần tạo tài khoản và gửi email rồi
                     request.setAttribute("toastMessage", "Thêm nhân viên thành công! Tài khoản đã được tạo và gửi về email.");
                     request.setAttribute("toastType", "success");
+
+                    // GHI SYSTEM LOG: THÊM NHÂN VIÊN
+                    dao.SystemLogDAO.insertLog(nguoiThucHien, "THÊM NHÂN VIÊN MỚI: " + hoTen, "Staff", clientIp);
+
                 } else if (result == 2) {
                     request.setAttribute("toastMessage", "Lỗi: Số điện thoại không hợp lệ (Phải có 10 số và bắt đầu bằng số 0)!");
                     request.setAttribute("toastType", "error");
@@ -98,9 +135,9 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
                 request.setAttribute("toastMessage", "Lỗi: Vui lòng điền đầy đủ và đúng định dạng các trường!");
                 request.setAttribute("toastType", "error");
             }
-        } // LUỒNG 2: XỬ LÝ GÁN NHÓM
+        } // LUỒNG 2: XỬ LÝ GÁN NHÓM (PHÂN QUYỀN)
         else if ("updateRole".equals(action)) {
-            List<String> myPermissions = (List<String>) request.getSession().getAttribute("QuyenHan");
+            List<String> myPermissions = (List<String>) session.getAttribute("QuyenHan");
             boolean isAdmin = myPermissions != null && myPermissions.contains("Admin");
 
             int maNhanVien = Integer.parseInt(request.getParameter("maNhanVien"));
@@ -121,6 +158,10 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
                     }
                     request.setAttribute("toastMessage", "Gán chức vụ thành công!");
                     request.setAttribute("toastType", "success");
+
+                    // GHI SYSTEM LOG: PHÂN QUYỀN / GÁN NHÓM
+                    dao.SystemLogDAO.insertLog(nguoiThucHien, "PHÂN QUYỀN NHÂN VIÊN (Mã NV: " + maNhanVien + ", Nhóm: " + selectedGroupId + ")", "User", clientIp);
+
                 } else {
                     request.setAttribute("toastMessage", "Lỗi: Không thể gán nhóm!");
                     request.setAttribute("toastType", "error");
@@ -140,12 +181,23 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
             stDAO.UpdateStaff(st);
             request.setAttribute("toastMessage", "Cập nhật thông tin thành công!");
             request.setAttribute("toastType", "success");
-        } // LUỒNG 4: KHÓA TÀI KHOẢN (TrangThai = false)
+
+            // GHI SYSTEM LOG: SỬA NHÂN VIÊN
+            dao.SystemLogDAO.insertLog(nguoiThucHien, "CẬP NHẬT THÔNG TIN NHÂN VIÊN (Mã NV: " + st.getMaNhanVien() + ")", "Staff", clientIp);
+
+        } // LUỒNG 4: KHÓA/MỞ TÀI KHOẢN (TrangThai = false/true)
         else if ("lock".equals(action)) {
             int maNguoiDung = Integer.parseInt(request.getParameter("maNguoiDung"));
-            // Nhận giá trị true/false từ giao diện (true: mở, false: khóa)
             boolean trangThai = Boolean.parseBoolean(request.getParameter("trangThai"));
             stDAO.UpdateStaffStatus(maNguoiDung, trangThai);
+
+            request.setAttribute("toastMessage", trangThai ? "Mở khóa tài khoản thành công!" : "Khóa tài khoản thành công!");
+            request.setAttribute("toastType", "success");
+
+            // GHI SYSTEM LOG: KHÓA / MỞ TÀI KHOẢN
+            String trangThaiText = trangThai ? "MỞ KHÓA" : "KHÓA";
+            dao.SystemLogDAO.insertLog(nguoiThucHien, trangThaiText + " TÀI KHOẢN (Mã người dùng: " + maNguoiDung + ")", "User", clientIp);
+
         } // LUỒNG 5: XÓA NHÂN VIÊN VÀ TÀI KHOẢN
         else if ("delete".equals(action)) {
             int maNhanVien = Integer.parseInt(request.getParameter("maNhanVien"));
@@ -155,13 +207,17 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
             if (isDeleted) {
                 request.setAttribute("toastMessage", "Đã xóa nhân viên và tài khoản!");
                 request.setAttribute("toastType", "success");
+
+                // GHI SYSTEM LOG: XÓA NHÂN VIÊN
+                dao.SystemLogDAO.insertLog(nguoiThucHien, "XÓA NHÂN VIÊN VÀ TÀI KHOẢN (Mã NV: " + maNhanVien + ")", "Staff", clientIp);
+
             } else {
                 request.setAttribute("toastMessage", "Lỗi: Không thể xóa (Có thể nhân viên này đang dính dữ liệu ở bảng khác)!");
                 request.setAttribute("toastType", "error");
             }
         }
 
-        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups()); // Gửi danh sách Nhóm ra web
+        request.setAttribute("LIST_GROUP", ugDAO.SelectUserGroups());
         request.setAttribute("LIST_STAFF", stDAO.SelectStaffAndGroup());
         request.setAttribute("LIST_USER", new UserDAO().SelectUser());
         request.getRequestDispatcher("./views/hrManager/hrManager.jsp").forward(request, response);
