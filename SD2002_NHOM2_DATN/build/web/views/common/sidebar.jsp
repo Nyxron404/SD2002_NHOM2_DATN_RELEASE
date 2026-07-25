@@ -128,10 +128,9 @@
             <path d="M52 90 C55 70 58 55 52 45 C50 42 48 44 50 48 C55 58 52 72 49 90 Z" fill="#396728" />
             <path d="M50 51 C38 48 26 38 28 30 C30 22 45 32 52 45 C50 47 49 49 50 51 Z" fill="#579c3f" />
             </svg>
-            <h2>Smart Farm</h2>
+            <h2>Smart Farmer</h2>
         </a>
     </div>
-
 
     <ul class="menu">
         <c:forEach var="QuyenHan" items="${sessionScope.QuyenHan}">
@@ -150,9 +149,17 @@
                         Báo cáo tổng quan 
                     </a>
                 </li>
+                
+                <!-- MENU ITEM MỚI: QUẢN LÝ KHU VỰC (Farm Area) -->
+                <li>
+                    <a href="${pageContext.request.contextPath}/farmarea" class="menu-item ${param.activePage == 'farmArea' ? 'active' : ''}">
+                        <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-7-2h2v-2h-2v2zm0-4h2V7h-2v6zm-4 4h2v-2H8v2zm0-4h2V7H8v6z"/></svg>
+                        Quản lý khu vực
+                    </a>
+                </li>
             </c:if>
+            
             <c:if test="${QuyenHan == 'HrManager' || QuyenHan == 'Admin'}">
-
                 <li>
                     <a href="${pageContext.request.contextPath}/hr" class="menu-item ${param.activePage == 'hrManager' ? 'active' : ''}">
                         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
