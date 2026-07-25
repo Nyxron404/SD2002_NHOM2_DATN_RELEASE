@@ -144,9 +144,9 @@
         </div>
 
         <!-- KHU VỰC AVATAR (Lấy Tên từ Session gán vào data-name) -->
-        <div class="avatar" id="userAvatar" data-name="${not empty sessionScope.TenDangNhap ? sessionScope.TenDangNhap : 'Hà Quang Linh'}">
+        <a href="${pageContext.request.contextPath}/personal" ><div class="avatar" id="userAvatar" data-name="${not empty sessionScope.TenDangNhap ? sessionScope.TenDangNhap : 'Hà Quang Linh'}">
             <!-- JavaScript bên dưới sẽ tự bắt chữ cái và vẽ màu vào đây -->
-        </div>
+        </div></a>
     </div>
 </header>
 

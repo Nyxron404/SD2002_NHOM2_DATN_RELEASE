@@ -115,4 +115,36 @@ public class UserDAO {
             return quyenHan;
         }
     }
+    
+    // Lấy thông tin tài khoản bằng mã người dùng
+    public User GetUserById(int maNguoiDung) {
+        String sql = "SELECT * FROM [User] WHERE MaNguoiDung = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("MaNguoiDung"), rs.getString("TenDangNhap"), 
+                    rs.getString("MatKhau"), rs.getInt("MaNhom"), 
+                    rs.getBoolean("TrangThai"), rs.getObject("NgayTao", LocalDateTime.class)
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Cập nhật mật khẩu mới
+    public boolean UpdatePassword(int maNguoiDung, String newPassword) {
+        String sql = "UPDATE [User] SET MatKhau = ? WHERE MaNguoiDung = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, maNguoiDung);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

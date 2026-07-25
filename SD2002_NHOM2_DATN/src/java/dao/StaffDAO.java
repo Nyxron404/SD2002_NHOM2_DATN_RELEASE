@@ -526,4 +526,25 @@ public class StaffDAO {
         }
         return list;
     }
+    
+    // Lấy thông tin nhân viên bằng mã người dùng
+    public Staff GetStaffByUserId(int maNguoiDung) {
+        String sql = "SELECT * FROM Staff WHERE MaNguoiDung = ?";
+        try (Connection con = DBConnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maNguoiDung);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Staff(
+                    rs.getInt("MaNhanVien"), rs.getString("HoTen"),
+                    rs.getObject("NgaySinh", LocalDate.class), rs.getBoolean("GioiTinh"),
+                    rs.getString("SDT"), rs.getString("Email"), rs.getString("DiaChi"),
+                    rs.getObject("NgayVaoLam", LocalDate.class), rs.getDouble("Luong"),
+                    rs.getInt("MaNguoiDung"), rs.getBoolean("DangKy")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
