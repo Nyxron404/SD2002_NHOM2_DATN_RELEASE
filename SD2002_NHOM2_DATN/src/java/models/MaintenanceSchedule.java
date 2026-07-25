@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package models;
+
 import java.time.LocalDate;
+
 /**
- *
- * @author longd
+ * Model tương ứng bảng dbo.MaintenanceSchedule
+ * UC-6.1, UC-6.2
  */
 public class MaintenanceSchedule {
+
     private int MaBaoTri;
     private int MaThietBi;
     private LocalDate NgayDuKien;
@@ -20,10 +19,28 @@ public class MaintenanceSchedule {
     private String KetQua;
     private int NguoiThucHien;
 
+    // Trường tiện ích, KHÔNG map trực tiếp cột nào trong bảng
+    // dùng để hiển thị kèm khi JOIN với Equipment (TenThietBi)
+    private String TenThietBi;
+
     public MaintenanceSchedule() {
     }
 
-    public MaintenanceSchedule(int MaBaoTri, int MaThietBi, LocalDate NgayDuKien, String NoiDungDuKien, String TrangThai, LocalDate NgayThucTe, String NoiDungThucTe, double ChiPhi, String KetQua, int NguoiThucHien) {
+    // Dùng khi lập lịch mới (UC-6.1)
+    public MaintenanceSchedule(int MaThietBi, LocalDate NgayDuKien, String NoiDungDuKien,
+            String TrangThai, double ChiPhi, int NguoiThucHien) {
+        this.MaThietBi = MaThietBi;
+        this.NgayDuKien = NgayDuKien;
+        this.NoiDungDuKien = NoiDungDuKien;
+        this.TrangThai = TrangThai;
+        this.ChiPhi = ChiPhi;
+        this.NguoiThucHien = NguoiThucHien;
+    }
+
+    // Đầy đủ - dùng khi đọc từ DB
+    public MaintenanceSchedule(int MaBaoTri, int MaThietBi, LocalDate NgayDuKien, String NoiDungDuKien,
+            String TrangThai, LocalDate NgayThucTe, String NoiDungThucTe, double ChiPhi,
+            String KetQua, int NguoiThucHien) {
         this.MaBaoTri = MaBaoTri;
         this.MaThietBi = MaThietBi;
         this.NgayDuKien = NgayDuKien;
@@ -34,13 +51,6 @@ public class MaintenanceSchedule {
         this.ChiPhi = ChiPhi;
         this.KetQua = KetQua;
         this.NguoiThucHien = NguoiThucHien;
-    }
-    public MaintenanceSchedule(int MaBaoTri, int MaThietBi, LocalDate NgayDuKien, String NoiDungDuKien, String TrangThai) {
-        this.MaBaoTri = MaBaoTri;
-        this.MaThietBi = MaThietBi;
-        this.NgayDuKien = NgayDuKien;
-        this.NoiDungDuKien = NoiDungDuKien;
-        this.TrangThai = TrangThai;
     }
 
     public int getMaBaoTri() {
@@ -122,5 +132,12 @@ public class MaintenanceSchedule {
     public void setNguoiThucHien(int NguoiThucHien) {
         this.NguoiThucHien = NguoiThucHien;
     }
-    
+
+    public String getTenThietBi() {
+        return TenThietBi;
+    }
+
+    public void setTenThietBi(String TenThietBi) {
+        this.TenThietBi = TenThietBi;
+    }
 }

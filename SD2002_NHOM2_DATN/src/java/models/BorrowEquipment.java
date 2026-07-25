@@ -1,16 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package models;
 
 import java.time.LocalDateTime;
 
 /**
- *
- * @author longd
+ * Model tương ứng bảng dbo.BorrowEquipment
+ * UC-5.3: Ghi nhận lịch sử sử dụng thiết bị
  */
 public class BorrowEquipment {
+
     private int MaMuonThietBi;
     private int MaThietBi;
     private int MaNhanVien;
@@ -19,14 +16,30 @@ public class BorrowEquipment {
     private LocalDateTime ThoiGianKetThuc;
     private String TinhTrangTruocKhiDung;
     private String TinhTrangSauKhiDung;
-    private float TongThoiGianSuDung;
+    private double TongThoiGianSuDung;
     private String GhiChu;
     private String TrangThai;
+
+    // Trường tiện ích khi JOIN hiển thị, không map cột trong bảng
+    private String TenThietBi;
+    private String HoTenNhanVien;
+    private String TenKhuVuc;
 
     public BorrowEquipment() {
     }
 
-    public BorrowEquipment(int MaMuonThietBi, int MaThietBi, int MaNhanVien, int MaKhuVuc, LocalDateTime ThoiGianBatDau, LocalDateTime ThoiGianKetThuc, String TinhTrangTruocKhiDung, String TinhTrangSauKhiDung, float TongThoiGianSuDung, String GhiChu, String TrangThai) {
+    // Dùng khi lập phiếu sử dụng mới (UC-5.3 B1)
+    public BorrowEquipment(int MaThietBi, int MaNhanVien, int MaKhuVuc, String TinhTrangTruocKhiDung) {
+        this.MaThietBi = MaThietBi;
+        this.MaNhanVien = MaNhanVien;
+        this.MaKhuVuc = MaKhuVuc;
+        this.TinhTrangTruocKhiDung = TinhTrangTruocKhiDung;
+    }
+
+    // Đầy đủ - dùng khi đọc từ DB
+    public BorrowEquipment(int MaMuonThietBi, int MaThietBi, int MaNhanVien, int MaKhuVuc,
+            LocalDateTime ThoiGianBatDau, LocalDateTime ThoiGianKetThuc, String TinhTrangTruocKhiDung,
+            String TinhTrangSauKhiDung, double TongThoiGianSuDung, String GhiChu, String TrangThai) {
         this.MaMuonThietBi = MaMuonThietBi;
         this.MaThietBi = MaThietBi;
         this.MaNhanVien = MaNhanVien;
@@ -104,11 +117,11 @@ public class BorrowEquipment {
         this.TinhTrangSauKhiDung = TinhTrangSauKhiDung;
     }
 
-    public float getTongThoiGianSuDung() {
+    public double getTongThoiGianSuDung() {
         return TongThoiGianSuDung;
     }
 
-    public void setTongThoiGianSuDung(float TongThoiGianSuDung) {
+    public void setTongThoiGianSuDung(double TongThoiGianSuDung) {
         this.TongThoiGianSuDung = TongThoiGianSuDung;
     }
 
@@ -127,5 +140,28 @@ public class BorrowEquipment {
     public void setTrangThai(String TrangThai) {
         this.TrangThai = TrangThai;
     }
-    
+
+    public String getTenThietBi() {
+        return TenThietBi;
+    }
+
+    public void setTenThietBi(String TenThietBi) {
+        this.TenThietBi = TenThietBi;
+    }
+
+    public String getHoTenNhanVien() {
+        return HoTenNhanVien;
+    }
+
+    public void setHoTenNhanVien(String HoTenNhanVien) {
+        this.HoTenNhanVien = HoTenNhanVien;
+    }
+
+    public String getTenKhuVuc() {
+        return TenKhuVuc;
+    }
+
+    public void setTenKhuVuc(String TenKhuVuc) {
+        this.TenKhuVuc = TenKhuVuc;
+    }
 }

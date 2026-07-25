@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package models;
+
 import java.time.LocalDate;
+
 /**
- *
- * @author longd
+ * Model tương ứng bảng dbo.Equipment
+ * UC-5.1, UC-5.2
  */
 public class Equipment {
+
     private int MaThietBi;
     private String TenThietBi;
     private String LoaiThietBi;
@@ -21,7 +20,21 @@ public class Equipment {
     public Equipment() {
     }
 
-    public Equipment(int MaThietBi, String TenThietBi, String LoaiThietBi, LocalDate NgayMua, double GiaTri, String TinhTrang, String MoTa, int ChuKyBaoTriThang) {
+    // Dùng khi thêm mới (UC-5.1) - chưa có MaThietBi (identity tự tăng)
+    public Equipment(String TenThietBi, String LoaiThietBi, LocalDate NgayMua, double GiaTri,
+            String TinhTrang, String MoTa, int ChuKyBaoTriThang) {
+        this.TenThietBi = TenThietBi;
+        this.LoaiThietBi = LoaiThietBi;
+        this.NgayMua = NgayMua;
+        this.GiaTri = GiaTri;
+        this.TinhTrang = TinhTrang;
+        this.MoTa = MoTa;
+        this.ChuKyBaoTriThang = ChuKyBaoTriThang;
+    }
+
+    // Dùng khi đọc từ DB (đầy đủ)
+    public Equipment(int MaThietBi, String TenThietBi, String LoaiThietBi, LocalDate NgayMua, double GiaTri,
+            String TinhTrang, String MoTa, int ChuKyBaoTriThang) {
         this.MaThietBi = MaThietBi;
         this.TenThietBi = TenThietBi;
         this.LoaiThietBi = LoaiThietBi;
@@ -95,5 +108,4 @@ public class Equipment {
     public void setChuKyBaoTriThang(int ChuKyBaoTriThang) {
         this.ChuKyBaoTriThang = ChuKyBaoTriThang;
     }
-    
 }
