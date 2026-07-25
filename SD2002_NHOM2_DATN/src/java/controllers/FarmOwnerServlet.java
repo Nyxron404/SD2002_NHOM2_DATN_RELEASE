@@ -7,6 +7,7 @@ import dao.SupplieDAO;
 import models.SystemLog;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,9 +22,6 @@ public class FarmOwnerServlet extends HttpServlet {
     private TaskDAO taskDAO = new TaskDAO();     
     private SupplieDAO supplieDAO = new SupplieDAO(); 
     private StaffDAO staffDAO = new StaffDAO();
-    
-    private List<Staff> workerList = staffDAO.getWorkersOnly();
-    private List<Staff> workersOnlyList = staffDAO.getWorkersOnly();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,11 +52,23 @@ public class FarmOwnerServlet extends HttpServlet {
             return; 
         }
 
-        // NẾU KHÔNG: Chạy code hiển thị giao diện Dashboard như bình thường
+        // Lấy danh sách công nhân mỗi khi có request để luôn cập nhật
+        List<Staff> workersOnlyList = staffDAO.getWorkersOnly();
+
+        // Lấy danh sách trạng thái Online từ bộ nhớ (được cập nhật bởi Filter)
+        ConcurrentHashMap<Integer, Long> activeUsers = (ConcurrentHashMap<Integer, Long>) request.getServletContext().getAttribute("ACTIVE_USERS_MAP");
+        if(activeUsers == null) {
+             activeUsers = new ConcurrentHashMap<>();
+        }
+        
+        // Truyền thêm currentTime (thời gian hiện tại) để xử lý logic quá 5 phút ở JSP
+        request.setAttribute("currentTimeMillis", System.currentTimeMillis());
+        request.setAttribute("activeUsersMap", activeUsers);
+
         List<SystemLog> logList = systemLogDAO.getAllLogs();
         request.setAttribute("systemLogs", logList);
         request.setAttribute("activeWorkersList", workersOnlyList);
-        request.setAttribute("workerCount", workerList.size());
+        request.setAttribute("workerCount", workersOnlyList.size());
         request.setAttribute("lowStockCount", supplieDAO.getLowStockCount());
         request.setAttribute("maintenanceCount", 2); 
         

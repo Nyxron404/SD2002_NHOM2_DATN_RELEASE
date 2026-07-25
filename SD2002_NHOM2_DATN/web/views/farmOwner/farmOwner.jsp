@@ -283,6 +283,23 @@
             .clickable-card {
                 cursor: pointer;
             }
+            .dot-online {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #2ecc71;
+                border-radius: 50%;
+                margin-right: 5px;
+                box-shadow: 0 0 5px #2ecc71;
+            }
+            .dot-offline {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #95a5a6;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
         </style>
     </head>
     <body>
@@ -423,24 +440,44 @@
                             <th>Mã Nhân Viên</th>
                             <th>Mã Người Dùng</th>
                             <th>Họ và Tên</th>
+                            <th>Trạng thái</th> <!-- Thêm cột Trạng Thái -->
                             <th>Số Điện Thoại</th>
                             <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Duyệt qua danh sách activeWorkersList do Servlet truyền sang -->
                         <c:forEach var="worker" items="${activeWorkersList}">
+                            <!-- Logic kiểm tra Online/Offline (Thời gian quá hạn: 5 phút = 300,000 milliseconds) -->
+                            <c:set var="isOnline" value="false" />
+                            <c:set var="lastActiveTime" value="${activeUsersMap[worker.getMaNguoiDung()]}" />
+
+                            <c:if test="${not empty lastActiveTime}">
+                                <c:if test="${(currentTimeMillis - lastActiveTime) <= 300000}">
+                                    <c:set var="isOnline" value="true" />
+                                </c:if>
+                            </c:if>
+
                             <tr>
                                 <td>#${worker.getMaNhanVien()}</td>
                                 <td>#${worker.getMaNguoiDung()}</td>
                                 <td><strong>${worker.getHoTen()}</strong></td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${isOnline}">
+                                            <span style="color: #27ae60; font-weight: bold;"><span class="dot-online"></span>Online</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="color: #7f8c8d; font-weight: bold;"><span class="dot-offline"></span>Offline</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>${worker.getSDT()}</td>
                                 <td>${worker.getEmail()}</td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty activeWorkersList}">
                             <tr>
-                                <td colspan="5" style="text-align: center; color: #7f8c8d; padding: 20px;">
+                                <td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">
                                     Không có dữ liệu công nhân ca làm.
                                 </td>
                             </tr>
