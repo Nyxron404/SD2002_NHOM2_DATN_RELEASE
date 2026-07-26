@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controllers;
 
 import java.io.IOException;
@@ -15,29 +11,15 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import services.AuthService;
 
-/**
- *
- * @author longd
- */
 @WebServlet(name = "authServlet", urlPatterns = {"/auth"})
 public class AuthServlet extends HttpServlet {
 
     private AuthService authSV = new AuthService();
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -50,34 +32,16 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //processRequest(request, response);
         String action = request.getParameter("action");
+        
         if (action.equals("register")) {
             String tenDangKy = request.getParameter("TenDangKy");
             String email = request.getParameter("EmailDangKy");
@@ -97,7 +61,8 @@ public class AuthServlet extends HttpServlet {
                 request.setAttribute("errorSystem", "Hệ thống gặp lỗi không thể đăng ký.");
             }
             request.getRequestDispatcher("./views/auth/register.jsp").forward(request, response);
-        }else if(action.equals("login")){
+            
+        } else if(action.equals("login")){
             String tenDangNhap = request.getParameter("TenDangNhap");
             String matKhau = request.getParameter("MatKhau");
             int checkLogin = authSV.CheckLogin(tenDangNhap, matKhau);
@@ -137,25 +102,72 @@ public class AuthServlet extends HttpServlet {
                     }
                     return;
                 }
-            }else{
-                request.setAttribute("errorLogin", "Tên đăng nhập hoặc mất khẩu sai.");
+            } else {
+                request.setAttribute("errorLogin", "Tên đăng nhập hoặc mật khẩu sai.");
                 request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
             }
-        }else if(action.equals("logout")){
+            
+        } else if(action.equals("logout")){
             HttpSession session = request.getSession(false);
-            session.invalidate();
+            if (session != null) {
+                session.invalidate();
+            }
             response.sendRedirect(request.getContextPath() + "/views/auth/login.jsp");
+            
+        } 
+        else if (action.equals("forgotPassword")) {
+            String tenDangNhap = request.getParameter("TenDangNhap");
+            String email = request.getParameter("Email");
+            
+            int userId = authSV.checkUserEmailMatch(tenDangNhap, email);
+            if(userId > 0) {
+                String otp = authSV.generateAndSendOTP(email);
+                HttpSession session = request.getSession();
+                session.setAttribute("reset_otp", otp);
+                session.setAttribute("reset_userId", userId);
+                
+                request.setAttribute("step", 2); 
+            } else {
+                request.setAttribute("errorSystem", "Tên đăng nhập hoặc email không tồn tại / không khớp.");
+                request.setAttribute("step", 1);
+            }
+            request.getRequestDispatcher("/views/auth/forgot.jsp").forward(request, response);
+            
+        } else if (action.equals("resetPassword")) {
+            String inputOtp = request.getParameter("otp1") + request.getParameter("otp2") + request.getParameter("otp3") + 
+                              request.getParameter("otp4") + request.getParameter("otp5") + request.getParameter("otp6");
+            String newPassword = request.getParameter("newPassword");
+            
+            HttpSession session = request.getSession();
+            String realOtp = (String) session.getAttribute("reset_otp");
+            Integer userId = (Integer) session.getAttribute("reset_userId");
+            
+            // So sánh OTP
+            if (realOtp != null && realOtp.equals(inputOtp)) {
+                if(authSV.CheckFormatMatKhau(newPassword) == 1) {
+                    authSV.updatePassword(userId, newPassword);
+                    
+                    // Xóa các session bảo mật
+                    session.removeAttribute("reset_otp");
+                    session.removeAttribute("reset_userId");
+                    
+                    request.setAttribute("success", "Đổi mật khẩu thành công. Vui lòng đăng nhập lại.");
+                    request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("errorSystem", "Mật khẩu không đúng định dạng (ít nhất 8 kí tự).");
+                    request.setAttribute("step", 2);
+                    request.getRequestDispatcher("/views/auth/forgot.jsp").forward(request, response);
+                }
+            } else {
+                request.setAttribute("errorSystem", "Mã OTP không chính xác.");
+                request.setAttribute("step", 2);
+                request.getRequestDispatcher("/views/auth/forgot.jsp").forward(request, response);
+            }
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Auth Controller handling Login, Register and Forgot Password";
+    }
 }
