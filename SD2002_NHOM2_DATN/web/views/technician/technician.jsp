@@ -14,7 +14,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Khu vực Kỹ thuật viên</title>
+        <title>Quản Lý Canh Tác</title>
         <style>
             body {
                 margin: 0; padding: 0;
@@ -138,7 +138,7 @@
 
         <div class="main-wrapper">
             <jsp:include page="/views/common/header.jsp">
-                <jsp:param name="pageTitle" value="Khu Vực Kỹ Thuật Viên" />
+                <jsp:param name="pageTitle" value="Quản Lý Canh Tác" />
             </jsp:include>
 
             <main class="content-area">
