@@ -101,6 +101,8 @@ public class WorkerServlet extends HttpServlet {
                 request.setAttribute("attendanceList", attendanceDAO.getAttendanceByUser(uid));
             }
         }
+        dao.SupplieDAO supplieDAO = new dao.SupplieDAO();
+        request.setAttribute("listSupplie", supplieDAO.SelectSupplie());
 
         request.setAttribute("currentUserId", userId);
         request.getRequestDispatcher("/views/worker/worker.jsp").forward(request, response);

@@ -501,7 +501,14 @@
                     <input type="hidden" name="nguoiPhuTrach" id="reportNguoiPhuTrach">
                     <div class="form-group">
                         <label>Ghi chú vật tư sử dụng:</label>
-                        <textarea name="ghiChuVatTu" required></textarea>
+                        <select name="ghiChuVatTu" required>
+                            <option value="" disabled selected>-- Chọn vật tư --</option>
+                            <c:forEach var="vt" items="${listSupplie}">
+                                <option value="[Mã ${vt.getMaVatTu()}] ${vt.getTenVatTu()}">
+                                    Mã ${vt.getMaVatTu()} - ${vt.getTenVatTu()}
+                                </option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Đường dẫn ảnh hiện trường:</label>
