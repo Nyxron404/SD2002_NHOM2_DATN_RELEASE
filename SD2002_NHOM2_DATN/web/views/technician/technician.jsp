@@ -149,7 +149,7 @@
                     <a href="${pageContext.request.contextPath}/technician?view=vegetable"
                        class="tab-btn ${ACTIVE_VIEW == 'vegetable' ? 'tab-active' : ''}">🥬 Quản lý rau trồng</a>
                     <a href="${pageContext.request.contextPath}/technician?view=harvest"
-                       class="tab-btn ${ACTIVE_VIEW == 'harvest' ? 'tab-active' : ''}">🧺 Quản lý thu hoạch rau</a>
+                       class="tab-btn ${ACTIVE_VIEW == 'harvest' ? 'tab-active' : ''}">🧺 Quản lý thu hoạch</a>
                     <a href="${pageContext.request.contextPath}/technician?view=livestock"
                        class="tab-btn ${ACTIVE_VIEW == 'livestock' ? 'tab-active' : ''}">🐄 Quản lý vật nuôi</a>
                 </div>
@@ -600,12 +600,15 @@
                 </c:if>
 
                 <%-- ========================================================= --%>
-                <%-- 3) QUẢN LÝ THU HOẠCH RAU                                    --%>
+                <%-- 3) QUẢN LÝ THU HOẠCH                                    --%>
                 <%-- ========================================================= --%>
                 <c:if test="${ACTIVE_VIEW == 'harvest'}">
                     <div class="page-toolbar">
-                        <h2>Quản lý thu hoạch rau</h2>
-                        <button class="btn-add" onclick="openHarvestPicker()">🧺 Thu hoạch</button>
+                        <h2>Quản lý thu hoạch</h2>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="btn-add" onclick="openHarvestPicker()">🧺 Thu hoạch rau</button>
+                            <button class="btn-add btn-import" onclick="openHarvestLiveStockPicker()">🐄 Thu hoạch vật nuôi</button>
+                        </div>
                     </div>
 
                     <div class="table-card" style="margin-bottom:15px;">
@@ -783,6 +786,160 @@
                             </div>
                             <p><strong>Ghi chú:</strong> <span id="hd_GhiChu"></span></p>
                             <div class="modal-footer"><div class="modal-footer-right"><button type="button" class="btn-cancel" onclick="closeModal('harvestDetailModal')">Đóng</button></div></div>
+                        </div>
+                    </div>
+
+                    <%-- ===================================================== --%>
+                    <%-- 3b) THU HOẠCH VẬT NUÔI (cùng trong view "harvest")     --%>
+                    <%-- ===================================================== --%>
+                    <div class="table-card">
+                        <table>
+                            <thead>
+                                <tr><th>Mã thu hoạch</th><th>Vật nuôi</th><th>Loại</th><th>Ngày thu hoạch</th><th>Giá trị ước tính</th><th>Hành động</th></tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="hv" items="${LIST_LIVESTOCK_HARVEST}">
+                                    <tr>
+                                        <td><strong>${hv.getMaThuHoachVN()}</strong></td>
+                                        <td>${fn:escapeXml(hv.getTenVatNuoi())}</td>
+                                        <td>${fn:escapeXml(hv.getLoaiVatNuoi())}</td>
+                                        <td>${hv.getNgayThuHoach()}</td>
+                                        <td>${hv.getGiaTriUocTinh()} VNĐ</td>
+                                        <td><button class="btn-action btn-view" onclick="openHarvestLiveStockDetail(${hv.getMaThuHoachVN()})">Xem chi tiết</button></td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty LIST_LIVESTOCK_HARVEST}">
+                                    <tr><td colspan="6" style="text-align:center;color:#7f8c8d;padding:20px;">Chưa có phiếu thu hoạch vật nuôi nào.</td></tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <%-- Biểu đồ cột: tổng số lượng đã thu hoạch theo loại vật nuôi --%>
+                    <div class="table-card">
+                        <h3 style="margin-top:0;color:#2e541f;">📊 Sản lượng thu hoạch theo loại vật nuôi</h3>
+                        <c:if test="${empty CHART_DATA_LIVESTOCK}">
+                            <p style="color:#7f8c8d;">Chưa có dữ liệu để hiển thị biểu đồ.</p>
+                        </c:if>
+                        <c:if test="${not empty CHART_DATA_LIVESTOCK}">
+                            <div id="harvestChartLiveStock" class="chart-wrapper"></div>
+                        </c:if>
+                    </div>
+
+                    <%-- Dữ liệu ẩn cho modal chi tiết phiếu thu hoạch vật nuôi --%>
+                    <div id="harvestLiveStockDataStore" style="display:none;">
+                        <c:forEach var="hv" items="${LIST_LIVESTOCK_HARVEST}">
+                            <div class="harvest-vn-data"
+                                 data-id="${hv.getMaThuHoachVN()}"
+                                 data-mavatnuoi="${hv.getMaVatNuoi()}"
+                                 data-ten="${fn:escapeXml(hv.getTenVatNuoi())}"
+                                 data-loai="${fn:escapeXml(hv.getLoaiVatNuoi())}"
+                                 data-ngay="${hv.getNgayThuHoach()}"
+                                 data-soluong="${hv.getSoLuongThuHoach()}"
+                                 data-chatluong="${fn:escapeXml(hv.getChatLuong())}"
+                                 data-giatri="${hv.getGiaTriUocTinh()}"
+                                 data-nguoithuhoach="${fn:escapeXml(hv.getTenNguoiThuHoach())}"
+                                 data-ghichu="${fn:escapeXml(hv.getGhiChu())}"></div>
+                        </c:forEach>
+                    </div>
+
+                    <%-- Modal 1b: chọn vật nuôi để thu hoạch --%>
+                    <div class="modal-overlay" id="harvestLiveStockPickerModal">
+                        <div class="modal-content" style="width:700px;">
+                            <div class="modal-header">
+                                <h3>Chọn vật nuôi để thu hoạch</h3>
+                                <button class="close-btn" onclick="closeModal('harvestLiveStockPickerModal')">&times;</button>
+                            </div>
+                            <table class="mini-table">
+                                <thead><tr><th>Mã vật nuôi</th><th>Tên vật nuôi</th><th>Loại</th><th>Số lượng hiện có</th><th></th></tr></thead>
+                                <tbody>
+                                    <c:forEach var="hls" items="${HARVESTABLE_LIVESTOCK_LIST}">
+                                        <tr>
+                                            <td>${hls.getMaVatNuoi()}</td>
+                                            <td>${fn:escapeXml(hls.getTenVatNuoi())}</td>
+                                            <td>${fn:escapeXml(hls.getLoaiVatNuoi())}</td>
+                                            <td>${hls.getSoLuong()}</td>
+                                            <td>
+                                                <button type="button" class="btn-action btn-harvest"
+                                                        onclick="openHarvestLiveStockForm(${hls.getMaVatNuoi()}, '${fn:escapeXml(hls.getTenVatNuoi())}', ${hls.getSoLuong()})">Thu hoạch</button>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${empty HARVESTABLE_LIVESTOCK_LIST}">
+                                        <tr><td colspan="5" style="text-align:center;color:#7f8c8d;padding:15px;">Hiện chưa có vật nuôi nào có thể thu hoạch.</td></tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                            <div class="modal-footer"><div class="modal-footer-right"><button type="button" class="btn-cancel" onclick="closeModal('harvestLiveStockPickerModal')">Đóng</button></div></div>
+                        </div>
+                    </div>
+
+                    <%-- Modal 2b: form nhập thông tin thu hoạch vật nuôi --%>
+                    <div class="modal-overlay" id="harvestLiveStockFormModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Thu hoạch: <span id="hfvn_TenVatNuoi"></span></h3>
+                                <button class="close-btn" onclick="closeModal('harvestLiveStockFormModal')">&times;</button>
+                            </div>
+                            <form action="${pageContext.request.contextPath}/technician" method="POST" id="harvestLiveStockForm">
+                                <input type="hidden" name="action" value="harvestLiveStock">
+                                <input type="hidden" name="maVatNuoiHarvest" id="hfvn_MaVatNuoi">
+                                <div class="form-row">
+                                    <div class="form-group"><label>Ngày thu hoạch</label><input type="date" name="ngayThuHoachVN" class="form-control" required></div>
+                                    <div class="form-group">
+                                        <label>Số lượng thu hoạch</label>
+                                        <input type="number" name="soLuongThuHoachVN" id="hfvn_SoLuong" class="form-control" min="1" required oninput="checkHarvestLiveStockQty()">
+                                        <div class="field-hint">Số lượng hiện có: <strong id="hfvn_SoLuongGoc"></strong>. Chỉ được thu hoạch nhỏ hơn hoặc bằng số lượng này và phải khác 0.</div>
+                                        <div class="field-hint" id="hfvn_QtyWarning" style="color:#c0392b; font-weight:700;"></div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Chất lượng</label>
+                                        <select name="chatLuongVN" class="form-control" required>
+                                            <option value="Tốt">Tốt</option>
+                                            <option value="Trung bình">Trung bình</option>
+                                            <option value="Kém">Kém</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group"><label>Giá trị ước tính (VNĐ)</label><input type="number" step="0.01" min="0" name="giaTriUocTinhVN" class="form-control" required></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Người thu hoạch</label>
+                                    <select name="nguoiThuHoachVN" class="form-control" required>
+                                        <option value="" disabled selected>-- Chọn công nhân --</option>
+                                        <c:forEach var="w" items="${WORKER_STAFF_LIST}">
+                                            <option value="${w.getMaNhanVien()}">${fn:escapeXml(w.getHoTen())}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="form-group"><label>Ghi chú</label><textarea name="ghiChuVN" class="form-control" placeholder="Có thể bỏ trống"></textarea></div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn-cancel" onclick="closeModal('harvestLiveStockFormModal')">Đóng</button>
+                                    <div class="modal-footer-right"><button type="submit" class="btn-save" id="hfvn_SubmitBtn">Xác nhận</button></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <%-- Modal 3b: xem chi tiết phiếu thu hoạch vật nuôi --%>
+                    <div class="modal-overlay" id="harvestLiveStockDetailModal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Chi tiết phiếu thu hoạch #<span id="hdvn_Ma"></span></h3>
+                                <button class="close-btn" onclick="closeModal('harvestLiveStockDetailModal')">&times;</button>
+                            </div>
+                            <div class="detail-grid">
+                                <p><strong>Tên vật nuôi:</strong> <span id="hdvn_TenVatNuoi"></span></p>
+                                <p><strong>Loại:</strong> <span id="hdvn_Loai"></span></p>
+                                <p><strong>Ngày thu hoạch:</strong> <span id="hdvn_Ngay"></span></p>
+                                <p><strong>Số lượng thu hoạch:</strong> <span id="hdvn_SoLuong"></span></p>
+                                <p><strong>Chất lượng:</strong> <span id="hdvn_ChatLuong"></span></p>
+                                <p><strong>Giá trị ước tính:</strong> <span id="hdvn_GiaTri"></span> VNĐ</p>
+                                <p><strong>Người thu hoạch:</strong> <span id="hdvn_NguoiThuHoach"></span></p>
+                            </div>
+                            <p><strong>Ghi chú:</strong> <span id="hdvn_GhiChu"></span></p>
+                            <div class="modal-footer"><div class="modal-footer-right"><button type="button" class="btn-cancel" onclick="closeModal('harvestLiveStockDetailModal')">Đóng</button></div></div>
                         </div>
                     </div>
                 </c:if>
@@ -1168,6 +1325,96 @@
                 if (maxVal <= 0) maxVal = 1;
 
                 var wrapper = document.getElementById('harvestChart');
+                var yAxis = document.createElement('div');
+                yAxis.className = 'chart-y-axis';
+                for (var i = 4; i >= 0; i--) {
+                    var lbl = document.createElement('div');
+                    lbl.innerText = Math.round(maxVal * i / 4);
+                    yAxis.appendChild(lbl);
+                }
+                var plot = document.createElement('div');
+                plot.className = 'chart-plot';
+                chartData.forEach(function (d) {
+                    var col = document.createElement('div');
+                    col.className = 'chart-bar-col';
+                    var valueLbl = document.createElement('div');
+                    valueLbl.className = 'chart-bar-value';
+                    valueLbl.innerText = d.value;
+                    var bar = document.createElement('div');
+                    bar.className = 'chart-bar';
+                    bar.style.height = Math.max(4, (d.value / maxVal * 250)) + 'px';
+                    var nameLbl = document.createElement('div');
+                    nameLbl.className = 'chart-bar-label';
+                    nameLbl.innerText = d.name;
+                    col.appendChild(valueLbl);
+                    col.appendChild(bar);
+                    col.appendChild(nameLbl);
+                    plot.appendChild(col);
+                });
+                wrapper.appendChild(yAxis);
+                wrapper.appendChild(plot);
+            })();
+            </c:if>
+
+            // ============== 3b) THU HOẠCH VẬT NUÔI ==============
+            function openHarvestLiveStockPicker() {
+                document.getElementById('harvestLiveStockPickerModal').style.display = 'flex';
+            }
+            function openHarvestLiveStockForm(maVatNuoi, tenVatNuoi, soLuongGoc) {
+                closeModal('harvestLiveStockPickerModal');
+                document.getElementById('hfvn_MaVatNuoi').value = maVatNuoi;
+                document.getElementById('hfvn_TenVatNuoi').innerText = tenVatNuoi;
+                document.getElementById('hfvn_SoLuongGoc').innerText = soLuongGoc;
+                document.getElementById('hfvn_SoLuong').max = soLuongGoc;
+                document.getElementById('hfvn_SoLuong').value = '';
+                document.getElementById('hfvn_QtyWarning').innerText = '';
+                document.getElementById('hfvn_SubmitBtn').disabled = false;
+                document.getElementById('harvestLiveStockFormModal').style.display = 'flex';
+            }
+            function checkHarvestLiveStockQty() {
+                const input = document.getElementById('hfvn_SoLuong');
+                const max = parseInt(input.max, 10);
+                const val = parseInt(input.value, 10);
+                const warn = document.getElementById('hfvn_QtyWarning');
+                const btn = document.getElementById('hfvn_SubmitBtn');
+                if (isNaN(val) || val <= 0) {
+                    warn.innerText = 'Số lượng thu hoạch phải khác 0.';
+                    btn.disabled = true;
+                } else if (val > max) {
+                    warn.innerText = 'Số lượng thu hoạch không được vượt quá số lượng hiện có (' + max + ').';
+                    btn.disabled = true;
+                } else {
+                    warn.innerText = '';
+                    btn.disabled = false;
+                }
+            }
+            function openHarvestLiveStockDetail(maThuHoachVN) {
+                const el = document.querySelector('.harvest-vn-data[data-id="' + maThuHoachVN + '"]');
+                if (!el) return;
+                document.getElementById('hdvn_Ma').innerText = el.dataset.id;
+                document.getElementById('hdvn_TenVatNuoi').innerText = el.dataset.ten;
+                document.getElementById('hdvn_Loai').innerText = el.dataset.loai;
+                document.getElementById('hdvn_Ngay').innerText = el.dataset.ngay;
+                document.getElementById('hdvn_SoLuong').innerText = el.dataset.soluong;
+                document.getElementById('hdvn_ChatLuong').innerText = el.dataset.chatluong;
+                document.getElementById('hdvn_GiaTri').innerText = el.dataset.giatri;
+                document.getElementById('hdvn_NguoiThuHoach').innerText = el.dataset.nguoithuhoach;
+                document.getElementById('hdvn_GhiChu').innerText = el.dataset.ghichu || '(không có)';
+                document.getElementById('harvestLiveStockDetailModal').style.display = 'flex';
+            }
+
+            // ---- Vẽ biểu đồ cột (tổng sản lượng theo loại vật nuôi) ----
+            <c:if test="${ACTIVE_VIEW == 'harvest' && not empty CHART_DATA_LIVESTOCK}">
+            (function () {
+                var chartData = [
+                    <c:forEach var="entry" items="${CHART_DATA_LIVESTOCK}" varStatus="st">
+                    { name: "${fn:escapeXml(entry.key)}", value: ${entry.value} }<c:if test="${!st.last}">,</c:if>
+                    </c:forEach>
+                ];
+                var maxVal = Math.max.apply(null, chartData.map(function (d) { return d.value; }));
+                if (maxVal <= 0) maxVal = 1;
+
+                var wrapper = document.getElementById('harvestChartLiveStock');
                 var yAxis = document.createElement('div');
                 yAxis.className = 'chart-y-axis';
                 for (var i = 4; i >= 0; i--) {

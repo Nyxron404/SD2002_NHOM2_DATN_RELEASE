@@ -3,6 +3,7 @@ package controllers;
 import dao.FarmAreaDAO;
 import dao.FarmingPracticeDAO;
 import dao.LiveStockDAO;
+import dao.LiveStockHarvestDAO;
 import dao.SupplieDAO;
 import dao.UserDAO;
 import dao.VegetableDAO;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import models.FarmingPractice;
 import models.LiveStock;
+import models.LiveStockHarvest;
 import models.Vegetable;
 import models.VegetableHarvest;
 import services.TechnicianService;
@@ -41,6 +43,7 @@ public class TechnicianServlet extends HttpServlet {
     private final VegetableDAO vegetableDAO = new VegetableDAO();
     private final VegetableHarvestDAO harvestDAO = new VegetableHarvestDAO();
     private final LiveStockDAO liveStockDAO = new LiveStockDAO();
+    private final LiveStockHarvestDAO liveStockHarvestDAO = new LiveStockHarvestDAO();
 
     List<FarmingPractice> list;
 
@@ -167,6 +170,11 @@ public class TechnicianServlet extends HttpServlet {
         request.setAttribute("HARVESTABLE_VEGETABLE_LIST", harvestDAO.getHarvestableVegetables());
         request.setAttribute("WORKER_STAFF_LIST", harvestDAO.getWorkerStaffList());
         request.setAttribute("CHART_DATA", harvestDAO.getChartDataByVegetableName());
+
+        // ---- Dữ liệu thu hoạch vật nuôi (dùng chung view "harvest") ----
+        request.setAttribute("LIST_LIVESTOCK_HARVEST", liveStockHarvestDAO.getAllLiveStockHarvests());
+        request.setAttribute("HARVESTABLE_LIVESTOCK_LIST", liveStockHarvestDAO.getHarvestableLiveStock());
+        request.setAttribute("CHART_DATA_LIVESTOCK", liveStockHarvestDAO.getChartDataByLiveStockType());
     }
 
     // ---- 4) Quản lý vật nuôi ----
@@ -362,6 +370,29 @@ public class TechnicianServlet extends HttpServlet {
                 session.setAttribute(ok ? "SUCCESS_MSG" : "ERROR_MSG",
                         ok ? "Ghi nhận thu hoạch thành công!"
                            : "Thu hoạch thất bại: số lượng không hợp lệ hoặc vượt quá số lượng rau hiện có.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("ERROR_MSG", "Dữ liệu không hợp lệ: " + e.getMessage());
+            }
+            response.sendRedirect(request.getContextPath() + "/technician?view=harvest");
+            return;
+
+        // ================= 3b) QUẢN LÝ THU HOẠCH VẬT NUÔI =================
+        } else if ("harvestLiveStock".equals(action)) {
+            try {
+                LiveStockHarvest h = new LiveStockHarvest();
+                h.setMaVatNuoi(Integer.parseInt(request.getParameter("maVatNuoiHarvest")));
+                h.setNgayThuHoach(LocalDate.parse(request.getParameter("ngayThuHoachVN")));
+                h.setSoLuongThuHoach(Integer.parseInt(request.getParameter("soLuongThuHoachVN")));
+                h.setChatLuong(request.getParameter("chatLuongVN"));
+                h.setGiaTriUocTinh(Double.parseDouble(request.getParameter("giaTriUocTinhVN")));
+                h.setNguoiThuHoach(Integer.parseInt(request.getParameter("nguoiThuHoachVN")));
+                h.setGhiChu(request.getParameter("ghiChuVN"));
+
+                boolean ok = liveStockHarvestDAO.insertHarvestAndUpdateLiveStock(h);
+                session.setAttribute(ok ? "SUCCESS_MSG" : "ERROR_MSG",
+                        ok ? "Ghi nhận thu hoạch vật nuôi thành công!"
+                           : "Thu hoạch thất bại: vật nuôi không ở trạng thái Khỏe mạnh, hoặc số lượng không hợp lệ / vượt quá số lượng hiện có.");
             } catch (Exception e) {
                 e.printStackTrace();
                 session.setAttribute("ERROR_MSG", "Dữ liệu không hợp lệ: " + e.getMessage());
