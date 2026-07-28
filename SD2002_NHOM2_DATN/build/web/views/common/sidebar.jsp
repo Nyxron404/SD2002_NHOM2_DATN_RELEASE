@@ -121,6 +121,9 @@
         border-left-color: #e74c3c;
         color: #e74c3c !important;
     }
+    * {
+        box-sizing: border-box;
+    }
 </style>
 <aside class="sidebar">
     <div class="logo-area">
@@ -149,7 +152,7 @@
                         Báo cáo tổng quan 
                     </a>
                 </li>
-                
+
                 <!-- MENU ITEM MỚI: QUẢN LÝ KHU VỰC (Farm Area) -->
                 <li>
                     <a href="${pageContext.request.contextPath}/farmarea" class="menu-item ${param.activePage == 'farmArea' ? 'active' : ''}">
@@ -158,7 +161,7 @@
                     </a>
                 </li>
             </c:if>
-            
+
             <c:if test="${QuyenHan == 'HrManager' || QuyenHan == 'Admin'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/hr" class="menu-item ${param.activePage == 'hrManager' ? 'active' : ''}">
