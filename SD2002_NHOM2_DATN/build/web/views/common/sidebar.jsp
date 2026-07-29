@@ -134,6 +134,7 @@
             <h2>Smart Farm</h2>
         </a>
     </div>
+            <jsp:include page="/views/common/ai-chatbox.jsp" />
 
     <ul class="menu">
         <c:forEach var="QuyenHan" items="${sessionScope.QuyenHan}">
